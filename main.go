@@ -1,14 +1,30 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 	"os"
 
+	"forum/database"
 	"forum/handlers"
 )
 
+var (
+	db  *sql.DB
+	err error
+)
+
+func init() {
+	db, err = database.Init("storage/forum.db")
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+}
+
 func main() {
+	defer db.Close()
+
 	// Restrict arguments parsed
 	if len(os.Args) != 1 {
 		log.Println("Too many arguments")

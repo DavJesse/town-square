@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum UI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f0f2f5;
+        }
+        .navbar {
+            background-color: #1877f2;
+            padding: 10px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .container {
+            display: flex;
+            margin: 20px;
+        }
+        .left-section {
+            width: 30%;
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+        }
+        .right-section {
+            flex: 1;
+            margin-left: 15px;
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+        }
+        .post {
+            background: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        }
+        .post img {
+            width: 100%;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .comment-section {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Forum</h1>
+        <input type="text" placeholder="Search Forum" style="padding: 5px;">
+    </div>
+    <div class="container">
+        <div class="left-section">
+            <h3>Friend Suggestions</h3>
+            <p>Michael Brown</p>
+            <p>Emily White</p>
+        </div>
+        <div class="right-section">
+            <h3>News Feed</h3>
+            <div class="post">
+                <h4>John Doe</h4>
+                <p>Enjoying a great day at the beach! 🌊☀️</p>
+                <img src="beach.jpg" alt="Beach Image">
+                <div class="actions">
+                    <button>Like</button>
+                    <button>Dislike</button>
+                </div>
+                <div class="comment-section">
+                    <input type="text" placeholder="Write a comment...">
+                </div>
+            </div>
+            <div class="post">
+                <h4>Jane Smith</h4>
+                <p>Just finished a fantastic book! Highly recommend it. 📖</p>
+                <img src="book.jpg" alt="Book Image">
+                <div class="actions">
+                    <button>Like</button>
+                    <button>Dislike</button>
+                </div>
+                <div class="comment-section">
+                    <input type="text" placeholder="Write a comment...">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

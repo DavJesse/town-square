@@ -1,29 +1,26 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 	"os"
 
 	"forum/database"
 	"forum/handlers"
-)
-
-var (
-	db  *sql.DB
-	err error
+	postHandlers "forum/handlers/posts"
 )
 
 func init() {
-	db, err = database.Init("storage/forum.db")
+	err := database.Init("storage/forum.db")
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
 }
 
 func main() {
-	defer db.Close()
+	defer database.Close()
+
+	database.CreateUser("toni", "toni@mail.com", "@antony222")
 
 	// Restrict arguments parsed
 	if len(os.Args) != 1 {
@@ -38,6 +35,8 @@ func main() {
 	http.HandleFunc("/login", handlers.LoginHandler)
 	http.HandleFunc("/forgot-password", handlers.ForgotPasswordHandler)
 	http.HandleFunc("/register", handlers.RegistrationHandler)
+
+	http.HandleFunc("/posts/create", postHandlers.PostCreate)
 
 	// Inform user initialization of server
 	log.Println("Server started on port 8080")

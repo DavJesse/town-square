@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Post</title>
+</head>
+<body>
+    <h1>Create a New Post</h1>
+    <form method="POST" action="/posts/create" enctype="multipart/form-data">
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title" required><br><br>
+        <label for="content">Content:</label><br>
+        <textarea id="content" name="content" required></textarea><br><br>
+        <label for="media">Upload Image (PNG or JPG, max 20MB):</label><br>
+        <input type="file" id="media" name="media" accept=".png,.jpg,.jpeg" required><br><br>
+        <label for="categories">Select Categories:</label><br>
+        {{range .}}
+            <input type="checkbox" id="categories" name="categories" value="{{.ID}}"> {{.Name}}<br>
+        {{end}}
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

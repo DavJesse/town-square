@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+</head>
+<body>
+    <h1>Search Results</h1>
+    {{if .}}
+    <div>
+    {{range .}}
+    <div class="post">
+        <h3>{{.Title}}</h3>
+        <p>{{.Content}}</p>
+        {{if .Media}}
+        <img src="/static/images/{{.Media}}" alt="Post Image" style="max-width: 200px; max-height: 200px;">
+        {{else}}
+        <p>No media</p>
+        {{end}}
+        <p>Posted on: {{.CreatedAt}}</p>
+    </div>
+    {{end}}
+    </div>
+    {{else}}
+    <p>No posts found</p>
+    {{end}}
+</body>
+</html>

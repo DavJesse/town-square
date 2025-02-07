@@ -4,12 +4,14 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"forum/handlers/errors"
 )
 
-func StaticHandler(w http.ResponseWriter, r *http.Request) {
+func Static(w http.ResponseWriter, r *http.Request) {
 	// Restric requests to "GET"
 	if r.Method != "GET" {
-		BadRequestHandler(w)
+		errors.BadRequestHandler(w)
 		return
 	}
 
@@ -26,7 +28,7 @@ func StaticHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !valid {
-		NotFoundHandler(w)
+		errors.NotFoundHandler(w)
 		return
 	}
 
@@ -34,13 +36,13 @@ func StaticHandler(w http.ResponseWriter, r *http.Request) {
 	filePath := "./web/" + path
 	fileInfo, err := os.Stat(filePath)
 	if err != nil {
-		NotFoundHandler(w)
+		errors.NotFoundHandler(w)
 		return
 	}
 
 	// Restrict access to directories
 	if fileInfo.IsDir() {
-		NotFoundHandler(w)
+		errors.NotFoundHandler(w)
 		return
 	}
 

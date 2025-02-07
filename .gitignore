@@ -1,3 +1,16 @@
+# Ignore all files in storage folder which houses the database
+/storage/*
+
+# Ignore all files in old media folder
+media/*
+
+# Ignore all files in the user images folder
+web/static/images/*
+
+# Ignore all files in the post media folder
+web/static/media/*
+
+# precautionary - not necessarily needed
 storage/forum.db
 storage/forum.db-wal
 storage/forum.db-shm

@@ -3,10 +3,7 @@ package posts
 import (
 	"fmt"
 	"html/template"
-	"io"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strconv"
 
 	"forum/database"
@@ -58,43 +55,10 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Generate a random filename
-		randomFileName, err := utils.GenerateRandomName()
+		// save the image to disk
+		filename, err := utils.SaveImage(fileType, file, utils.MEDIA)
 		if err != nil {
-			http.Error(w, "Failed to generate a unique filename", http.StatusInternalServerError)
-			return
-		}
-
-		// Determine the file extension based on the MIME type
-		var ext string
-		switch fileType {
-		case "image/png":
-			ext = ".png"
-		case "image/jpeg":
-			ext = ".jpg"
-		}
-
-		// Construct the full filename
-		filename := randomFileName + ext
-
-		// Save the file to the media folder
-		mediaFolder := "web/static/media"
-		if err := os.MkdirAll(mediaFolder, os.ModePerm); err != nil {
-			http.Error(w, "Failed to create media folder", http.StatusInternalServerError)
-			return
-		}
-
-		filePath := filepath.Join(mediaFolder, filename)
-		outFile, err := os.Create(filePath)
-		if err != nil {
-			http.Error(w, "Failed to save the file", http.StatusInternalServerError)
-			return
-		}
-		defer outFile.Close()
-
-		// Copy the file content to the new file
-		if _, err := io.Copy(outFile, file); err != nil {
-			http.Error(w, "Failed to save the file", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 

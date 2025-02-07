@@ -8,11 +8,18 @@ import (
 
 	"forum/database"
 	"forum/handlers"
-	postHandlers "forum/handlers/posts"
+	auth "forum/handlers/auth"
+	comments "forum/handlers/comments"
+	posts "forum/handlers/posts"
+	users "forum/handlers/users"
 	"forum/utils"
 )
 
 func init() {
+	utils.CreatImagesFolder()
+	utils.CreatMediaFolder()
+	utils.CreatStorageFolder()
+
 	err := database.Init("storage/forum.db")
 	if err != nil {
 		log.Fatalln(err.Error())
@@ -33,37 +40,36 @@ func main() {
 		return
 	}
 
-	// Candle hundler functions
-	http.HandleFunc("/", handlers.IndexHandler)
-	http.HandleFunc("/static/", handlers.StaticHandler)
-	http.HandleFunc("/success", handlers.SuccessHandler)
-	http.HandleFunc("/login", handlers.LoginHandler)
-	http.HandleFunc("/forgot-password", handlers.ForgotPasswordHandler)
-	http.HandleFunc("/register", handlers.RegistrationHandler)
-	// RESTORE // http.Handle("/posts/create", middleware.AuthMiddleware(http.HandlerFunc(postHandlers.PostCreate)))
-	http.HandleFunc("/posts/create", postHandlers.PostCreate)
-	http.HandleFunc("/posts/display", postHandlers.PostDisplay)
-	// User Profile routes
-	http.HandleFunc("GET /profile", handlers.ViewUserProfile)
+	// authentication
+	http.HandleFunc("/", handlers.Index)
+	http.HandleFunc("/static/", handlers.Static)
+	http.HandleFunc("/success", auth.Success)
+	http.HandleFunc("/login", auth.Login)
+	http.HandleFunc("/forgot-password", auth.ForgotPassword)
+	http.HandleFunc("/register", auth.Registration)
+	http.HandleFunc("/logout", auth.Logout)
+
+	// users
+	http.HandleFunc("GET /profile", users.ViewProfile)
 	// http.HandleFunc("GET /user/update", middleware.AuthMiddleware(http.HandlerFunc(handlers.UpdateUserProfile))) // Protected
 
-	http.HandleFunc("/get", func(w http.ResponseWriter, r *http.Request) {
-		user, _ := database.GetUserByEmailOrUsername("toni", "toni")
-		fmt.Println("User: ", user)
-	})
+	// posts
+	http.HandleFunc("/posts/create", posts.PostCreate)
+	http.HandleFunc("/posts/display", posts.PostDisplay)
+	http.HandleFunc("/posts/like", posts.LikePost)
+	http.HandleFunc("/posts/dislike", posts.DislikePost)
+	http.HandleFunc("/categories", posts.CategoriesPage)
+	http.HandleFunc("/categories/", posts.SingeCategoryPosts)
+	http.HandleFunc("/search", posts.Search)
+	// RESTORE // http.Handle("/posts/create", middleware.AuthMiddleware(http.HandlerFunc(postHandlers.PostCreate)))
 
-	http.HandleFunc("/posts/like", handlers.LikePostHandler)
-	http.HandleFunc("/posts/dislike", handlers.DislikePostHandler)
-	http.HandleFunc("/comments/like", handlers.LikeCommentHandler)
-	http.HandleFunc("/comments/dislike", handlers.DislikeCommentHandler)
-	http.HandleFunc("/comment", handlers.Comment)
-	http.HandleFunc("/categories", handlers.CategoriesPageHandler)
-	http.HandleFunc("/categories/", handlers.SingeCategoryPosts)
+	// comments
+	http.HandleFunc("/comments/like", comments.LikeCommentHandler)
+	http.HandleFunc("/comments/dislike", comments.DislikeCommentHandler)
+	http.HandleFunc("/comment", comments.Comment)
 
-	// Inform user initialization of server
-	log.Printf("Server runing on http://localhost%s\n", port)
-
-	// Start the server, handle emerging errors
+	// start the server, handle emerging errors
+	fmt.Printf("Server runing on http://localhost%s\n", port)
 	err := http.ListenAndServe(port, nil)
 	if err != nil {
 		log.Println("Failed to start server: ", err)

@@ -8,7 +8,7 @@ import (
 	"forum/models"
 )
 
-func IndexHandler(w http.ResponseWriter, r *http.Request) {
+func Index(w http.ResponseWriter, r *http.Request) {
 	// Fetch posts from the database
 	posts, err := database.GetAllPosts()
 	if err != nil {
@@ -26,10 +26,18 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	data := struct {
 		Posts      []models.PostWithUsername
 		Categories []models.Category
+		IsLogged   bool
 	}{
 		Posts:      posts,
 		Categories: categories,
+		IsLogged:   IsLoggedIn(r), // Capture login status
 	}
 
 	tmpl.Execute(w, data)
+}
+
+// Checks if user is loged in
+func IsLoggedIn(r *http.Request) bool {
+	session, _ := r.Cookie("session_id")
+	return session != nil
 }

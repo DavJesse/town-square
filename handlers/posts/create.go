@@ -13,10 +13,6 @@ import (
 	"forum/utils"
 )
 
-// TODO - Fetch the user id from the logged in user, e.g from r.Context
-// Mock user ID for now
-var userID int = 1
-
 // Handler for serving the form and handling form submission
 func PostCreate(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
@@ -82,7 +78,7 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 		filename := randomFileName + ext
 
 		// Save the file to the media folder
-		mediaFolder := "media"
+		mediaFolder := "web/static/media"
 		if err := os.MkdirAll(mediaFolder, os.ModePerm); err != nil {
 			http.Error(w, "Failed to create media folder", http.StatusInternalServerError)
 			return
@@ -119,14 +115,21 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		userID, _, err := database.GetUserData(r)
+		if err != nil {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+
 		// Create the post with categories
-		postID, err := database.CreatePostWithCategories(userID, title, content, filename, categoryIDsInt)
+		_, err = database.CreatePostWithCategories(userID, title, content, filename, categoryIDsInt)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("Failed to create post: %v", err), http.StatusInternalServerError)
 			return
 		}
 
-		fmt.Fprintf(w, "Post created successfully! Post ID: %d\n", postID)
+		http.Redirect(w, r, "/", http.StatusFound)
+		return
 
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

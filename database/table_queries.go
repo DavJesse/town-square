@@ -73,7 +73,9 @@ const (
 		FOREIGN KEY (user_id) REFERENCES users(id),
 		FOREIGN KEY (post_id) REFERENCES posts(uuid),
 		FOREIGN KEY (comment_id) REFERENCES comments(uuid),
-		CHECK (post_id IS NOT NULL OR comment_id IS NOT NULL)  -- At least one must be non-null
+		CHECK (post_id IS NOT NULL OR comment_id IS NOT NULL),  -- At least one must be non-null
+		UNIQUE (user_id, post_id),  -- Ensure the user can only like the same post once
+		UNIQUE (user_id, comment_id) -- Ensure the user can only like the same comment once
 	);`
 	LIKES_TABLE_INDEX_user_id    = `CREATE INDEX IF NOT EXISTS idx_likes_user_id ON likes (user_id);`
 	LIKES_TABLE_INDEX_post_id    = `CREATE INDEX IF NOT EXISTS idx_likes_post_id ON likes (post_id);`
@@ -87,7 +89,9 @@ const (
 		FOREIGN KEY (user_id) REFERENCES users(id),
 		FOREIGN KEY (post_id) REFERENCES posts(uuid),
 		FOREIGN KEY (comment_id) REFERENCES comments(uuid),
-		CHECK (post_id IS NOT NULL OR comment_id IS NOT NULL)  -- At least one must be non-null
+		CHECK (post_id IS NOT NULL OR comment_id IS NOT NULL),  -- At least one must be non-null
+		UNIQUE (user_id, post_id),  -- Ensure the user can only dislike the same post once
+		UNIQUE (user_id, comment_id) -- Ensure the user can only dislike the same comment once
 	);`
 	DISLIKES_TABLE_INDEX_user_id    = `CREATE INDEX IF NOT EXISTS idx_dislikes_user_id ON dislikes (user_id);`
 	DISLIKES_TABLE_INDEX_post_id    = `CREATE INDEX IF NOT EXISTS idx_dislikes_post_id ON dislikes (post_id);`

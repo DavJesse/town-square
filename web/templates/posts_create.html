@@ -1,23 +1,181 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Post</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Open Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #d7dad9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background-color: #ffffff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-family: 'Open Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        }
+
+        .navbar__title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #0172eb;
+            font-family: 'Open Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif!important;
+        }
+
+        .navbar__actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .navbar__search {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #333;
+            transition: border 0.3s ease;
+        }
+
+        .navbar__search:focus {
+            border-color: #0172eb;
+            outline: none;
+        }
+
+        .navbar__button {
+            padding: 8px 15px;
+            background-color: #0172eb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar__button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Form Container */
+        .form-container {
+            display: flex;
+            justify-content: center;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+
+        form {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #0172eb;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input[type="text"], textarea, input[type="file"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        input[type="submit"] {
+            padding: 10px 15px;
+            background-color: #0172eb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .categories-container {
+            margin-top: 10px;
+        }
+
+        .categories-container input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>Create a New Post</h1>
-    <form method="POST" action="/posts/create" enctype="multipart/form-data">
-        <label for="title">Title:</label><br>
-        <input type="text" id="title" name="title" required><br><br>
-        <label for="content">Content:</label><br>
-        <textarea id="content" name="content" required></textarea><br><br>
-        <label for="media">Upload Image (PNG or JPG, max 20MB):</label><br>
-        <input type="file" id="media" name="media" accept=".png,.jpg,.jpeg" required><br><br>
-        <label for="categories">Select Categories:</label><br>
-        {{range .}}
-            <input type="checkbox" id="categories" name="categories" value="{{.ID}}"> {{.Name}}<br>
-        {{end}}
-        <br>
-        <input type="submit" value="Submit">
-    </form>
+    <div class="navbar">
+        <h1 class="navbar__title">Welcome To Forum</h1>
+        <div class="navbar__actions">
+            <input type="text" class="navbar__search" placeholder="Search Forum">
+            <a href="/posts/create">
+                <button class="navbar__button" id="create-post-button">Create Post</button>
+            </a>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <form method="POST" action="/posts/create" enctype="multipart/form-data">
+            <h1>Create a New Post</h1>
+
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+
+            <label for="content">Content:</label>
+            <textarea id="content" name="content" required></textarea>
+
+            <label for="media">Upload Image (PNG or JPG, max 20MB):</label>
+            <input type="file" id="media" name="media" accept=".png,.jpg,.jpeg" required>
+
+            <div class="categories-container">
+                <label for="categories">Select Categories:</label><br>
+                {{range .}}
+                    <input type="checkbox" id="categories" name="categories" value="{{.ID}}"> {{.Name}}<br>
+                {{end}}
+            </div>
+
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
 </body>
 </html>

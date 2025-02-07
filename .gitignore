@@ -1,2 +1,5 @@
-storage/
+storage/forum.db
+storage/forum.db-wal
+storage/forum.db-shm
 media/
+web/static/images/

@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"strings"
 
+	"database/sql"
 	"forum/models"
+	"log"
 )
 
 // initializes the categories table with the predefined categories
@@ -86,4 +88,43 @@ func ValidateCategories(categoryIDs []int) error {
 	}
 
 	return nil
+}
+
+// FetchCategoryPostsWithID retrieves all posts associated with a given category ID
+func FetchCategoryPostsWithID(categoryID int) ([]models.Post, error) {
+	query := `
+        SELECT p.uuid, p.title, p.content, p.media, p.user_id, p.created_at
+        FROM posts p
+        JOIN post_categories pc ON p.uuid = pc.post_id
+        WHERE pc.category_id = ?`
+	rows, err := db.Query(query, categoryID)
+	if err != nil {
+		log.Println("Error querying posts by category ID:", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []models.Post
+	for rows.Next() {
+		var post models.Post
+		var media sql.NullString
+		err := rows.Scan(&post.UUID, &post.Title, &post.Content, &media, &post.UserID, &post.CreatedAt)
+		if err != nil {
+			log.Println("Error scanning post:", err)
+			return nil, err
+		}
+		if media.Valid {
+			post.Media = media.String
+		} else {
+			post.Media = ""
+		}
+		posts = append(posts, post)
+	}
+
+	if err = rows.Err(); err != nil {
+		log.Println("Error with rows:", err)
+		return nil, err
+	}
+
+	return posts, nil
 }

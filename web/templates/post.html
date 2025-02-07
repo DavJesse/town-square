@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum Post</title>
+    <style>
+        /* Base styles */
+        :root {
+            --primary-color: #2563eb;
+            --text-color: #1f2937;
+            --secondary-text: #6b7280;
+            --border-color: #e5e7eb;
+            --background: #ffffff;
+            --hover-bg: #f3f4f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.5;
+            color: var(--text-color);
+            background-color: #f9fafb;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            margin-bottom: 2rem;
+            color: var(--secondary-text);
+        }
+
+        .breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* Post */
+        .post {
+            background-color: var(--background);
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .post-header {
+            margin-bottom: 2rem;
+        }
+
+        .post-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .post-meta {
+            color: var(--secondary-text);
+            font-size: 0.875rem;
+        }
+
+        .post-date {
+            margin-right: 1rem;
+        }
+
+        /* Post Content */
+        .post-media {
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .post-media img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .post-text {
+            font-size: 1.125rem;
+            line-height: 1.75;
+            margin-bottom: 2rem;
+        }
+
+        /* Post Actions */
+        .post-actions {
+            display: flex;
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            background: var(--background);
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: var(--hover-bg);
+        }
+
+        /* Comments Section */
+        .comments-section {
+            background-color: var(--background);
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+
+        .comments-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .comment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            align-self: flex-end;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: opacity 0.2s;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 640px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .post {
+                padding: 1rem;
+            }
+
+            .post-title {
+                font-size: 1.5rem;
+            }
+
+            .post-text {
+                font-size: 1rem;
+            }
+
+            .comments-section {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="/">Home</a> / <span>Post</span>
+        </nav>
+
+        <article class="post">
+            <header class="post-header">
+                <h1 class="post-title">{{.Title}}</h1>
+                <div class="post-meta">
+                    <span class="post-date">Posted on {{.CreatedAt.Format "January 2, 2006"}}</span>
+                    <span class="post-author">by User #{{.UserID}}</span>
+                </div>
+            </header>
+
+            <div class="post-content">
+                {{if .Media}}
+                <div class="post-media">
+                    <img src="{{if.Media}}" alt="Post media">
+                </div>
+                {{end}}
+
+                <div class="post-text">
+                    {{.Content}}
+                </div>
+            </div>
+
+            <footer class="post-footer">
+                <div class="post-actions">
+                    <button class="action-btn like-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3">
+                            </path>
+                        </svg>
+                        Like
+                    </button>
+                    <button class="action-btn share-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                        Share
+                    </button>
+                </div>
+            </footer>
+        </article>
+
+        <section class="comments-section">
+            <h2>Comments</h2>
+            <div class="comment-form">
+                <textarea placeholder="Add a comment..."></textarea>
+                <button class="submit-btn">Post Comment</button>
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>

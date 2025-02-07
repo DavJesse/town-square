@@ -33,7 +33,7 @@ func TestMain(m *testing.M) {
 	defer db.Close()
 
 	// create a single user that will be used in tests
-	_, err = CreateUser("milton", "milton@mail.com", "mPass")
+	_, err = CreateUser("milton", "milton@mail.com", "$2a$10$no3SHHuvF8C6gR.zUSlsJu46Hq8kIMRSqp5hpj/5b1XXMlROPpXIa")
 	if err != nil {
 		error_s := fmt.Errorf("%w\n", err)
 		fmt.Println(error_s)

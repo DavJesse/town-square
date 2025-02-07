@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -8,6 +9,7 @@ import (
 	"forum/database"
 	"forum/handlers"
 	postHandlers "forum/handlers/posts"
+	"forum/utils"
 )
 
 func init() {
@@ -18,9 +20,11 @@ func init() {
 }
 
 func main() {
-	defer database.Close()
+	portStr := utils.Port() // get the port to use to start the server
+	port := fmt.Sprintf(":%d", portStr)
 
-	database.CreateUser("toni", "toni@mail.com", "@antony222")
+	// will postpone the closure of the database handler created by init/0 function to when main/0 exits
+	defer database.Close()
 
 	// Restrict arguments parsed
 	if len(os.Args) != 1 {
@@ -30,19 +34,37 @@ func main() {
 	}
 
 	// Candle hundler functions
+	http.HandleFunc("/", handlers.IndexHandler)
 	http.HandleFunc("/static/", handlers.StaticHandler)
-	// http.HandleFunc("/", handlers.IndexHandler)
+	http.HandleFunc("/success", handlers.SuccessHandler)
 	http.HandleFunc("/login", handlers.LoginHandler)
 	http.HandleFunc("/forgot-password", handlers.ForgotPasswordHandler)
 	http.HandleFunc("/register", handlers.RegistrationHandler)
-
+	// RESTORE // http.Handle("/posts/create", middleware.AuthMiddleware(http.HandlerFunc(postHandlers.PostCreate)))
 	http.HandleFunc("/posts/create", postHandlers.PostCreate)
+	http.HandleFunc("/posts/display", postHandlers.PostDisplay)
+	// User Profile routes
+	http.HandleFunc("GET /profile", handlers.ViewUserProfile)
+	// http.HandleFunc("GET /user/update", middleware.AuthMiddleware(http.HandlerFunc(handlers.UpdateUserProfile))) // Protected
+
+	http.HandleFunc("/get", func(w http.ResponseWriter, r *http.Request) {
+		user, _ := database.GetUserByEmailOrUsername("toni", "toni")
+		fmt.Println("User: ", user)
+	})
+
+	http.HandleFunc("/posts/like", handlers.LikePostHandler)
+	http.HandleFunc("/posts/dislike", handlers.DislikePostHandler)
+	http.HandleFunc("/comments/like", handlers.LikeCommentHandler)
+	http.HandleFunc("/comments/dislike", handlers.DislikeCommentHandler)
+	http.HandleFunc("/comment", handlers.Comment)
+	http.HandleFunc("/categories", handlers.CategoriesPageHandler)
+	http.HandleFunc("/categories/", handlers.SingeCategoryPosts)
 
 	// Inform user initialization of server
-	log.Println("Server started on port 8080")
+	log.Printf("Server runing on http://localhost%s\n", port)
 
 	// Start the server, handle emerging errors
-	err := http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(port, nil)
 	if err != nil {
 		log.Println("Failed to start server: ", err)
 		return

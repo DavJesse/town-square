@@ -25,6 +25,11 @@ func Init(dbname string) error {
 		return errors.New("error enebling foreign key constraints")
 	}
 
+	err = enableWALMode(db)
+	if err != nil {
+		return errors.New("error enebling foreign key constraints")
+	}
+
 	// initialize tables
 	err = createTables(db)
 	if err != nil {
@@ -90,6 +95,19 @@ func enableForeignKeys(db *sql.DB) error {
 	_, err := db.Exec("PRAGMA foreign_keys = ON;")
 	if err != nil {
 		return fmt.Errorf("failed to enable foreign key constraints: %w", err)
+	}
+	return nil
+}
+
+/*
+* WAL (Write-Ahead Logging) Mode
+* In WAL mode, SQLite allows for greater concurrency by allowing multiple readers while there is a single writer.
+* This mode helps in reducing the chances of database locks when there are multiple concurrent read and write operations
+ */
+func enableWALMode(db *sql.DB) error {
+	_, err := db.Exec("PRAGMA journal_mode = WAL;")
+	if err != nil {
+		return fmt.Errorf("failed to set WAL mode: %w", err)
 	}
 	return nil
 }

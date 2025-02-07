@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome TO Forum</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #bec5c5;
+            color: #333;
+        }
+        
+        .navbar {
+            background-color: #ebeeee;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            gap: 10px;
+        }
+        
+        .navbar__title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1694d7;
+            margin-right: auto;
+        }
+        
+        .navbar__search {
+            padding: 8px 20px;
+            border: 1px solid #ccc;
+            border: none;
+            border-radius: 5px;
+        }
+        
+        .navbar__button {
+            padding: 8px 15px;
+            background-color: #1694d7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .container {
+            display: flex;
+            margin: 20px auto;
+            max-width: 1200px;
+        }
+        
+        .sidebar {
+            width: 20%;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+        }
+        
+        .sidebar__heading {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #1694d7;
+        }
+        
+        .sidebar__list {
+            list-style: none;
+        }
+        
+        .sidebar__list-item {
+    font-size: 14px;
+    margin: 10px 0;
+    color: #555;
+    padding: 8px 15px;
+    background-color: #1694d7;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition */
+}
+
+.sidebar__list-item:hover {
+    background-color: #0a7a9d; /* Darker shade for hover effect */
+    transform: scale(1.05); /* Slightly enlarge the item on hover */
+}
+
+        
+        .main-content {
+            width: 60%;
+            margin: 0 20px;
+        }
+        
+        .main-content__heading {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #1694d7;
+        }
+        
+        .card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            padding: 15px;
+        }
+        
+        .card__title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .card__description {
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .load-more-btn {
+            padding: 10px 20px;
+            background-color: #1694d7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .load-more {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1 class="navbar__title">Forum</h1>
+        <input type="text" class="navbar__search" placeholder="Search Forum">
+        <button class="navbar__button">Create Post</button>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar">
+            <h3 class="sidebar__heading">Categories</h3>
+            <ul class="sidebar__list">
+                <li class="sidebar__list-item">Agriculture</li>
+                <li class="sidebar__list-item">Arts</li>
+                <li class="sidebar__list-item">Education</li>
+                <li class="sidebar__list-item">Lifestyle</li>
+                <li class="sidebar__list-item">Culture</li>
+                <li class="sidebar__list-item">Science</li>
+                <li class="sidebar__list-item">Multi-Category</li>
+            </ul>
+        </div>
+        
+        <div class="main-content" id="postContainer">
+            <h3 class="main-content__heading">Posts</h3>
+            <!-- Posts will go here -->
+        </div>
+    </div>
+    <div class="load-more">
+        <button class="load-more-btn" id="loadMoreBtn">Load More Posts</button>
+    </div>
+
+    <script>
+        let posts = [
+            { Creator: 'John', UUID: '1', Title: 'Post 1', Content: 'This is the first post.', Media: 'image1.jpg' },
+            { Creator: 'Jane', UUID: '2', Title: 'Post 2', Content: 'This is the second post.', Media: 'image2.jpg' },
+            { Creator: 'Alice', UUID: '3', Title: 'Post 3', Content: 'This is the third post.', Media: 'image3.jpg' },
+            { Creator: 'Bob', UUID: '4', Title: 'Post 4', Content: 'This is the fourth post.', Media: 'image4.jpg' },
+            { Creator: 'Charlie', UUID: '5', Title: 'Post 5', Content: 'This is the fifth post.', Media: 'image5.jpg' },
+            { Creator: 'Eve', UUID: '6', Title: 'Post 6', Content: 'This is the sixth post.', Media: 'image6.jpg' },
+        ];
+        
+        let currentIndex = 0;
+        const postsPerLoad = 3;
+
+        function loadPosts() {
+            const postContainer = document.getElementById('postContainer');
+            const endIndex = Math.min(currentIndex + postsPerLoad, posts.length);
+            const postsToLoad = posts.slice(currentIndex, endIndex);
+            
+            postsToLoad.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'card';
+                postElement.innerHTML = `
+                    <h4 class="card__title">User ${post.Creator}</h4>
+                    <p><a href="/posts/display?pid=${post.UUID}">${post.Title}</a></p>
+                    <p class="card__description">${post.Content}</p>
+                    ${post.Media ? `<img src="/static/media/${post.Media}" alt="Post Image" style="width: 70px; aspect-ratio: 1/1;">` : ''}
+                    <div class="actions">
+                        <form action="/posts/like" method="post">
+                            <input type="hidden" name="post-id" value="${post.UUID}">
+                            <button type="submit">Like</button>
+                        </form>
+                        <form action="/posts/dislike" method="post">
+                            <input type="hidden" name="post-id" value="${post.UUID}">
+                            <button type="submit">Dislike</button>
+                        </form>
+                    </div>
+                `;
+                postContainer.appendChild(postElement);
+            });
+            
+            currentIndex += postsPerLoad;
+            if (currentIndex >= posts.length) {
+                document.getElementById('loadMoreBtn').style.display = 'none'; // Hide "Load More" button if no more posts
+            }
+        }
+
+        document.getElementById('loadMoreBtn').addEventListener('click', loadPosts);
+        
+        // Load initial posts
+        loadPosts();
+    </script>
+</body>
+</html>

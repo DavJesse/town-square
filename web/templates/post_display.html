@@ -3,272 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{.Title}}</title>
+    <meta name="description" content="Display Posts is a portal to view the whole story.">
+    <title>{{.PostData.Title}}</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/post_display.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@700&display=swap" rel="stylesheet">
 
-    <style>
-        /* Define color variables */
-        :root {
-            --primary-color: #0172eb; /* New primary color */
-            --background-color: #d7dad9; /* New background color */
-            --text-color: #333;
-            --card-background-color: white;
-            --comment-background-color: #f9f9f9;
-            --border-radius: 5px;
-            --hover-color: #0161b3; /* Slightly darker shade for hover effect */
-        }
-
-        /* General Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 20px;
-            border-radius: var(--border-radius);
-            margin-bottom: 20px;
-        }
-
-        header h1 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        header p {
-            font-size: 1rem;
-            margin-bottom: 5px;
-        }
-
-        article {
-            background-color: var(--card-background-color);
-            padding: 20px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-
-        article h2 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-
-        article p {
-            font-size: 1rem;
-            margin-bottom: 15px;
-            line-height: 1.8;
-        }
-
-        article img {
-            max-width: 100%;
-            border-radius: var(--border-radius);
-            margin-top: 10px;
-        }
-
-        section {
-            margin-top: 30px;
-        }
-
-        section h3 {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
-
-        ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        ul li {
-            background-color: #f0f0f0;
-            margin: 5px 0;
-            padding: 8px;
-            border-radius: 4px;
-        }
-
-        .comment-section {
-            margin-top: 20px;
-        }
-
-        .comment {
-            background-color: var(--comment-background-color);
-            padding: 15px;
-            border-radius: var(--border-radius);
-            margin-bottom: 10px;
-            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .comment p {
-            margin-bottom: 5px;
-        }
-
-        .comment em {
-            font-style: italic;
-            color: #666;
-        }
-
-        .actions {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-        }
-
-        .actions form {
-            display: inline-block;
-            margin: 0;
-        }
-
-        .actions button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .actions button:hover {
-            background-color: var(--hover-color);
-        }
-
-        form {
-            margin-top: 20px;
-        }
-
-        form input[type="text"] {
-            padding: 10px;
-            font-size: 1rem;
-            width: 80%;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            margin-right: 10px;
-        }
-
-        form button {
-            padding: 10px 15px;
-            font-size: 1rem;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        form button:hover {
-            background-color: var(--hover-color);
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            padding: 10px;
-        }
-
-        footer a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-size: 1rem;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Responsive Styling */
-        @media (max-width: 768px) {
-            body {
-                padding: 15px;
-            }
-
-            header h1 {
-                font-size: 1.5rem;
-            }
-
-            article {
-                padding: 15px;
-            }
-
-            .comment {
-                padding: 12px;
-            }
-
-            form input[type="text"] {
-                width: 100%;
-            }
-
-            .actions button {
-                font-size: 0.9rem;
-            }
-        }
-    </style>
 </head>
 <body>
-    {{$post := .}}
-    <header>
-        <h1>{{.Title}}</h1>
-        <p><strong>Posted by:</strong> {{.Username}}</p>
-        <p><strong>Created At:</strong> {{.CreatedAt}}</p>
-        <p>Likes: {{.LikesCount}} Dislikes: {{.DislikesCount }}</p>
+
+    <div class="navbar">
+        <a href="/">
+            <h1 class="navbar__title">forum</h1>
+        </a>
+        
+        <div class="navbar__actions">
+            <form action="/search" method="get" class="navbar__search-form">
+                <input type="text" name="q" class="navbar__search" placeholder="Search...">
+                <button type="submit" class="navbar__button">Search</button>
+            </form>
+
+            <a href="/posts/create">
+                <button class="navbar__button" id="create-post-button">Create Post</button>
+            </a>
+
+            <!-- Show Logout Button and Profile Picture if Logged In -->
+            {{ if .IsLogged}}
+            <form action="/logout" method="POST" style="display: inline;">
+                <button class="navbar__button" id="login-button">Log Out</button>
+            </form>
+            
+            <div class="navbar__Profile__Pic">
+            {{ if .ProfPic }}
+            <a href="/profile">
+                <img src="/static/images/{{.ProfPic}}"  alt="user">
+             </a>
+            {{ else }}
+            <a href="/profile">
+               <img src="/static/user-circle-svgrepo-com.svg"  alt="user">
+            </a>
+             {{ end }}
+            </div>
+            {{ else }}
+            <!-- Show Log In Button if Logged In -->
+            <a href="/login">
+                <button class="navbar__button" id="login-button">Login</button>
+            </a> 
+            {{ end }}
+        </div>
+    </div>
+
+    {{$post := .PostData}}
+    <header class="post-head">
+        <h1>{{.PostData.Title}}</h1>
+        <p class="author">Posted by:<strong> {{.PostData.Username}}</strong></p>
+        <p class="date">Posted on:<strong> {{.PostData.CreatedAt}}</strong></p>
+
+        <div class="metrics">
+            <form action="/posts/like" method="post">
+                <input type="hidden" name="post-id" value="{{.PostData.UUID}}">
+                <button type="submit" class="like-btn">👍 {{.PostData.LikesCount}}</button>
+            </form>
+            <form action="/posts/dislike" method="post">
+                <input type="hidden" name="post-id" value="{{.PostData.UUID}}">
+                <button type="submit" class="dislike-btn">👎 {{.PostData.DislikesCount}}</button>
+            </form>
+        </div>
+        
     </header>
 
     <article>
         <div>
-            <h2>Content</h2>
-            <p>{{.Content}}</p>
-        </div>
-        <div>
-            <h3>Media</h3>
-            {{if .Media}}
-                <img src="/static/media/{{.Media}}" alt="Post Media" />
+            {{if .PostData.Media}}
+                <img src="/static/media/{{.PostData.Media}}" alt="Post Media" />
             {{else}}
                 <p>No media available for this post.</p>
             {{end}}
         </div>
+        <div class="post-content">
+            <p>{{.PostData.Content | replaceNewlines}}</p>
+        </div>
     </article>
 
-    <section>
-        <h3>Categories:</h3>
+    <section class="category-section">
         <ul>
-            {{range .Categories}}
-                <li>{{.}}</li>
+            {{range .PostData.Categories}}
+                <li class="category-pill">{{.}}</li>
             {{end}}
         </ul>
-    </section>
+    </section>    
 
     <section>
-        {{if .Comments}}
+        {{if .PostData.Comments}}
         <div class="comment-section">
             <!-- Displaying existing comments -->
-            {{range $comment := .Comments}}
+            {{range $comment := .PostData.Comments}}
             <div class="comment">
-                <p><strong>{{$comment.Creator}}</strong> commented:</p>
+                <p class="comment-author"><strong>{{$comment.Creator}}</strong> commented:</p>
                 <p>{{$comment.Content}}</p>
-                <p><em>{{$comment.CreatedAt}}</em></p>
+                <p class="commedt-date"><em>{{$comment.CreatedAt}}</em></p>
             </div>
             <div class="actions">
                 <form action="/comments/like" method="post">
                     <input type="hidden" name="comment-id" value="{{$comment.UUID}}">
                     <input type="hidden" name="post-id" value="{{$post.UUID}}">
-                    <button type="submit">Like: {{$comment.LikesCount}}</button>
+                    <button type="submit" class="like-btn">👍 {{$comment.LikesCount}}</button>
                 </form>
                 <form action="/comments/dislike" method="post">
                     <input type="hidden" name="comment-id" value="{{$comment.UUID}}">
                     <input type="hidden" name="post-id" value="{{$post.UUID}}">
-
-                    <button type="submit">Dislike: {{$comment.DislikesCount}}</button>
+                    <button type="submit" class="dislike-btn">👎 {{$comment.DislikesCount}}</button>
                 </form>
             </div>
             {{end}}
@@ -278,18 +122,23 @@
                 No comments yet. Be the first to comment!
             </div>
         {{end}}
-        <div>
+
             <!-- Comment form -->
-            <form action="/comment" method="POST">
-                <input type="hidden" name="postUUID" value="{{.UUID}}">
-                <input type="text" name="comment" placeholder="Write a comment..." required>
-                <button type="submit">Post</button>
-            </form>
-        </div>
+            {{ if .IsLogged }}
+             <div class="form-container">
+                 <form action="/comment" method="POST">
+                     <input type="hidden" name="postUUID" value="{{.PostData.UUID}}">
+                     <input type="text" name="comment" placeholder="Write a comment..." required>
+                     <button type="submit">Post</button>
+                    </form>
+                </div>
+                {{ end }}
+
     </section>
 
     <footer>
         <p><a href="/">Back to Posts</a></p>
     </footer>
+
 </body>
 </html>

@@ -1,10 +1,8 @@
 package utils
 
-import "regexp"
-
-// func IsValidEmail(email string) bool {
-// 	return strings.Contains(email, "@") && strings.HasSuffix(email, ".com")
-// }
+import (
+	"regexp"
+)
 
 // Validate email format
 

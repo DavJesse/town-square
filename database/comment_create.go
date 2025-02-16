@@ -1,9 +1,13 @@
 package database
 
-import "forum/utils"
+import (
+	"fmt"
+
+	"github.com/gofrs/uuid"
+)
 
 func CreateComment(userID int, postID string, content string) (int64, error) {
-	uuid, err := utils.GenerateUUID()
+	uuid, err := GenerateUUID()
 	if err != nil {
 		return 0, err
 	}
@@ -13,4 +17,12 @@ func CreateComment(userID int, postID string, content string) (int64, error) {
 		return 0, err
 	}
 	return result.LastInsertId()
+}
+
+func GenerateUUID() (string, error) {
+	newUUID, err := uuid.NewV4()
+	if err != nil {
+		return "", fmt.Errorf("error generating UUID: %w", err)
+	}
+	return newUUID.String(), nil
 }

@@ -2,6 +2,7 @@ package posts
 
 import (
 	"encoding/json"
+	errors "forum/handlers/errors"
 	"log"
 	"net/http"
 
@@ -15,13 +16,15 @@ import (
 // GetCategoriesHandler handles requests to retrieve all categories.
 func GetCategories(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		log.Println("Invalid request method")
+		errors.BadRequestHandler(w)
 		return
 	}
 
 	categories, err := database.FetchCategories()
 	if err != nil {
-		http.Error(w, "Failed to fetch categories", http.StatusInternalServerError)
+		log.Println("Failed to fetch categories")
+		errors.InternalServerErrorHandler(w)
 		return
 	}
 
@@ -49,10 +52,25 @@ func CategoriesPage(w http.ResponseWriter, r *http.Request) {
 
 // Sends all posts of a single category
 func SingeCategoryPosts(w http.ResponseWriter, r *http.Request) {
+	var userData models.User
+	var err error
+	session, loggedIn := database.IsLoggedIn(r)
+
+	// Retrieve user data
+	if loggedIn {
+		userData, err = database.GetUserbySessionID(session.SessionID)
+		if err != nil {
+			log.Printf("Error getting user: %v\n", err) // Add error logging
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+	}
+
 	// Extract the category ID from the URL path
 	pathParts := strings.Split(r.URL.Path, "/")
 	if len(pathParts) < 3 {
-		http.Error(w, "Invalid URL", http.StatusBadRequest)
+		log.Println("Invalid request method")
+		errors.BadRequestHandler(w)
 		return
 	}
 	categoryID := pathParts[2]
@@ -65,17 +83,28 @@ func SingeCategoryPosts(w http.ResponseWriter, r *http.Request) {
 	// Fetch posts from the database
 	posts, err := database.FetchCategoryPostsWithID(ID)
 	if err != nil {
-		http.Error(w, "Category doesn't exist", http.StatusInternalServerError)
+		log.Println("Category doesn't exist")
+		errors.InternalServerErrorHandler(w)
 		return
 	}
 	// Load the HTML template
-	tmpl := template.Must(template.ParseFiles("web/templates/category.html"))
+	tmpl, err := template.ParseFiles("web/templates/category.html")
+	if err != nil {
+		log.Println("Error: ", err)
+		errors.InternalServerErrorHandler(w)
+		return
+	}
 	// Execute the template with the posts
 	data := struct {
-		Posts []models.Post
+		Posts    []models.Post
+		IsLogged bool
+		ProfPic  string
 	}{
-		Posts: posts,
+		Posts:    posts,
+		IsLogged: loggedIn,
+		ProfPic:  userData.Image,
 	}
+
 	err = tmpl.Execute(w, data)
 	if err != nil {
 		log.Println("Error executing template:", err)

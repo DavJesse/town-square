@@ -26,6 +26,12 @@ type Session struct {
 	UserID    int       `json:"user_id"`
 	Expiry    time.Time `json:"expiry"`
 }
+type SessionWithUsername struct {
+	SessionID string    `json:"session_id"`
+	UserID    int       `json:"user_id"`
+	Username  string    `json:"username"`
+	Expiry    time.Time `json:"expiry"`
+}
 
 // category struct
 type Category struct {

@@ -1,0 +1,19 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.category-container {
+    width: 100%; /* Adjust width as needed */
+    max-width: 800px; /* Prevent it from getting too wide */
+    /* text-align: center; */
+    padding: 20px;
+    background: #f8f8f8; /* Optional: Background color */
+    border-radius: 8px; /* Optional: Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Box shadow */
+    margin-top: 80px;
+}

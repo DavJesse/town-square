@@ -8,14 +8,14 @@ import (
 	"forum/utils"
 )
 
-// LoginUser handles user login and session management.
+// LoginUser logs the user in by verifying credentials and creating a session.
 func LoginUser(detailOne, detailTwo, password string) (string, error) {
 	// Fetch the user by username or email
-	query := `SELECT id, password, session_id FROM users WHERE username = ? OR username = ? OR email = ? OR email = ?`
+	query := `SELECT id, password, session_id FROM users WHERE username = ? OR email = ?`
 	var userID int
 	var hashedPassword string
 	var existingSessionID sql.NullString
-	err := db.QueryRow(query, detailOne, detailTwo, detailOne, detailTwo).Scan(&userID, &hashedPassword, &existingSessionID)
+	err := db.QueryRow(query, detailOne, detailTwo).Scan(&userID, &hashedPassword, &existingSessionID)
 	if err != nil {
 		return "", fmt.Errorf("invalid username/email or password: %w", err)
 	}
@@ -25,7 +25,7 @@ func LoginUser(detailOne, detailTwo, password string) (string, error) {
 		return "", fmt.Errorf("invalid username/email or password")
 	}
 
-	// If the user already has a session, destroy it
+	// If the user already has a session, delete it
 	if existingSessionID.Valid {
 		err = DeleteSession(existingSessionID.String)
 		if err != nil {
@@ -48,5 +48,12 @@ func LoginUser(detailOne, detailTwo, password string) (string, error) {
 		return "", fmt.Errorf("failed to create session: %w", err)
 	}
 
+	// Update user's session ID in users table
+	err = UpdateUserSession(newSessionID, userID)
+	if err != nil {
+		return "", fmt.Errorf("failed to update user session ID: %w", err)
+	}
+
+	// Return the new session ID
 	return newSessionID, nil
 }

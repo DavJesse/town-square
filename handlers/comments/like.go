@@ -2,14 +2,18 @@ package comments
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+
+	errors "forum/handlers/errors"
 
 	"forum/database"
 )
 
 func LikeCommentHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		errors.MethodNotAllowedHandler(w)
+		log.Printf("METHOD ERROR: method not allowed")
 		return
 	}
 
@@ -25,7 +29,8 @@ func LikeCommentHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = database.LikeComment(userID, commentID)
 	if err != nil {
-		http.Error(w, "Failed to like comment", http.StatusInternalServerError)
+		errors.InternalServerErrorHandler(w)
+		fmt.Printf("DISLIKE ERROR: %v", err)
 		return
 	}
 

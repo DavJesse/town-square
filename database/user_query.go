@@ -60,3 +60,34 @@ func GetUserbySessionID(UUID string) (models.User, error) {
 
 	return user, nil
 }
+
+func GetUserbyID(userID int) (models.User, error) {
+	query := `SELECT id, username, email, bio, image, created_at FROM users WHERE id = ?`
+
+	var user models.User
+	var bio, image sql.NullString // Use sql.NullString for nullable fields
+
+	err := db.QueryRow(query, userID).Scan(
+		&user.ID,
+		&user.Username,
+		&user.Email,
+		&bio,   // Scan into NullString
+		&image, // Scan into NullString
+		&user.CreatedAt,
+	)
+
+	if err != nil {
+		fmt.Printf("Database error: %v\n", err)
+		return models.User{}, err
+	}
+
+	// Convert NullString to string, using empty string if NULL
+	if bio.Valid {
+		user.Bio = bio.String
+	}
+	if image.Valid {
+		user.Image = image.String
+	}
+
+	return user, nil
+}

@@ -12,6 +12,7 @@ import (
 // initializes the categories table with the predefined categories
 func InitCategories() error {
 	categories := []string{
+		"miscellaneous",
 		"agriculture",
 		"arts",
 		"education",
@@ -19,7 +20,6 @@ func InitCategories() error {
 		"technology",
 		"culture",
 		"science",
-		"miscellaneous",
 	}
 
 	tx, err := db.Begin()

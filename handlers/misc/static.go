@@ -1,6 +1,7 @@
-package handlers
+package misc
 
 import (
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -11,7 +12,8 @@ import (
 func Static(w http.ResponseWriter, r *http.Request) {
 	// Restric requests to "GET"
 	if r.Method != "GET" {
-		errors.BadRequestHandler(w)
+		errors.MethodNotAllowedHandler(w)
+		log.Printf("METHOD ERROR: method not allowed")
 		return
 	}
 
@@ -29,6 +31,7 @@ func Static(w http.ResponseWriter, r *http.Request) {
 
 	if !valid {
 		errors.NotFoundHandler(w)
+		log.Println("DIRECTORY AVAILABILITY ERROR: directory not found")
 		return
 	}
 
@@ -37,12 +40,14 @@ func Static(w http.ResponseWriter, r *http.Request) {
 	fileInfo, err := os.Stat(filePath)
 	if err != nil {
 		errors.NotFoundHandler(w)
+		log.Printf("FILE AVAILABILITY ERROR: %v", err)
 		return
 	}
 
 	// Restrict access to directories
 	if fileInfo.IsDir() {
 		errors.NotFoundHandler(w)
+		log.Println("DIRECTORY AVAILABILITY ERROR: directory not found")
 		return
 	}
 

@@ -1,5 +1,6 @@
 # Ignore all files in storage folder which houses the database
 /storage/*
+storage/*
 
 # Ignore all files in old media folder
 media/*

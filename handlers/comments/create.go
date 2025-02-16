@@ -2,9 +2,12 @@ package comments
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"forum/database"
+	"forum/handlers/auth"
+	errors "forum/handlers/errors"
 )
 
 func Comment(w http.ResponseWriter, r *http.Request) {
@@ -14,21 +17,22 @@ func Comment(w http.ResponseWriter, r *http.Request) {
 
 	// Only allow POST requests for submitting a comment
 	if r.Method != http.MethodPost {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		errors.MethodNotAllowedHandler(w)
+		log.Println("METHOD ERROR: method not allowed")
 		return
 	}
 
 	// Parse form data (assuming the form contains a comment and post UUID)
 	err := r.ParseForm()
 	if err != nil {
-		http.Error(w, "Error parsing form data", http.StatusBadRequest)
+		errors.BadRequestHandler(w)
+		log.Printf("REQUEST ERROR: %v", err)
 		return
 	}
 
 	// Retrieve the comment text and post UUID from the form
-	commentText := r.FormValue("comment")
+	commentText := auth.EscapeFormSpecialCharacters(r, "comment")
 	postUUID := r.FormValue("postUUID")
-	// userID := r.FormValue("userID") // Assuming userID is passed in the form
 
 	userID, _, err := database.GetUserData(r)
 	if err != nil {
@@ -36,30 +40,11 @@ func Comment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// fmt.Println("TEXT: ", commentText)
-
-	// Ensure the comment is not empty
-	if commentText == "" {
-		http.Error(w, "Comment cannot be empty", http.StatusBadRequest)
-		return
-	}
-
-	// // Validate the UUID format (basic validation, adjust according to your needs)
-	// if !utils.IsValidUUID(postUUID) {
-	// 	http.Error(w, "Invalid post UUID", http.StatusBadRequest)
-	// 	return
-	// }
-
-	// Assuming you convert the userID from string to int
-	// userIDInt, err := strconv.Atoi(userID)
-	// if err != nil {
-	// 	http.Error(w, "Invalid user ID", http.StatusBadRequest)
-	// 	return
-	// }
 	// Call the CreateComment function to insert the comment into the database
 	_, err = database.CreateComment(userID, postUUID, commentText)
 	if err != nil {
-		http.Error(w, "Error inserting comment into database", http.StatusInternalServerError)
+		errors.InternalServerErrorHandler(w)
+		log.Printf("DATABASE ERROR: %v", err)
 		return
 	}
 

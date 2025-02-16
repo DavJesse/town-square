@@ -33,5 +33,6 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	// Redirect to the previous page
+	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
 }

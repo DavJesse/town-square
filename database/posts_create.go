@@ -3,8 +3,6 @@ package database
 import (
 	"fmt"
 	"strings"
-
-	"forum/utils"
 )
 
 // Create inserts data into the specified table using provided field names and values.
@@ -22,7 +20,7 @@ func CreatePostWithCategories(userID int, title, content, media string, category
 		}
 	}()
 
-	postUUID, err := utils.GenerateUUID()
+	postUUID, err := GenerateUUID()
 	if err != nil {
 		return 0, fmt.Errorf("failed to generate a random uuid: %w", err)
 	}

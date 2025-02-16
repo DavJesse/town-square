@@ -3,14 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta name="description" content="Oops! Something went wrong. Visit our forum platform to find discussions, ask questions, and connect with the community.">
+    <title>Error!</title>
+    <link rel="stylesheet" href="/static/css/error.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
     <section class="error-code">
         <h2>Sorry: We Ran Into a Problem</h2>
-        <p>{{.Code}}</p>
-        <p>{{.Issue}}</p>
-        <a href="/">Go Home</a>
+        <p class="code">{{.Code}}</p>
+        <p class="issue">{{.Issue}}</p>
+        
+        <div class="home">
+            <a href="/">Find Your Way Home</a>
+        </div>
     </section>
 </body>
 </html>

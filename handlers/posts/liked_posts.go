@@ -1,11 +1,13 @@
 package posts
 
 import (
-	utils "forum/utils"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+
+	errors "forum/handlers/errors"
+	utils "forum/utils"
 
 	"forum/database"
 	"forum/models"
@@ -19,7 +21,8 @@ type TemplateData struct {
 
 func ShowLikedPosts(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		errors.MethodNotAllowedHandler(w)
+		log.Println("METHOD ERROR: method not allowed")
 		return
 	}
 

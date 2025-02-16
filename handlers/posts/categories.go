@@ -2,29 +2,31 @@ package posts
 
 import (
 	"encoding/json"
-	errors "forum/handlers/errors"
+	"html/template"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
+
+	errors "forum/handlers/errors"
+	"forum/utils"
 
 	"forum/database"
 	"forum/models"
-	"html/template"
-	"strconv"
-	"strings"
 )
 
 // GetCategoriesHandler handles requests to retrieve all categories.
 func GetCategories(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		log.Println("Invalid request method")
-		errors.BadRequestHandler(w)
+		errors.MethodNotAllowedHandler(w)
+		log.Println("METHOD ERROR: method not allowed")
 		return
 	}
 
 	categories, err := database.FetchCategories()
 	if err != nil {
-		log.Println("Failed to fetch categories")
 		errors.InternalServerErrorHandler(w)
+		log.Printf("DATABASE ERROR: %v", err)
 		return
 	}
 
@@ -36,7 +38,8 @@ func GetCategories(w http.ResponseWriter, r *http.Request) {
 func CategoriesPage(w http.ResponseWriter, r *http.Request) {
 	categories, err := database.FetchCategories()
 	if err != nil {
-		http.Error(w, "Failed to fetch categories", http.StatusInternalServerError)
+		errors.InternalServerErrorHandler(w)
+		log.Printf("DATABASE ERROR: %v", err)
 		return
 	}
 	// Load the HTML template
@@ -66,6 +69,13 @@ func SingeCategoryPosts(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	tempPath, err := utils.GetTemplatePath("category.html")
+	if err != nil {
+		errors.InternalServerErrorHandler(w)
+		log.Printf("TEMPLATE AVAILABILITY ERROR: %v", err)
+		return
+	}
+
 	// Extract the category ID from the URL path
 	pathParts := strings.Split(r.URL.Path, "/")
 	if len(pathParts) < 3 {
@@ -88,10 +98,10 @@ func SingeCategoryPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Load the HTML template
-	tmpl, err := template.ParseFiles("web/templates/category.html")
+	tmpl, err := template.ParseFiles(tempPath)
 	if err != nil {
-		log.Println("Error: ", err)
 		errors.InternalServerErrorHandler(w)
+		log.Printf("TEMPLATE PARSING ERROR: %v", err)
 		return
 	}
 	// Execute the template with the posts
@@ -107,6 +117,7 @@ func SingeCategoryPosts(w http.ResponseWriter, r *http.Request) {
 
 	err = tmpl.Execute(w, data)
 	if err != nil {
-		log.Println("Error executing template:", err)
+		errors.InternalServerErrorHandler(w)
+		log.Printf("TEMPLATE EXECUTION ERROR: %v", err)
 	}
 }

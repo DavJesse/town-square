@@ -1,14 +1,17 @@
 package posts
 
 import (
+	"log"
 	"net/http"
 
 	"forum/database"
+	errors "forum/handlers/errors"
 )
 
 func DislikePost(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		errors.MethodNotAllowedHandler(w)
+		log.Println("METHOD ERROR: method not allowed")
 		return
 	}
 

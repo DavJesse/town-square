@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html"
 	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -122,6 +123,7 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 		return
 
 	default:
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		errors.MethodNotAllowedHandler(w)
+		log.Println("METHOD ERROR: method not allowed")
 	}
 }

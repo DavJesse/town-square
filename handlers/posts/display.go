@@ -18,6 +18,13 @@ func PostDisplay(w http.ResponseWriter, r *http.Request) {
 	var err error
 	session, loggedIn := database.IsLoggedIn(r)
 
+	_, err = utils.GetTemplatePath("post_display.html")
+	if err != nil {
+		log.Printf("TEMPLATE AVAILABILITY ERROR: %v", err)
+		errors.NotFoundHandler(w)
+		return
+	}
+
 	// Retrieve user data if logged in
 	if loggedIn {
 		userData, err = database.GetUserbySessionID(session.SessionID)

@@ -91,11 +91,26 @@ func ValidateCategories(categoryIDs []int) error {
 }
 
 // FetchCategoryPostsWithID retrieves all posts associated with a given category ID
-func FetchCategoryPostsWithID(categoryID int) ([]models.Post, error) {
+func FetchCategoryPostsWithID(categoryID int) ([]models.PostWithCategories, error) {
+	// Check if the category exists
+	var exists bool
+	err := db.QueryRow("SELECT EXISTS(SELECT 1 FROM categories WHERE id = ?)", categoryID).Scan(&exists)
+	if err != nil {
+		log.Println("Error checking if category exists:", err)
+		return nil, err
+	}
+	if !exists {
+		return nil, fmt.Errorf("category with ID %d does not exist", categoryID)
+	}
+
+	// Fetch posts for the category
 	query := `
-        SELECT p.uuid, p.title, p.content, p.media, p.user_id, p.created_at
+        SELECT p.uuid, p.title, p.content, p.media, p.user_id, p.created_at,
+               COALESCE(l.likes_count, 0) AS likes_count, COALESCE(d.dislikes_count, 0) AS dislikes_count
         FROM posts p
         JOIN post_categories pc ON p.uuid = pc.post_id
+        LEFT JOIN (SELECT post_id, COUNT(*) AS likes_count FROM likes GROUP BY post_id) l ON p.uuid = l.post_id
+        LEFT JOIN (SELECT post_id, COUNT(*) AS dislikes_count FROM dislikes GROUP BY post_id) d ON p.uuid = d.post_id
         WHERE pc.category_id = ?`
 	rows, err := db.Query(query, categoryID)
 	if err != nil {
@@ -104,11 +119,11 @@ func FetchCategoryPostsWithID(categoryID int) ([]models.Post, error) {
 	}
 	defer rows.Close()
 
-	var posts []models.Post
+	var posts []models.PostWithCategories
 	for rows.Next() {
-		var post models.Post
+		var post models.PostWithCategories
 		var media sql.NullString
-		err := rows.Scan(&post.UUID, &post.Title, &post.Content, &media, &post.UserID, &post.CreatedAt)
+		err := rows.Scan(&post.UUID, &post.Title, &post.Content, &media, &post.UserID, &post.CreatedAt, &post.LikesCount, &post.DislikesCount)
 		if err != nil {
 			log.Println("Error scanning post:", err)
 			return nil, err
@@ -125,6 +140,5 @@ func FetchCategoryPostsWithID(categoryID int) ([]models.Post, error) {
 		log.Println("Error with rows:", err)
 		return nil, err
 	}
-
 	return posts, nil
 }

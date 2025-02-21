@@ -73,10 +73,17 @@ func Registration(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Check if email or username is taken
-	existingUser, _ := database.GetUserByEmailOrUsername(EscapeFormSpecialCharacters(r, "email"), EscapeFormSpecialCharacters(r, "username"))
+	// Check if email is taken
+	existingUser, _ := database.GetUserByEmailOrUsername(EscapeFormSpecialCharacters(r, "email"), EscapeFormSpecialCharacters(r, "email"))
 	if existingUser.Username != "" {
-		ParseAlertMessage(w, tmpl, fmt.Sprintf("%s taken!", r.FormValue("email")))
+		ParseAlertMessage(w, tmpl, fmt.Sprintf("the email '%s' is taken!", r.FormValue("email")))
+		return
+	}
+
+	// Check if username is taken
+	existingUser, _ = database.GetUserByEmailOrUsername(EscapeFormSpecialCharacters(r, "username"), EscapeFormSpecialCharacters(r, "username"))
+	if existingUser.Username != "" {
+		ParseAlertMessage(w, tmpl, fmt.Sprintf("the username '%s' is taken!", r.FormValue("username")))
 		return
 	}
 

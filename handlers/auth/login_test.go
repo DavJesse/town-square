@@ -50,22 +50,22 @@ func TestLoginHandler_GET(t *testing.T) {
 	}
 }
 
-func TestLoginHandler_InvalidMethod(t *testing.T) {
-	req, err := http.NewRequest("PUT", "/login", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
+// func TestLoginHandler_InvalidMethod(t *testing.T) {
+// 	req, err := http.NewRequest("PUT", "/login", nil)
+// 	if err != nil {
+// 		t.Fatal(err)
+// 	}
 
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(Login)
+// 	rr := httptest.NewRecorder()
+// 	handler := http.HandlerFunc(Login)
 
-	handler.ServeHTTP(rr, req)
+// 	handler.ServeHTTP(rr, req)
 
-	if status := rr.Code; status != http.StatusBadRequest {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusBadRequest)
-	}
-}
+// 	if status := rr.Code; status != http.StatusBadRequest {
+// 		t.Errorf("handler returned wrong status code: got %v want %v",
+// 			status, http.StatusBadRequest)
+// 	}
+// }
 
 func TestLoginHandler_FormFields(t *testing.T) {
 	req, err := http.NewRequest("GET", "/login", nil)

@@ -12,7 +12,7 @@ func LikeComment(userID int, commentID string) error {
 		return fmt.Errorf("failed to begin transaction: %w", err)
 	}
 
-	// Defer a rollback in case of failure
+	// Defer rollback in case of failure
 	defer func() {
 		if err != nil {
 			tx.Rollback()
@@ -26,21 +26,24 @@ func LikeComment(userID int, commentID string) error {
 		return fmt.Errorf("failed to check if like exists: %w", err)
 	}
 
-	// If already liked, just return
 	if likeExists {
-		return nil
-	}
+		// If the comment is already liked, unlike it (remove the like)
+		_, err = tx.Exec(`DELETE FROM likes WHERE user_id = ? AND comment_id = ?`, userID, commentID)
+		if err != nil {
+			return fmt.Errorf("failed to remove like: %w", err)
+		}
+	} else {
+		// Remove any existing dislike before adding the like
+		_, err = tx.Exec(`DELETE FROM dislikes WHERE user_id = ? AND comment_id = ?`, userID, commentID)
+		if err != nil {
+			return fmt.Errorf("failed to remove dislike: %w", err)
+		}
 
-	// Remove any existing dislike for the same comment
-	_, err = tx.Exec(`DELETE FROM dislikes WHERE user_id = ? AND comment_id = ?`, userID, commentID)
-	if err != nil {
-		return fmt.Errorf("failed to remove dislike: %w", err)
-	}
-
-	// Insert the like
-	_, err = tx.Exec(`INSERT INTO likes (user_id, comment_id) VALUES (?, ?)`, userID, commentID)
-	if err != nil {
-		return fmt.Errorf("failed to insert comment like: %w", err)
+		// Insert the like
+		_, err = tx.Exec(`INSERT INTO likes (user_id, comment_id) VALUES (?, ?)`, userID, commentID)
+		if err != nil {
+			return fmt.Errorf("failed to insert comment like: %w", err)
+		}
 	}
 
 	// Commit the transaction

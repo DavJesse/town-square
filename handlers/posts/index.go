@@ -26,6 +26,11 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	if r.URL.String() != "/" {
+		errors.NotFoundHandler(w)
+		return
+	}
+
 	// Fetch posts from the database
 	posts, err := database.GetAllPosts()
 	if err != nil {

@@ -53,8 +53,8 @@
     {{if .Posts}}
         {{range .Posts}}
         <div class="card">
-            <p class="card__date">{{.CreatedAt}}</p>
             <p class="card__title"><a href="/posts/display?pid={{.UUID}}">{{.Title}}</a></p>
+            <p class="card__date">{{.CreatedAt}}</p>
             <p class="card__description">{{.Content}}</p>
             {{if .Media}}
             <img src="/static/media/{{.Media}}" alt="Post Image" style="width: 70px; aspect-ratio: 1/1;">
@@ -62,11 +62,11 @@
             <div class="actions">
                 <form action="/posts/like" method="post">
                     <input type="hidden" name="post-id" value="{{.UUID}}">
-                    <button type="submit">Like</button>
+                    <button type="submit">{{.LikesCount}} Like</button>
                 </form>
                 <form action="/posts/dislike" method="post">
                     <input type="hidden" name="post-id" value="{{.UUID}}">
-                    <button type="submit">Dislike</button>
+                    <button type="submit">{{.DislikesCount}} Dislike</button>
                 </form>
             </div>
         </div>

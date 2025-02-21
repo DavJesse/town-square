@@ -1,0 +1,227 @@
+/* Apply a background color to the entire page */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #5c5b5b;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Center the login container */
+.login-container, .forgot-password-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    width: 350px;
+    text-align: center;
+}
+
+/* Style headings */
+h1 {
+    font-family: 'Roboto', sans-serif;
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+}
+
+.password-rules {
+    text-align: left;
+    background-color: #f8f8f8;
+    padding: 10px;
+    border-radius: 5px;
+    list-style-type: disc;
+    font-size: 14px;
+    color: #555;
+    margin: 10px 15px;
+    padding-left: 20px;
+}
+
+/* Style logo */
+.logo {
+    font-family: 'Open Sans', sans-serif;  /* Use Open Sans */
+    font-weight: 700;                      /* Make it bold */
+    font-size: 50px;                        /* Adjust size */
+    text-transform: none;              
+    letter-spacing: 2px;                    /* Add spacing for a sleek look */
+    color: #0172eb;                            /* Dark color */
+    text-align: center;                     /* Center it */
+    margin-bottom: 10px;                    /* Add spacing below */
+}
+
+.login p:first-of-type {
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    font-style: italic;
+    letter-spacing: 1px;
+    color: #555;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+/* Style form elements */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Style the labels */
+form label {
+    display: block;  /* Ensures labels are on their own line */
+    text-align: left;
+    font-size: 14px;
+    font-weight: bold;
+    color: #000000;
+    margin-top: 10px;
+    margin-left: 15px;
+    letter-spacing: 1px;
+}
+
+/* Style login form */
+.login-container form input, .forgot-password-container form input {
+    display: block;       /* Ensures each input takes a full line */
+    width: 100%;           /* Adjust width as needed */
+    max-width: 300px;     /* Prevents input from becoming too large */
+    margin: 0 auto;       /* Centers the input horizontally */
+    padding: 10px;        /* Adds space inside the input box */
+    border: 1px solid #ccc; /* Light border for structure */
+    border-radius: 5px;   /* Soft rounded edges */
+    font-size: 14px;      /* Readable text size */
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Style buttons */
+button {
+    background-color: #0172eb;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 20px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-left: 12px;
+    margin-right: 12px;
+    letter-spacing: 2px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Account issues text */
+.account-issues {
+    text-align: left;
+    margin-left: 12px;
+    font-size: 18px;
+}
+
+/* Account issues links */
+.account-issues a {
+    color: #0172eb;
+    text-decoration: none;
+}
+
+.account-issues a:hover {
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    /* Adjust login and registration containers for smaller screens */
+    .login-container, .forgot-password-container {
+        width: 90%; /* Allow containers to take full width */
+        padding: 15px; /* Adjust padding */
+    }
+
+    .login-container, .forgot-password-container {
+        margin-top: 50%;
+    }
+
+    /* Adjust font sizes for smaller screens */
+    h1 {
+        font-size: 24px;
+    }
+
+    /* Adjust textareas */
+    textarea {
+        width: 100%;
+        max-width: 90%;
+    }
+
+    /* Adjust logo size */
+    .logo {
+        font-size: 40px;
+    }
+
+    /* Adjust input fields for smaller screens */
+    .login-container form input, .forgot-password-container form input {
+        max-width: 90%; /* Make inputs full-width */
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+
+    /* Adjust button size */
+    button, .upload-btn, .remove-btn {
+        font-size: 16px; /* Smaller button font */
+        padding: 8px;
+        width: 90%;
+        display: block; /* Makes the button take up the full width of its container */
+        margin: 10px auto; /* Centers it horizontally */
+        text-align: center; /* Ensures text inside is centered */
+    }
+
+    /* Reduce margins for better fit on smaller screens */
+    .account-issues {
+        font-size: 16px;
+    }
+}
+
+/* Adjust for extra small screens (e.g., mobile phones) */
+@media (max-width: 480px) {
+    body {
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    /* Adjust containers for mobile */
+    .login-container, .form-container, .forgot-password-container {
+        width: 90%; /* Reduce container width */
+        padding: 10px;
+    }
+
+    /* Adjust logo and headings for mobile */
+    .logo {
+        font-size: 35px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    /* Adjust form elements */
+    .form-container form input, .forgot-password-container form input {
+        font-size: 14px; /* Smaller input font size */
+    }
+
+    /* Adjust textarea and buttons */
+    textarea {
+        font-size: 13px;
+    }
+
+    button, .upload-btn, .remove-btn {
+        font-size: 14px; /* Slightly smaller button font */
+    }
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/category.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">
+            <h1 class="navbar__title">forum</h1>
+        </a>
+        
+        <div class="navbar__actions">
+            <form action="/search" method="get" class="navbar__search-form">
+                <input type="text" name="q" class="navbar__search" placeholder="Search...">
+                <button type="submit" class="navbar__button">Search</button>
+            </form>
+
+            <!-- Show Logout Button and Profile Picture if Logged In -->
+            {{ if .IsLogged}}
+            <form action="/logout" method="POST" style="display: inline;">
+                <button class="navbar__button" id="login-button">Log Out</button>
+            </form>
+            
+            <div class="navbar__Profile__Pic">
+            {{ if .ProfPic }}
+            <a href="/profile">
+                <img src="/static/images/{{.ProfPic}}"  alt="user">
+             </a>
+            {{ else }}
+            <a href="/profile">
+               <img src="/static/user-circle-svgrepo-com.svg"  alt="user">
+            </a>
+             {{ end }}
+            </div>
+            {{ else }}
+            <!-- Show Log In Button if Logged In -->
+            <a href="/login">
+                <button class="navbar__button" id="login-button">Login</button>
+            </a> 
+            {{ end }}
+        </div>
+    </div>
+    
+<div class="category-container">
+    <div class="posts">
+    <h3 class="main-content__heading">More from this category</h3>
+    {{if .Posts}}
+        {{range .Posts}}
+        <div class="card">
+            <p class="card__title"><a href="/posts/display?pid={{.UUID}}">{{.Title}}</a></p>
+            <p class="card__date">{{.CreatedAt}}</p>
+            <p class="card__description">{{.Content}}</p>
+            {{if .Media}}
+            <img src="/static/media/{{.Media}}" alt="Post Image" style="width: 70px; aspect-ratio: 1/1;">
+            {{end}}
+            <div class="actions">
+                <form action="/posts/like" method="post">
+                    <input type="hidden" name="post-id" value="{{.UUID}}">
+                    <button type="submit">{{.LikesCount}} Like</button>
+                </form>
+                <form action="/posts/dislike" method="post">
+                    <input type="hidden" name="post-id" value="{{.UUID}}">
+                    <button type="submit">{{.DislikesCount}} Dislike</button>
+                </form>
+            </div>
+        </div>
+        {{end}}
+    </div>
+    {{else}}
+    <p>No posts in this category</p>
+    {{end}}
+</div>
+</body>
+</html>

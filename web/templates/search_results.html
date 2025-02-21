@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/category.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">
+            <h1 class="navbar__title">forum</h1>
+        </a>
+        
+        <div class="navbar__actions">
+            <form action="/search" method="get" class="navbar__search-form">
+                <input type="text" name="q" class="navbar__search" placeholder="Search...">
+                <button type="submit" class="navbar__button">Search</button>
+            </form>
+            <!-- <input type="text" class="navbar__search" placeholder="Search Forum"> -->
+            <a href="/posts/create">
+                <button class="navbar__button" id="create-post-button">Create Post</button>
+            </a>
+            
+            <!-- Show Logout Button and Profile Picture if Logged In -->
+            {{ if .IsLogged}}
+            <form action="/logout" method="POST" style="display: inline;">
+                <button class="navbar__button" id="login-button">Log Out</button>
+            </form>
+            
+            <div class="navbar__Profile__Pic">
+            {{ if .ProfPic }}
+            <a href="/profile">
+                <img src="/static/images/{{.ProfPic}}"  alt="user">
+             </a>
+            {{ else }}
+            <a href="/profile">
+               <img src="/static/user-circle-svgrepo-com.svg"  alt="user">
+            </a>
+             {{ end }}
+            </div>
+            {{ else }}
+            <!-- Show Log In Button if Logged In -->
+            <a href="/login">
+                <button class="navbar__button" id="login-button">Login</button>
+            </a> 
+            {{ end }}
+        </div>
+    </div>
+
+    {{if .Posts}}
+    <div class="category-container">
+        <h1 class="main-content__heading" >Search Results</h1>
+    {{range .Posts}}
+    <div class="card">
+        <p class="card__title"><a href="/posts/display?pid={{.UUID}}" style="color: #0172eb;">{{.Title}}</a></p>
+       
+        <p class="card__description">{{.Content}}</p>
+        {{if .Media}}
+        <img src="/static/media/{{.Media}}" alt="Post Image" style="width: 70px; aspect-ratio: 1/1;">
+        {{else}}
+        <p class="card__description">No media</p>
+        {{end}}
+        <p class="card__description">Posted on: {{.CreatedAt}}</p>
+    </div>
+    {{end}}
+    </div>
+    {{else}}
+    <p>No posts found</p>
+    {{end}}
+</body>
+</html>

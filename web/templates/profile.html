@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">
+            <h1 class="navbar__title">forum</h1>
+        </a>
+        
+        <div class="navbar__actions">
+            <form action="/search" method="get" class="navbar__search-form">
+                <input type="text" name="q" class="navbar__search" placeholder="Search...">
+                <button type="submit" class="navbar__button">Search</button>
+            </form>
+            <a href="/posts/create">
+                <button class="navbar__button" id="create-post-button">Create Post</button>
+            </a>
+    
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-content">
+            <h3 class="main-content__heading">{{.User.Username}}'s Profile</h3>
+            
+            <div class="card">
+                <div class="profile-info">
+                    {{if .User.Image}}
+                        <img src="/static/images/{{.User.Image}}" alt="Profile Image" style="width: 200px; height: 200px; object-fit: cover;">
+                    {{else}}
+                        <img src="/static/user-circle-svgrepo-com.svg" alt="user">
+                    {{end}}
+                    
+                    <div class="profile-details">
+                        <p><strong>Email:</strong> {{.User.Email}}</p>
+                        {{if .User.Bio}}
+                        <p><strong>Bio:</strong> {{.User.Bio}}</p>
+                        {{else}}
+                        <p>No Bio</p>
+                        {{end}}
+                        <a href="/liked-posts"><button class="navbar__button">view posts i've liked</button></a>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="main-content__heading">Posts</h3>
+            {{if .Posts}}
+                {{range .Posts}}
+                <div class="card">
+                    <p class="card__title"><a href="/posts/display?pid={{.UUID}}" style="color: #0172eb;">{{.Title}}</a></p>
+                    <p class="card__description">{{.Content}}</p>
+                    {{if .Media}}
+                    <img src="/static/media/{{.Media}}" alt="Post Image" style="width: 70px; aspect-ratio: 1/1;">
+                    {{end}}
+                </div>
+                {{end}}
+            {{else}}
+                <p>No posts available</p>
+            {{end}}
+        </div>
+    </div>
+    <script src="/static/js/index.js"></script>
+</body>
+</html>

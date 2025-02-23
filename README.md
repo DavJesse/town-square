@@ -8,6 +8,8 @@ This is a project about creating a web forum that allows:
 - associating categories to posts
 - liking and disliking posts and comments
 - filtering posts
+- posts can have images asssociated with them
+- a user has a profile, with an image to identify them
 
 
 ## port difficulties
@@ -67,6 +69,7 @@ The forum allows:
 - associating categories to posts
 - liking and disliking posts and comments
 - filter posts based on various criteria(liked posts, posts by categories)
+- uploading images when creating posts and registering a user. Allowed image types: png, jpeg, gif.
 
 ## **Features**
 - **User Authentication** 

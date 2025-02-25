@@ -59,6 +59,10 @@
             <textarea id="content" name="content" placeholder="share your thoughts" required></textarea>
 
             <div class="custom-file-upload">
+                <input type="hidden" id="error_message" value="{{.Message}}">
+                {{ if .Message }}
+                <p style="color: red;">{{.Message}}</p>
+            {{ end }}
                 <label for="image" class="upload-btn">Upload Image (PNG, GIF or JPG, max 20MB)</label>
                 <input type="file" id="image" name="image" accept="image/gif, image/jpeg, image/png">
                 <p id="file-name">No file chosen</p>

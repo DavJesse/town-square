@@ -1,7 +1,6 @@
 package posts
 
 import (
-	"fmt"
 	"html"
 	"html/template"
 	"log"
@@ -17,41 +16,52 @@ import (
 
 // Handler for serving the form and handling form submission
 func PostCreate(w http.ResponseWriter, r *http.Request) {
+	// create template path
+	temPath, err := utils.GetTemplatePath("posts_create.html")
+	if err != nil {
+		errors.NotFoundHandler(w)
+	}
+
+	tmpl := template.Must(template.ParseFiles(temPath))
+
+	var loggedIn bool
+	session, lIn := database.IsLoggedIn(r)
+	if lIn {
+		loggedIn = true
+	}
+
+	// Retrieve user data
+	userData, _ := database.GetUserbySessionID(session.SessionID)
+
+	// fetch categories from the database
+	categories, err := database.FetchCategories()
+	if err != nil {
+		errors.InternalServerErrorHandler(w)
+		return
+	}
+
+	// Capture data to be parsed in html template
+	data := struct {
+		Categories []models.Category
+		IsLogged   bool
+		ProfPic    string
+		Message    string
+	}{
+		Categories: categories,
+		IsLogged:   loggedIn,
+		ProfPic:    userData.Image,
+	}
+
+	// Handle allowed methods
 	switch r.Method {
-	case http.MethodGet:
-		var loggedIn bool
-		session, lIn := database.IsLoggedIn(r)
-		if lIn {
-			loggedIn = true
-		}
-
-		// Retrieve user data
-		userData, _ := database.GetUserbySessionID(session.SessionID)
-
-		// fetch categories from the database
-		categories, err := database.FetchCategories()
-		if err != nil {
-			errors.InternalServerErrorHandler(w)
-			return
-		}
-
-		data := struct {
-			Categories []models.Category
-			IsLogged   bool
-			ProfPic    string
-		}{
-			Categories: categories,
-			IsLogged:   loggedIn,
-			ProfPic:    userData.Image,
-		}
-
-		tmpl := template.Must(template.ParseFiles("./web/templates/posts_create.html"))
+	case http.MethodGet: // Parse form
 		tmpl.Execute(w, data)
 
+		// Qualify data captured in html form
 	case http.MethodPost:
-		if err := r.ParseMultipartForm(20 << 20); err != nil { // 20MB max
-			http.Error(w, "File upload too large or invalid form data", http.StatusBadRequest)
-			return
+		// Parse the form with a max size (for the entire form, including file and other form data)
+		if err := r.ParseMultipartForm(26 * 1024 * 1024); err != nil { // Allow 10MB form data for the image + other fields
+			log.Println("INFO: Client form exceeds 26MB")
 		}
 
 		title := r.FormValue("title")
@@ -69,22 +79,31 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 		if err == nil { // Only process the file if it's uploaded
 			defer file.Close()
 
-			// Validate the file extension type and size
+			// Check the file size (if greater than 4MB, return an error)
+			if handler.Size > 4*1024*1024 { // 20MB in bytes
+				data.Message = "image exceeds 20MB"
+				ParseFormMessage(w, tmpl, data)
+				return
+			}
+
+			// Validate the file extension type
 			allowedTypes := map[string]bool{
 				"image/png":  true,
 				"image/jpeg": true,
-				"image/gif": true,
+				"image/gif":  true,
 			}
 			fileType := handler.Header.Get("Content-Type")
 			if !allowedTypes[fileType] {
-				http.Error(w, "Invalid file type. Only GIF, PNG and JPG images are allowed.", http.StatusBadRequest)
+				data.Message = "Invalid file type. Only GIF, PNG, and JPG images are allowed."
+				ParseFormMessage(w, tmpl, data)
 				return
 			}
 
 			// Save the image to disk
 			filename, err = utils.SaveImage(fileType, file, utils.MEDIA)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				log.Println("ERROR: Failed to save image")
+				errors.InternalServerErrorHandler(w)
 				return
 			}
 		}
@@ -94,7 +113,8 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 		for _, idStr := range categoryIDs {
 			id, err := strconv.Atoi(idStr)
 			if err != nil {
-				http.Error(w, "Invalid category ID", http.StatusBadRequest)
+				log.Println("INFO: Invalid category ID")
+				errors.BadRequestHandler(w)
 				return
 			}
 			categoryIDsInt = append(categoryIDsInt, id)
@@ -102,7 +122,8 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 
 		// Validate that the selected categories exist in the database
 		if err := database.ValidateCategories(categoryIDsInt); err != nil {
-			http.Error(w, fmt.Sprintf("Invalid category: %v", err), http.StatusBadRequest)
+			log.Printf("INFO: Invalid category %v", err)
+			errors.BadRequestHandler(w)
 			return
 		}
 
@@ -116,7 +137,8 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 		// Create the post with categories
 		_, err = database.CreatePostWithCategories(userID, title, content, filename, categoryIDsInt)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Failed to create post: %v", err), http.StatusInternalServerError)
+			log.Printf("ERROR: Failed to create post: %v", err)
+			errors.InternalServerErrorHandler(w)
 			return
 		}
 
@@ -126,5 +148,15 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 	default:
 		errors.MethodNotAllowedHandler(w)
 		log.Println("METHOD ERROR: method not allowed")
+	}
+}
+
+func ParseFormMessage(w http.ResponseWriter, tmpl *template.Template, data interface{}) {
+	// Execute the page
+	err := tmpl.Execute(w, data)
+	if err != nil {
+		errors.InternalServerErrorHandler(w)
+		log.Printf("TEMPLATE EXECUTION ERROR: %v", err)
+		return
 	}
 }

@@ -80,7 +80,7 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 			defer file.Close()
 
 			// Check the file size (if greater than 4MB, return an error)
-			if handler.Size > 4*1024*1024 { // 20MB in bytes
+			if handler.Size > 20*1024*1024 { // 20MB in bytes
 				data.Message = "image exceeds 20MB"
 				ParseFormMessage(w, tmpl, data)
 				return

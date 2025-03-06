@@ -1,8 +1,8 @@
 package auth
 
 import (
+	"encoding/json"
 	"html"
-	"html/template"
 	"log"
 	"net/http"
 	"time"
@@ -14,30 +14,9 @@ import (
 )
 
 // LoginHandler handles user login and session creation, as well as preventing login when already logged in.
-func Login(w http.ResponseWriter, r *http.Request) {
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	var user models.User
-
-	// Build path to login.html
-	templatePath, err := utils.GetTemplatePath("login.html")
-	if err != nil {
-		log.Printf("TEMPLATE AVAILABILITY ERROR: %v", err)
-		errors.NotFoundHandler(w)
-		return
-	}
-
-	// Parse html template
-	tmpl, err := template.ParseFiles(templatePath)
-	if err != nil {
-		log.Printf("TEMPLATE PARSING ERROR: %v", err)
-		errors.InternalServerErrorHandler(w)
-		return
-	}
-
-	// If the method is GET, if serve blank login form
-	if r.Method == "GET" {
-		ExecuteTemplate(w, tmpl)
-		return
-	}
+	var loginCredentials models.LoginCredentials
 
 	// Catch non-Get and non-POST requests
 	if r.Method != "POST" {
@@ -47,15 +26,15 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse the form data
-	if err := r.ParseForm(); err != nil {
-		log.Printf("FORM ERROR: %v", err)
-		errors.BadRequestHandler(w)
+	if err := json.NewDecoder(r.Body).Decode(&loginCredentials); err != nil {
+		log.Printf("FORM DECODING ERROR: %v", err)
+		errors.InternalServerErrorHandler(w)
 		return
 	}
 
 	// Populate user credentials
 	// Determine whether input is a valid email
-	emailUsername := html.EscapeString(r.FormValue("email_username"))
+	emailUsername := html.EscapeString(loginCredentials.Email_username)
 
 	if utils.ValidEmail(emailUsername) {
 		user.Email = emailUsername
@@ -64,13 +43,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Extract form data
-	user.Password = html.EscapeString(r.FormValue("password")) // Populate password field
+	user.Password = html.EscapeString(loginCredentials.Password) // Populate password field
 
 	// Attempt to log in the user
 	sessionID, err := database.LoginUser(user.Username, user.Email, user.Password)
 	if err != nil {
 		log.Printf("LOGIN ERROR: %v", err)
-		ParseAlertMessage(w, tmpl, "invalid username or password")
+		ParseAlertMessage(w, "invalid username or password")
 		return
 	}
 
@@ -92,22 +71,18 @@ func Login(w http.ResponseWriter, r *http.Request) {
 }
 
 // ParseAlertMessage is used for displaying alert messages in templates.
-func ParseAlertMessage(w http.ResponseWriter, tmpl *template.Template, message string) {
-	// Define template path and error message
-	alert := map[string]string{"ErrorMessage": message}
+func ParseAlertMessage(w http.ResponseWriter, message string) {
+	var alert models.FormError
 
-	// Execute the page
-	err := tmpl.Execute(w, alert)
-	if err != nil {
-		errors.InternalServerErrorHandler(w)
-		log.Printf("TEMPLATE EXECUTION ERROR: %v", err)
-		return
-	}
-}
+	// Set relevant headers
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 
-func ExecuteTemplate(w http.ResponseWriter, tmpl *template.Template) {
-	if err := tmpl.Execute(w, nil); err != nil {
-		log.Printf("TEMPLATE EXECUTION ERROR: %v", err)
-		errors.InternalServerErrorHandler(w)
+	// Parse error message
+	alert.ErrorMessage = message
+
+	if err := json.NewEncoder(w).Encode(alert); err != nil {
+		http.Error(w, `{"error_message":"`+alert.ErrorMessage+`"}`, http.StatusOK)
+		log.Println("JSON ENCODING ERROR: ", err)
 	}
 }

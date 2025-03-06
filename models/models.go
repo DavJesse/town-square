@@ -4,9 +4,22 @@ import (
 	"time"
 )
 
+// Error Response object
 type WebError struct {
 	Code  int    `json:"code"`
 	Issue string `json:"issue"`
+}
+
+// Form error object
+type FormError struct {
+	ErrorMessage string `json:"error_message"`
+	Data         string `json:"data"`
+}
+
+// login credetials object
+type LoginCredentials struct {
+	Email_username string `json:"email_username"`
+	Password       string `json:"password"`
 }
 
 // user struct

@@ -10,8 +10,8 @@ import (
 )
 
 type Response struct {
-	Code int
-	Message string
+	Code     int
+	Message  string
 	Redirect string
 }
 
@@ -26,8 +26,8 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		if !loggedIn {
 			// http.Redirect(w, r, "/login", http.StatusSeeOther)
 			r := Response{
-				Code: http.StatusTemporaryRedirect,
-				Message: "User is not logged in. Please log in to try again",
+				Code:     http.StatusTemporaryRedirect,
+				Message:  "User is not logged in. Please log in to try again",
 				Redirect: "/login",
 			}
 			json.NewEncoder(w).Encode(r)
@@ -40,8 +40,8 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			_ = database.DeleteSession(session.SessionID)
 			// http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			r := Response{
-				Code: http.StatusUnauthorized,
-				Message: "Session expired. Please log in to try again",
+				Code:     http.StatusUnauthorized,
+				Message:  "Session expired. Please log in to try again",
 				Redirect: "/login",
 			}
 			json.NewEncoder(w).Encode(r)

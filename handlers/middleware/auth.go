@@ -2,19 +2,35 @@ package middleware
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"time"
 
 	"forum/database"
 )
 
+type Response struct {
+	Code int
+	Message string
+	Redirect string
+}
+
 // AuthMiddleware checks if the user has a valid session and attaches the user information to the request context.
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
 		// If we have a valid session, fetch session and user info
+
 		session, loggedIn := database.IsLoggedIn(r)
 		if !loggedIn {
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			// http.Redirect(w, r, "/login", http.StatusSeeOther)
+			r := Response{
+				Code: http.StatusTemporaryRedirect,
+				Message: "User is not logged in. Please log in to try again",
+				Redirect: "/login",
+			}
+			json.NewEncoder(w).Encode(r)
 			return
 		}
 
@@ -22,7 +38,13 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		if time.Now().After(session.Expiry) {
 			// Session expired, delete it and return Unauthorized
 			_ = database.DeleteSession(session.SessionID)
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			// http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			r := Response{
+				Code: http.StatusUnauthorized,
+				Message: "Session expired. Please log in to try again",
+				Redirect: "/login",
+			}
+			json.NewEncoder(w).Encode(r)
 			return
 		}
 

@@ -22,9 +22,27 @@ type LoginCredentials struct {
 	Password       string `json:"password"`
 }
 
+// registration details object
+type RegistrationDetails struct {
+	FirstName       string `json:"first_name"`
+	LastName        string `json:"last_name"`
+	Age             int    `json:"age"`
+	Gender          string `json:"gender"`
+	Username        string `json:"username"`
+	Email           string `json:"email"`
+	Password        string `json:"password"`
+	ConfirmPassword string `json:"confirm_password"`
+	Bio             string `json:"bio,omitempty"`
+	Image           string `json:"image,omitempty"`
+}
+
 // user struct
 type User struct {
 	ID        int       `json:"id"`
+	FirstName string    `json:"first_name"`
+	LastName  string    `json:"last_name"`
+	Age       int       `json:"age"`
+	Gender    string    `json:"gender"`
 	Username  string    `json:"username"`
 	Email     string    `json:"email"`
 	Password  string    `json:"-"` // Exclude from JSON responses

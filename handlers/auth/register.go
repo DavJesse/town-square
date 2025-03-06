@@ -1,11 +1,10 @@
 package auth
 
 import (
-	"fmt"
 	"html"
-	"html/template"
 	"log"
 	"net/http"
+	"strings"
 
 	"forum/database"
 	"forum/handlers/errors"
@@ -13,33 +12,13 @@ import (
 	"forum/utils"
 )
 
-func Registration(w http.ResponseWriter, r *http.Request) {
+const MaxUploadSize = 20 * 1024 * 1024
+
+func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 
-	// Construct absolute path to register.html
-	tmplPath, err := utils.GetTemplatePath("register.html")
-	if err != nil {
-		log.Printf("TEMPLATE AVAILABILITY ERROR: %v", err)
-		errors.NotFoundHandler(w)
-		return
-	}
-
-	// Render html template
-	tmpl, err := template.ParseFiles(tmplPath)
-	if err != nil {
-		log.Printf("TEMPLATE PARSING ERROR: %v", err)
-		errors.InternalServerErrorHandler(w)
-		return
-	}
-
-	// Render registration form when method is GET
-	if r.Method == "GET" {
-		ExecuteTemplate(w, tmpl)
-		return
-	}
-
 	// Logout previous session
-	err = LogOutSession(w, r)
+	err := LogOutSession(w, r)
 	if err != nil {
 		log.Printf("LOG OUT ERROR: %v", err)
 		errors.InternalServerErrorHandler(w)
@@ -47,8 +26,15 @@ func Registration(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Handle non-GET and non-POST requests
-	if r.Method != "POST" {
+	if r.Method != http.MethodPost {
 		log.Println("REQUEST ERROR: bad request")
+		errors.BadRequestHandler(w)
+		return
+	}
+
+	// Check content type
+	contentType := r.Header.Get("Content-Type")
+	if !strings.HasPrefix(contentType, "multipart/form-data") {
 		errors.BadRequestHandler(w)
 		return
 	}
@@ -62,28 +48,21 @@ func Registration(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Validate image uploaded from form
-	if err := r.ParseMultipartForm(20 << 20); err != nil { //max size: 2MB
-		ParseAlertMessage(w, tmpl, "File upload too large or invalid form data")
+	if err := r.ParseMultipartForm(MaxUploadSize); err != nil { // max size: 20MB
+		ParseAlertMessage(w, "File upload too large or invalid form data")
 		return
 	}
 
 	// Validate email format
 	if !utils.ValidEmail(EscapeFormSpecialCharacters(r, "email")) {
-		ParseAlertMessage(w, tmpl, "Invalid email format")
+		ParseAlertMessage(w, "Invalid email format")
 		return
 	}
 
 	// Check if email is taken
-	existingUser, _ := database.GetUserByEmailOrUsername(EscapeFormSpecialCharacters(r, "email"), EscapeFormSpecialCharacters(r, "email"))
+	existingUser, _ := database.GetUserByEmailOrUsername(EscapeFormSpecialCharacters(r, "email"), EscapeFormSpecialCharacters(r, "username"))
 	if existingUser.Username != "" {
-		ParseAlertMessage(w, tmpl, fmt.Sprintf("the email '%s' is taken!", r.FormValue("email")))
-		return
-	}
-
-	// Check if username is taken
-	existingUser, _ = database.GetUserByEmailOrUsername(EscapeFormSpecialCharacters(r, "username"), EscapeFormSpecialCharacters(r, "username"))
-	if existingUser.Username != "" {
-		ParseAlertMessage(w, tmpl, fmt.Sprintf("the username '%s' is taken!", r.FormValue("username")))
+		ParseAlertMessage(w, "the email/username taken")
 		return
 	}
 
@@ -96,13 +75,13 @@ func Registration(w http.ResponseWriter, r *http.Request) {
 
 	// Validate passwords
 	if password != confirmPassword {
-		ParseAlertMessage(w, tmpl, "Passwords do not match")
+		ParseAlertMessage(w, "Passwords do not match")
 		return
 	}
 
 	// Check password strength
 	if err = utils.PasswordStrength(password); err != nil {
-		ParseAlertMessage(w, tmpl, err.Error())
+		ParseAlertMessage(w, err.Error())
 		return
 	}
 
@@ -122,7 +101,7 @@ func Registration(w http.ResponseWriter, r *http.Request) {
 		}
 		fileType := handler.Header.Get("Content-Type")
 		if !allowedTypes[fileType] {
-			ParseAlertMessage(w, tmpl, "Invalid file type. Only PNG and JPG images are allowed")
+			ParseAlertMessage(w, "Invalid file type. Only PNG and JPG images are allowed")
 			return
 		}
 
@@ -136,13 +115,19 @@ func Registration(w http.ResponseWriter, r *http.Request) {
 
 		// Update the name of the profile image
 		user.Image = filename
+
+		// Capture errors due to missing files
+	} else if err == http.ErrMissingFile {
+		log.Printf("FILE UPLOAD ERROR: %v", err)
+		errors.InternalServerErrorHandler(w)
+		return
 	}
 
 	// Create new user in the database
 	_, err = database.CreateNewUser(user)
 	if err != nil {
 		log.Printf("DATABASE ERROR: %v", err)
-		ParseAlertMessage(w, tmpl, "Registration failed, try again")
+		ParseAlertMessage(w, "Registration failed, try again")
 		return
 	}
 

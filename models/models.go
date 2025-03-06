@@ -5,8 +5,8 @@ import (
 )
 
 type WebError struct {
-	Code  int
-	Issue string
+	Code  int    `json:"code"`
+	Issue string `json:"issue"`
 }
 
 // user struct

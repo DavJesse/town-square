@@ -16,7 +16,13 @@ import (
 // LoginHandler handles user login and session creation, as well as preventing login when already logged in.
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	var user models.User
-	var loginCredentials models.LoginCredentials
+	// var loginCredentials models.LoginCredentials
+
+	if r.Method == http.MethodGet {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		http.ServeFile(w, r, "./web/templates/index1.html")
+		return
+	}
 
 	// Catch non-Get and non-POST requests
 	if r.Method != "POST" {
@@ -25,16 +31,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Parse the form data
-	if err := json.NewDecoder(r.Body).Decode(&loginCredentials); err != nil {
-		log.Printf("FORM DECODING ERROR: %v", err)
-		errors.InternalServerErrorHandler(w)
-		return
-	}
-
 	// Populate user credentials
 	// Determine whether input is a valid email
-	emailUsername := html.EscapeString(loginCredentials.Email_username)
+	emailUsername := html.EscapeString(r.Form.Get("email_username"))
 
 	if utils.ValidEmail(emailUsername) {
 		user.Email = emailUsername
@@ -43,7 +42,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Extract form data
-	user.Password = html.EscapeString(loginCredentials.Password) // Populate password field
+	user.Password = html.EscapeString(r.Form.Get("password")) // Populate password field
 
 	// Attempt to log in the user
 	sessionID, err := database.LoginUser(user.Username, user.Email, user.Password)

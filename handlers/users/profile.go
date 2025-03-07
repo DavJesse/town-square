@@ -63,7 +63,7 @@ func ViewUserProfile(w http.ResponseWriter, r *http.Request) {
 		Code:     http.StatusOK,
 		Message:  "Error getting posts",
 		Redirect: "",
-		Data: profileData,
+		Data:     profileData,
 	}
 	json.NewEncoder(w).Encode(req)
 }

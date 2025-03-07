@@ -18,6 +18,12 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	var loginCredentials models.LoginCredentials
 
+	if r.Method == http.MethodGet {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		http.ServeFile(w, r, "./web/templates/index1.html")
+		return
+	}
+
 	// Catch non-Get and non-POST requests
 	if r.Method != "POST" {
 		log.Println("METHOD ERROR: method not allowed")

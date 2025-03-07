@@ -2,21 +2,22 @@ async function fetchErrorMessage(errorMessageContainer) {
     try {
         let response =  await fetch('/login');
         if (!response.ok) {
-            let data = response.json();
-            setErrorMessage(errorMessageContainer, data.error_message);
+            let data = await response.json().catch(() => null);
+            if (data && data.error_message) {
+                setErrorMessage(errorMessageContainer, data.error_message);
+            }
         }
     } catch (error) {
-        console.error(`Error fetcing message: ${error}`);
+        console.error(`Error fetching message: ${error}`);
     }
 }
 
 function setErrorMessage(errorMessageContainer, message) {
     errorMessageContainer.value = message;
-    if (message) {
-        let errorText = document.createElement('p');
-        errorText.textContent = message;
-        errorText.style.color = 'red';
-        errorText.insertAdjacentElement('afterend', errorText);
+    let errorMessage = document.getElementById('error_text');
+
+    if (errorMessage) {
+        errorMessage.textContent = message;
     }
 }
 
@@ -34,11 +35,6 @@ export function renderLoginPage() {
     heading.textContent = 'real-time-forum';
     loginContainer.appendChild(heading);
 
-    // create login text
-    let loginText = document.createElement('h1');
-    heading.textContent = 'real-time-forum';
-    loginContainer.appendChild(loginText);
-
     // create login sub-container
     let loginSubContainer = document.createElement('div');
     loginSubContainer.classList.add('login');
@@ -55,8 +51,15 @@ export function renderLoginPage() {
     errorMessageContainer.id = 'error_message';
     errorMessageContainer.type = 'hidden';
     errorMessageContainer.value = '';
-    fetchErrorMessage(errorMessageContainer);
+
+    // Create error message placeholder
+    let errorText = document.createElement('p');
+    errorText.id = 'error_text';
+    errorText.style.color = 'red';
+    loginSubContainer.appendChild(errorText);
     loginSubContainer.appendChild(errorMessageContainer);
+    
+    fetchErrorMessage(errorMessageContainer);
 
     // create login form
     let loginForm = document.createElement('form');
@@ -74,7 +77,7 @@ export function renderLoginPage() {
 
     // create password input
     let password = document.createElement('input');
-    password.type = 'text';
+    password.type = 'password';
     password.id = 'password';
     password.placeholder = 'password';
     password.name = 'password';

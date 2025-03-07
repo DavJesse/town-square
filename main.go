@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"text/template"
 
 	"forum/database"
 
@@ -42,7 +43,9 @@ func main() {
 		return
 	}
 
+	http.HandleFunc("/spa", SPA)
 	// authentication
+
 	http.HandleFunc("/", posts.Index)
 	http.HandleFunc("/static/", misc.Static)
 	http.HandleFunc("/login", auth.LoginHandler)
@@ -77,4 +80,10 @@ func main() {
 		log.Println("Failed to start server: ", err)
 		return
 	}
+}
+
+func SPA(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	tmpl := template.Must(template.ParseFiles(("web/templates/spa.html")))
+	tmpl.Execute(w, nil)
 }

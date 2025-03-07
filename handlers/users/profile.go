@@ -1,13 +1,12 @@
 package auth
 
 import (
-	"html/template"
+	"encoding/json"
 	"log"
 	"net/http"
 
 	"forum/database"
 	"forum/models"
-	utils "forum/utils"
 )
 
 // ViewUserProfile handler
@@ -22,19 +21,28 @@ func ViewUserProfile(w http.ResponseWriter, r *http.Request) {
 	// fmt.Printf("UserData retrieved: %+v\n", userData)  // Add debug logging
 	if err != nil {
 		log.Printf("Error getting user: %v\n", err) // Add error logging
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		w.Header().Set("Content-Type", "application/json")
+		r := models.Response{
+			Code:     http.StatusTemporaryRedirect,
+			Message:  "Error getting user",
+			Redirect: "/login",
+		}
+		json.NewEncoder(w).Encode(r)
+		// http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
 
 	UserPosts, err := database.PostsFilterByUser(userData.ID)
 	if err != nil {
 		log.Printf("Error getting posts: %v\n", err) // Add error logging
-	}
-
-	// Render the template with data
-	path, err := utils.GetTemplatePath("profile.html")
-	if err != nil {
-		log.Println("Error getting template path")
+		// w.Header().Set("Content-Type", "application/json")
+		// r := models.Response{
+		// 	Code:     http.StatusOK,
+		// 	Message:  "Error getting posts",
+		// 	Redirect: "/login",
+		// }
+		// json.NewEncoder(w).Encode(r)
+		// return
 	}
 
 	// Combine user data and user posts into a single struct
@@ -50,16 +58,14 @@ func ViewUserProfile(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println("-------")
 	// fmt.Println(profileData.Posts)
 
-	tmpl, err := template.ParseFiles(path)
-	if err != nil {
-		http.Error(w, "Failed to load profile template", http.StatusInternalServerError)
-		return
+	w.Header().Set("Content-Type", "application/json")
+	req := models.Response{
+		Code:     http.StatusOK,
+		Message:  "Error getting posts",
+		Redirect: "",
+		Data: profileData,
 	}
-
-	if err := tmpl.Execute(w, profileData); err != nil {
-		log.Printf("Error executing template: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-	}
+	json.NewEncoder(w).Encode(req)
 }
 
 // func UpdateUserProfile(){

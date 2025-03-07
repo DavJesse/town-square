@@ -111,5 +111,26 @@ export function renderLoginPage() {
 
     document.body.appendChild(loginContainer);
     
+
+        // Attach event listener to handle login via AJAX
+        loginForm.addEventListener("submit", async function (event) {
+            event.preventDefault(); // Prevent full-page reload
+    
+            let formData = new FormData(loginForm);
+            let response = await fetch("/login", {
+                method: "POST",
+                body: formData,
+            });
+    
+            let data = await response.json().catch(() => null);
+    
+            if (response.ok && !data?.error_message) {
+                // Redirect to dashboard on success
+                navigateTo("/dashboard");
+            } else {
+                // Show error message
+                errorText.textContent = data?.error_message || "Login failed";
+            }
+        });
 }
 

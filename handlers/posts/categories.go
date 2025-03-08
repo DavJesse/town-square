@@ -2,7 +2,6 @@ package posts
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -79,8 +78,6 @@ func SingleCategoryPosts(w http.ResponseWriter, r *http.Request) {
 		IsLogged: loggedIn,
 		ProfPic:  userData.Image,
 	}
-
-	fmt.Println(data)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(data)

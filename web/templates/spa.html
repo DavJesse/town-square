@@ -59,7 +59,7 @@
             {{range .Posts}}
             <div class="card">
                 <p class="card__title">
-                    <a href="/posts/display?pid={{.UUID}}" style="color: #0172eb;">{{.Title}}</a>
+                    <a href="#" onclick="fetchPostDisplay('{{.UUID}}')" style="color: #0172eb;">{{.Title}}</a>
                 </p>
                 <p class="card__subject">{{.Creator}}</p>
                 <p class="card__description">{{.Content | replaceNewlines}}</p>
@@ -84,5 +84,6 @@
     <script src="/static/js/index.js"></script>
     <script src="/static/js/profile.js"></script>
     <script src="/static/js/category.js"></script>
+    <script src="/static/js/post_display.js"></script>
 </body>
 </html>

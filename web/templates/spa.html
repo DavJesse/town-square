@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
+    <title>Forum</title>
     <link rel="stylesheet" href="/static/css/main.css">
     <link rel="stylesheet" href="/static/css/index.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
         <a href="/">
             <h1 class="navbar__title">forum</h1>
         </a>
-
+        
         <div class="navbar__actions">
             <form action="/search" method="get" class="navbar__search-form">
                 <input type="text" name="q" class="navbar__search" placeholder="Search...">
@@ -22,14 +22,43 @@
             <a href="/posts/create">
                 <button class="navbar__button" id="create-post-button">Create Post</button>
             </a>
-            <button onclick="profile()">Profile</button>
+            {{ if .IsLogged}}
+            <form action="/logout" method="POST" style="display: inline;">
+                <button class="navbar__button" id="login-button">Log Out</button>
+            </form>
+            <div class="navbar__Profile__Pic">
+                {{ if .ProfPic }}
+                <button onclick="profile">
+                    <img src="/static/images/{{.ProfPic}}"  alt="user">
+                </a>
+                {{ else }}
+                <a href="/profile">
+                    <img src="/static/user-circle-svgrepo-com.svg"  alt="user">
+                </a>
+                {{ end }}
+            </div>
+            {{ else }}
+            <a href="/login">
+                <button class="navbar__button" id="login-button">Login</button>
+            </a> 
+            {{ end }}
         </div>
     </div>
-
+    
     <div class="container">
+        <!-- For mobile devices -->
+        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+
+        <div class="sidebar" id="sidebar">
+            <button class="sidebar__close" onclick="toggleSidebar()">✖</button>
+            <h3 class="sidebar__heading">Categories</h3>
+            <div id="categories-list"></div>
+        </div>
+
         <div class="main-content" id="main-content"></div>
     </div>
     <script src="/static/js/index.js"></script>
     <script src="/static/js/profile.js"></script>
+    <script src="/static/js/category.js"></script>
 </body>
 </html>

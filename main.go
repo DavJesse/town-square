@@ -5,9 +5,9 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"text/template"
 
 	"forum/database"
+	"forum/handlers"
 
 	auth "forum/handlers/auth"
 	comments "forum/handlers/comments"
@@ -39,13 +39,13 @@ func main() {
 	// Restrict arguments parsed
 	if len(os.Args) != 1 {
 		log.Println("Too many arguments")
-		log.Println("Usage: go run main.go")
+		log.Println("Usage: go run .")
 		return
 	}
 
-	http.HandleFunc("/spa", SPA)
-	// authentication
+	http.HandleFunc("/spa", handlers.SPA)
 
+	// authentication
 	http.HandleFunc("/", posts.Index)
 	http.HandleFunc("/static/", misc.Static)
 	http.HandleFunc("/login", auth.LoginHandler)
@@ -80,10 +80,4 @@ func main() {
 		log.Println("Failed to start server: ", err)
 		return
 	}
-}
-
-func SPA(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	tmpl := template.Must(template.ParseFiles(("web/templates/spa.html")))
-	tmpl.Execute(w, nil)
 }

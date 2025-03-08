@@ -54,8 +54,32 @@
             <h3 class="sidebar__heading">Categories</h3>
             <div id="categories-list"></div>
         </div>
-
-        <div class="main-content" id="main-content"></div>
+        
+        <div class="main-content" id="main-content">
+            {{range .Posts}}
+            <div class="card">
+                <p class="card__title">
+                    <a href="/posts/display?pid={{.UUID}}" style="color: #0172eb;">{{.Title}}</a>
+                </p>
+                <p class="card__subject">{{.Creator}}</p>
+                <p class="card__description">{{.Content | replaceNewlines}}</p>
+                {{if .Media}}
+                <img src="/static/media/{{.Media}}" alt="Post Image" style="width: 70px; aspect-ratio: 1/1;">
+                {{end}}
+        
+                <div class="actions">
+                    <form action="/posts/like" method="post">
+                        <input type="hidden" name="post-id" value="{{.UUID}}">
+                        <button type="submit">{{.LikesCount}} Like</button>
+                    </form>
+                    <form action="/posts/dislike" method="post">
+                        <input type="hidden" name="post-id" value="{{.UUID}}">
+                        <button type="submit">{{.DislikesCount}} Dislike</button>
+                    </form>
+                </div>
+            </div>
+            {{end}}
+        </div>
     </div>
     <script src="/static/js/index.js"></script>
     <script src="/static/js/profile.js"></script>

@@ -105,7 +105,7 @@ export function renderLoginPage() {
     
             if (response.ok && !data?.error_message) {
                 // Redirect to dashboard on success
-                navigateTo("/dashboard");
+                navigateTo("/");
             } else {
                 // Show error message
                 errorText.textContent = data?.error_message || "Login failed";

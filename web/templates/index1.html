@@ -3,18 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="/static/css/category.css">
-    <link rel="stylesheet" href="/static/css/error.css">
-    <link rel="stylesheet" href="/static/css/form.css">
-    <link rel="stylesheet" href="/static/css/index.css">
+    <meta name="description" content="Index page for our forum website. Join the conversation; take part in conversation around all kinds of topics.">
+    <title>Welcome To Forum</title>
     <link rel="stylesheet" href="/static/css/main.css">
-    <link rel="stylesheet" href="/static/css/onboarding.css">
-    <link rel="stylesheet" href="/static/css/post_display.css">
-    <!-- <link rel="stylesheet" href="/static/css/posts_create.css"> -->
+    <link rel="stylesheet" href="/static/css/index.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@700&display=swap" rel="stylesheet">
+
 </head>
 <body>
-    <script type="module" src="/static/js/routes.js" defer></script>
+    <div class="navbar">
+        <a href="/">
+            <h1 class="navbar__title">forum</h1>
+        </a>
+        
+        <div class="navbar__actions">
+            <form action="/search" method="get" class="navbar__search-form">
+                <input type="text" name="q" class="navbar__search" placeholder="Search...">
+                <button type="submit" class="navbar__button">Search</button>
+            </form>
+            <!-- <input type="text" class="navbar__search" placeholder="Search Forum"> -->
+            <a href="/posts/create">
+                <button class="navbar__button" id="create-post-button">Create Post</button>
+            </a>
+            
+            <!-- Show Logout Button and Profile Picture if Logged In -->
+            {{ if .IsLogged}}
+            <form action="/logout" method="POST" style="display: inline;">
+                <button class="navbar__button" id="login-button">Log Out</button>
+            </form>
+            
+            <div class="navbar__Profile__Pic">
+            {{ if .ProfPic }}
+            <a href="/profile">
+                <img src="/static/images/{{.ProfPic}}"  alt="user">
+             </a>
+            {{ else }}
+            <a href="/profile">
+               <img src="/static/user-circle-svgrepo-com.svg"  alt="user">
+            </a>
+             {{ end }}
+            </div>
+            {{ else }}
+            <!-- Show Log In Button if Logged In -->
+            <a href="/login">
+                <button class="navbar__button" id="login-button">Login</button>
+            </a> 
+            {{ end }}
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- For mobile devices -->
+        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+
+        <div class="sidebar" id="sidebar">
+            <button class="sidebar__close" onclick="toggleSidebar()">✖</button>
+            <h3 class="sidebar__heading">Categories</h3>
+            {{range .Categories}}
+            <a href="/categories/{{.ID}}">
+                <p class="sidebar__list-item">{{.Name}}</p>
+            </a>
+            {{end}}
+        </div>
+
+        
+        <div class="main-content">
+            <div class="header-buttons">
+                <!-- Button for All Posts (Default View) -->
+                <h3 class="main-content__heading">All Posts</h3>
+        
+                <!-- Button for Liked Posts -->
+                <a href="/liked-posts" class="navbar__button">My Liked Posts</a>
+            </div>
+        
+            {{range .Posts}}
+            <div class="card">
+                <p class="card__title">
+                    <a href="/posts/display?pid={{.UUID}}" style="color: #0172eb;">{{.Title}}</a>
+                </p>
+                <p class="card__subject">{{.Creator}}</p>
+                <p class="card__description">{{.Content | replaceNewlines}}</p>
+                {{if .Media}}
+                <img src="/static/media/{{.Media}}" alt="Post Image" style="width: 70px; aspect-ratio: 1/1;">
+                {{end}}
+        
+                <div class="actions">
+                    <form action="/posts/like" method="post">
+                        <input type="hidden" name="post-id" value="{{.UUID}}">
+                        <button type="submit">{{.LikesCount}} Like</button>
+                    </form>
+                    <form action="/posts/dislike" method="post">
+                        <input type="hidden" name="post-id" value="{{.UUID}}">
+                        <button type="submit">{{.DislikesCount}} Dislike</button>
+                    </form>
+                </div>
+            </div>
+            {{end}}
+        </div>
+        
+    </div>
+    <script src="/static/js/index.js"></script>
 </body>
 </html>

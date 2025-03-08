@@ -25,6 +25,13 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Serve page at get request
+	if r.Method == http.MethodGet {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		http.ServeFile(w, r, "./web/templates/index.html")
+		return
+	}
+
 	// Handle non-GET and non-POST requests
 	if r.Method != http.MethodPost {
 		log.Println("REQUEST ERROR: bad request")
@@ -138,5 +145,5 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func EscapeFormSpecialCharacters(r *http.Request, elementName string) string {
-	return html.EscapeString(r.FormValue(elementName))
+	return html.EscapeString(r.Form.Get(elementName))
 }

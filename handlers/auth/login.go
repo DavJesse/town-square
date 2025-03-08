@@ -20,7 +20,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodGet {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		http.ServeFile(w, r, "./web/templates/index1.html")
+		http.ServeFile(w, r, "./web/templates/index.html")
 		return
 	}
 

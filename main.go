@@ -59,8 +59,8 @@ func main() {
 
 	// posts
 	http.HandleFunc("/posts/display", posts.PostDisplay)
-	http.HandleFunc("/categories", posts.CategoriesPage)
-	http.HandleFunc("/categories/", posts.SingeCategoryPosts)
+	http.HandleFunc("/categories", posts.GetCategories)
+	http.HandleFunc("/categories/", posts.SingleCategoryPosts)
 	http.HandleFunc("/search", posts.Search)
 	http.HandleFunc("/liked-posts", posts.ShowLikedPosts)
 

@@ -1,4 +1,4 @@
-import { renderRegistrationPage } from "./register";
+import { renderRegistrationPage } from "/static/js/register.js";
 import { renderLoginPage } from "/static/js/login.js";
 
 // routes.js

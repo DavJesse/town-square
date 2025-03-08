@@ -1,11 +1,9 @@
 package posts
 
 import (
-	"html/template"
+	"encoding/json"
 	"log"
 	"net/http"
-
-	utils "forum/utils"
 
 	errors "forum/handlers/errors"
 
@@ -18,13 +16,6 @@ func PostDisplay(w http.ResponseWriter, r *http.Request) {
 	var err error
 	session, loggedIn := database.IsLoggedIn(r)
 
-	_, err = utils.GetTemplatePath("post_display.html")
-	if err != nil {
-		log.Printf("TEMPLATE AVAILABILITY ERROR: %v", err)
-		errors.NotFoundHandler(w)
-		return
-	}
-
 	// Retrieve user data if logged in
 	if loggedIn {
 		userData, err = database.GetUserbySessionID(session.SessionID)
@@ -35,20 +26,16 @@ func PostDisplay(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Parse template with function to replace '\n' with '<br>'
-	tmpl := template.Must(template.New("post_display.html").Funcs(template.FuncMap{
-		"replaceNewlines": utils.ReplaceNewlines,
-	}).ParseFiles("./web/templates/post_display.html"))
-
 	postID := r.URL.Query().Get("pid")
 
 	postData, err := database.GetPostByUUID(postID)
 	if err != nil {
+		errors.NotFoundHandler(w)
 		log.Println("Error getting post data: ", err)
 		return
 	}
 
-	// Infuse data to be executed with inquiry if user is logged in
+	// Prepare data for JSON response
 	data := struct {
 		PostData models.PostWithCategories
 		IsLogged bool
@@ -59,10 +46,6 @@ func PostDisplay(w http.ResponseWriter, r *http.Request) {
 		ProfPic:  userData.Image,
 	}
 
-	// fmt.Println("POST: ", PostData)
-
-	if err := tmpl.Execute(w, data); err != nil {
-		log.Printf("Error executing template: %v", err)
-		errors.InternalServerErrorHandler(w)
-	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(data)
 }

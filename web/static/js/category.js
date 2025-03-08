@@ -46,7 +46,9 @@ function fetchCategoryPosts(categoryID) {
                 const postElement = document.createElement('div');
                 postElement.classList.add('card');
                 postElement.innerHTML = `
-                    <p class="card__title"><a href="/posts/display?pid=${post.uuid}" style="color: #0172eb;">${post.title}</a></p>
+                    <p class="card__title">
+                        <a href="#" onclick="fetchPostDisplay('${post.uuid}')" style="color: #0172eb;">${post.title}</a>
+                    </p>
                     <p class="card__date">${post.created_at}</p>
                     <p class="card__description">${post.Content}</p>
                     ${post.media ? `<img src="/static/media/${post.media}" alt="Post Image" style="width: 70px; aspect-ratio: 1/1;">` : ''}

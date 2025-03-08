@@ -35,7 +35,7 @@ function handleRouteChange() {
     const path = window.location.pathname;
     console.log(`Current path: ${path}`);
 
-    const app = document.getElementById("app"); // Main content area
+    document.body.innerHTML = ""
 
     switch (path) {
         case "/":

@@ -3,7 +3,7 @@ import { fetchErrorMessage } from '/static/js/form_error_message.js'
 export function renderRegistrationPage() {
     document.title = 'sign up - real-time-forum'; // Set document title
 
-    let formContainer = document.CreateElement('div');
+    let formContainer = document.createElement('div');
     formContainer.classList.add('form-container');
 
     // create logo

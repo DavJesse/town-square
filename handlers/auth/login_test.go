@@ -18,7 +18,7 @@ func TestLoginHandler_GET(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	// Call the handler function
-	handler := http.HandlerFunc(Login)
+	handler := http.HandlerFunc(LoginHandler)
 	handler.ServeHTTP(rr, req)
 
 	// Check the status code
@@ -74,7 +74,7 @@ func TestLoginHandler_FormFields(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(Login)
+	handler := http.HandlerFunc(LoginHandler)
 
 	handler.ServeHTTP(rr, req)
 

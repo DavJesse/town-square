@@ -128,9 +128,10 @@ button:hover {
 }
 
 /* Account issues links */
-.account-issues a {
+.register-link {
     color: #0172eb;
     text-decoration: none;
+    font-size: 18px;
 }
 
 .account-issues a:hover {

@@ -4,14 +4,45 @@ import (
 	"time"
 )
 
+// Error Response object
 type WebError struct {
 	Code  int    `json:"code"`
 	Issue string `json:"issue"`
 }
 
+// Form error object
+type FormError struct {
+	ErrorMessage string `json:"error_message"`
+	Data         string `json:"data"`
+}
+
+// login credetials object
+type LoginCredentials struct {
+	Email_username string `json:"email_username"`
+	Password       string `json:"password"`
+}
+
+// registration details object
+type RegistrationDetails struct {
+	FirstName       string `json:"first_name"`
+	LastName        string `json:"last_name"`
+	Age             int    `json:"age"`
+	Gender          string `json:"gender"`
+	Username        string `json:"username"`
+	Email           string `json:"email"`
+	Password        string `json:"password"`
+	ConfirmPassword string `json:"confirm_password"`
+	Bio             string `json:"bio,omitempty"`
+	Image           string `json:"image,omitempty"`
+}
+
 // user struct
 type User struct {
 	ID        int       `json:"id"`
+	FirstName string    `json:"first_name"`
+	LastName  string    `json:"last_name"`
+	Age       int       `json:"age"`
+	Gender    string    `json:"gender"`
 	Username  string    `json:"username"`
 	Email     string    `json:"email"`
 	Password  string    `json:"-"` // Exclude from JSON responses

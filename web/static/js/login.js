@@ -94,22 +94,27 @@ export function renderLoginPage() {
         // Attach event listener to handle login via AJAX
         loginForm.addEventListener("submit", async function (event) {
             event.preventDefault(); // Prevent full-page reload
-    
+        
             let formData = new FormData(loginForm);
+            
+            // Debugging: Log FormData values
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]); // Check what is actually being sent
+            }
+        
             let response = await fetch("/login", {
                 method: "POST",
                 body: formData,
             });
-    
+        
             let data = await response.json().catch(() => null);
-    
+        
             if (response.ok && !data?.error_message) {
-                // Redirect to dashboard on success
                 navigateTo("/");
             } else {
-                // Show error message
                 errorText.textContent = data?.error_message || "Login failed";
             }
         });
+        
 }
 

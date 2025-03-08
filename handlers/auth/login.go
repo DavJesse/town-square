@@ -31,6 +31,16 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err := r.ParseForm()
+	if err != nil {
+		log.Printf("ERROR: %v", err)
+		errors.BadRequestHandler(w)
+		return
+	}
+	for key, values := range r.Form {
+		log.Printf("Form key: %s, Value: %v", key, values)
+	}
+
 	// Populate user credentials
 	// Determine whether input is a valid email
 	emailUsername := html.EscapeString(r.Form.Get("email_username"))
@@ -43,7 +53,14 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Extract form data
 	user.Password = html.EscapeString(r.Form.Get("password")) // Populate password field
+	log.Printf("Username/email %s", user.Username)
+	log.Printf("password %s", user.Password)
 
+	if emailUsername == "" || user.Password == "" {
+		log.Println("ERROR: Empty username or password field")
+		ParseAlertMessage(w, "email and password are required")
+		return
+	}
 	// Attempt to log in the user
 	sessionID, err := database.LoginUser(user.Username, user.Email, user.Password)
 	if err != nil {

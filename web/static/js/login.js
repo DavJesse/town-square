@@ -95,26 +95,40 @@ export function renderLoginPage() {
         loginForm.addEventListener("submit", async function (event) {
             event.preventDefault(); // Prevent full-page reload
         
-            let formData = new FormData(loginForm);
-            
-            // Debugging: Log FormData values
-            for (let pair of formData.entries()) {
-                console.log(pair[0] + ': ' + pair[1]); // Check what is actually being sent
-            }
+            if (event.target !== loginForm) return; // Ensure accurate form submision
+
+            let emailUsername = document.getElementById("email_username").value;
+            let password = document.getElementById("password").value;
         
+            let requestBody = JSON.stringify({
+                email_username: emailUsername,
+                password: password,
+            });
+        
+            try {
             let response = await fetch("/login", {
                 method: "POST",
-                body: formData,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: requestBody,
             });
         
             let data = await response.json().catch(() => null);
         
             if (response.ok && !data?.error_message) {
+                // Redirect to dashboard on success
                 navigateTo("/");
             } else {
-                errorText.textContent = data?.error_message || "Login failed";
+                // Show error message
+                document.getElementById("error_text").textContent = data?.error_message || "Login failed";
             }
+        } catch (error) {
+            console.log(`Fetch Error: ${error}`);
+            document.getElementById("error_text").textContent = "Network Error, please try again";
+        }
         });
+        
         
 }
 

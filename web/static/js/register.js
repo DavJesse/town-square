@@ -39,7 +39,7 @@ export function renderRegistrationPage() {
 
     let firstName = document.createElement('input');
     firstName.type = 'text';
-    firstName.id = 'first-name';
+    firstName.id = 'first_name';
     firstName.name = 'first-name';
     firstName.placeholder = 'first name';
     firstName.required = true;
@@ -47,7 +47,7 @@ export function renderRegistrationPage() {
 
     let lastName = document.createElement('input');
     lastName.type = 'text';
-    lastName.id = 'last-name';
+    lastName.id = 'last_name';
     lastName.name = 'last-name';
     lastName.placeholder = 'last name';
     lastName.required = true;
@@ -79,6 +79,7 @@ export function renderRegistrationPage() {
      let gender = document.createElement('select');
      gender.id = 'gender';
      gender.name = 'gender';
+     gender.textContent = 'gender';
      
      let none = document.createElement('option');
      none.value = 'none';
@@ -121,7 +122,7 @@ export function renderRegistrationPage() {
 
      let confirmPassword = document.createElement('input');
      confirmPassword.type = 'password';
-     confirmPassword.id = 'confirm-password';
+     confirmPassword.id = 'confirm_password';
      confirmPassword.name = 'confirm-password';
      confirmPassword.placeholder = 'confirm password';
      confirmPassword.required = true
@@ -151,9 +152,16 @@ export function renderRegistrationPage() {
 
      // Create upload status section
      let fileName = document.createElement('p');
-     fileName.id = 'file-name';
+     fileName.id = 'file_name';
      fileName.textContent = 'no file chosen';
      imageUpload.appendChild(fileName);
+
+     // Create remove image button
+     let removeImage = document.createElement('button');
+     removeImage.id = 'remove_image';
+     removeImage.classList.add('remove-btn');
+     removeImage.style.display = 'none';
+     removeImage.textContent = 'Remove image';
 
      registrationForm.appendChild(imageUpload);
 
@@ -195,20 +203,53 @@ export function renderRegistrationPage() {
     registrationForm.addEventListener("submit", async function (event) {
         event.preventDefault(); // Prevent full-page reload
 
-        let formData = new FormData(registrationForm);
+        if (event.target !== registrationForm) return; // Ensure accurate form submision
+
+        let firstName = document.getElementById('first_name').value;
+        let lastName = document.getElementById('last_name').value;
+        let username = document.getElementById('username').value;
+        let age = document.getElementById('age').value;
+        let gender = document.getElementById('gender').value;
+        let email = document.getElementById('email').value;
+        let password = document.getElementById('password').value;
+        let confirmPassword = document.getElementById('confirm_password').value;
+        let bio = document.getElementById('bio').value;
+        let image = document.getElementById('image').files[0];
+
+        let requestBody = JSON.stringify({
+            first_name: firstName,
+            last_name: lastName,
+            username: username,
+            age: age,
+            gender: gender,
+            email: email,
+            password: password,
+            confirm_password: confirmPassword,
+            bio: bio,
+            image: image,
+        });
+        
+        try {
         let response = await fetch("/register", {
             method: "POST",
-            body: formData,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: requestBody,
         });
 
         let data = await response.json().catch(() => null);
 
         if (response.ok && !data?.error_message) {
-            // Redirect to dashboard on success
-            navigateTo("/");
+            // Redirect to login page on success
+            navigateTo("/login");
         } else {
             // Show error message
             errorText.textContent = data?.error_message || "Registration failed";
         }
+    } catch (error) {
+        console.log(`Fetch Error: ${error}`);
+        errorText.textContent = "Network Error, please try again";
+    }
     });
 }

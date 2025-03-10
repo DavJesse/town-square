@@ -24,6 +24,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Declare utility variables
 	var user models.User
+	var loginResponse models.LoginResponse
 
 	// Catch non-Get and non-POST requests
 	if r.Method != "POST" {
@@ -32,13 +33,17 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Parse form data
-	r.ParseMultipartForm(10 << 20)
-	log.Printf("Request Body: %s", r.Body)
+	// Extract form data
+	err := json.NewDecoder(r.Body).Decode(&loginResponse)
+	if err != nil {
+		log.Printf("REQUEST ERROR: %s", err)
+		errors.BadRequestHandler(w)
+		return
+	}
 
 	// Populate user credentials
-	emailUsername := html.EscapeString(r.FormValue("email_username"))
-	user.Password = html.EscapeString(r.FormValue("password")) // Populate password field
+	emailUsername := html.EscapeString(loginResponse.EmailUsername)
+	user.Password = html.EscapeString(loginResponse.Password) // Populate password field
 
 	// Check for empty user input
 	if emailUsername == "" || user.Password == "" {

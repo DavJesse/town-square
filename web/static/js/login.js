@@ -90,6 +90,7 @@ export function renderLoginPage() {
 
     document.body.appendChild(loginContainer);
     
+    
 
         // Attach event listener to handle login via AJAX
         loginForm.addEventListener("submit", async function (event) {
@@ -99,12 +100,12 @@ export function renderLoginPage() {
 
             let emailUsername = document.getElementById("email_username").value;
             let password = document.getElementById("password").value;
-        
+            
             let requestBody = JSON.stringify({
                 email_username: emailUsername,
                 password: password,
             });
-        
+            
             try {
             let response = await fetch("/login", {
                 method: "POST",
@@ -115,7 +116,7 @@ export function renderLoginPage() {
             });
         
             let data = await response.json().catch(() => null);
-        
+            
             if (response.ok && !data?.error_message) {
                 // Redirect to dashboard on success
                 navigateTo("/");
@@ -127,8 +128,12 @@ export function renderLoginPage() {
             console.log(`Fetch Error: ${error}`);
             document.getElementById("error_text").textContent = "Network Error, please try again";
         }
-        });
-        
-        
+    });
+    
+    // Prevent 'sign up' link from being blocked
+    registerLink.addEventListener("click", function(event) {
+        event.stopPropagation();
+        navigateTo("/register");
+    });
 }
 

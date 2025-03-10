@@ -252,4 +252,10 @@ export function renderRegistrationPage() {
         errorText.textContent = "Network Error, please try again";
     }
     });
+
+     // Prevent 'sign up' link from being blocked
+     registerLink.addEventListener("click", function(event) {
+        event.stopPropagation();
+        navigateTo("/login");
+    });
 }

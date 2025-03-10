@@ -38,7 +38,7 @@ export function renderLoginPage() {
     loginSubContainer.appendChild(errorText);
     loginSubContainer.appendChild(errorMessageContainer);
     
-    fetchErrorMessage(errorMessageContainer);
+    fetchErrorMessage(errorMessageContainer, '/login');
 
     // create login form
     let loginForm = document.createElement('form');

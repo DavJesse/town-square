@@ -25,7 +25,7 @@ export function renderRegistrationPage() {
     formContainer.appendChild(errorText);
     formContainer.appendChild(errorMessageContainer);
     
-    fetchErrorMessage(errorMessageContainer);
+    fetchErrorMessage(errorMessageContainer, '/register');
 
     // Create registration form
     let registrationForm = document.createElement('form');

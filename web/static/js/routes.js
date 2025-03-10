@@ -1,3 +1,4 @@
+import { renderRegistrationPage } from "/static/js/register.js";
 import { renderLoginPage } from "/static/js/login.js";
 
 // routes.js
@@ -34,7 +35,7 @@ function handleRouteChange() {
     const path = window.location.pathname;
     console.log(`Current path: ${path}`);
 
-    const app = document.getElementById("app"); // Main content area
+    document.body.innerHTML = ""
 
     switch (path) {
         case "/":
@@ -44,7 +45,7 @@ function handleRouteChange() {
             renderLoginPage();
             break;
         case "/register":
-            app.innerHTML = "<h1>Register</h1><p>Create a new account.</p>";
+            renderRegistrationPage();
             break;
         case "/posts":
             app.innerHTML = "<h1>Posts</h1><p>Here are some posts.</p>";

@@ -1,25 +1,4 @@
-async function fetchErrorMessage(errorMessageContainer) {
-    try {
-        let response =  await fetch('/login');
-        if (!response.ok) {
-            let data = await response.json().catch(() => null);
-            if (data && data.error_message) {
-                setErrorMessage(errorMessageContainer, data.error_message);
-            }
-        }
-    } catch (error) {
-        console.error(`Error fetching message: ${error}`);
-    }
-}
-
-function setErrorMessage(errorMessageContainer, message) {
-    errorMessageContainer.value = message;
-    let errorMessage = document.getElementById('error_text');
-
-    if (errorMessage) {
-        errorMessage.textContent = message;
-    }
-}
+import { fetchErrorMessage } from '/static/js/form_error_message.js'
 
 export function renderLoginPage() {
     // update document title
@@ -59,7 +38,7 @@ export function renderLoginPage() {
     loginSubContainer.appendChild(errorText);
     loginSubContainer.appendChild(errorMessageContainer);
     
-    fetchErrorMessage(errorMessageContainer);
+    fetchErrorMessage(errorMessageContainer, '/login');
 
     // create login form
     let loginForm = document.createElement('form');
@@ -111,26 +90,50 @@ export function renderLoginPage() {
 
     document.body.appendChild(loginContainer);
     
+    
 
         // Attach event listener to handle login via AJAX
         loginForm.addEventListener("submit", async function (event) {
             event.preventDefault(); // Prevent full-page reload
-    
-            let formData = new FormData(loginForm);
+        
+            if (event.target !== loginForm) return; // Ensure accurate form submision
+
+            let emailUsername = document.getElementById("email_username").value;
+            let password = document.getElementById("password").value;
+            
+            let requestBody = JSON.stringify({
+                email_username: emailUsername,
+                password: password,
+            });
+            
+            try {
             let response = await fetch("/login", {
                 method: "POST",
-                body: formData,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: requestBody,
             });
-    
+        
             let data = await response.json().catch(() => null);
-    
+            
             if (response.ok && !data?.error_message) {
                 // Redirect to dashboard on success
-                navigateTo("/dashboard");
+                navigateTo("/");
             } else {
                 // Show error message
-                errorText.textContent = data?.error_message || "Login failed";
+                document.getElementById("error_text").textContent = data?.error_message || "Login failed";
             }
-        });
+        } catch (error) {
+            console.log(`Fetch Error: ${error}`);
+            document.getElementById("error_text").textContent = "Network Error, please try again";
+        }
+    });
+    
+    // Prevent 'sign up' link from being blocked
+    registerLink.addEventListener("click", function(event) {
+        event.stopPropagation();
+        navigateTo("/register");
+    });
 }
 

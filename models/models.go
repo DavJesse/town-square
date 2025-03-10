@@ -16,12 +16,6 @@ type FormError struct {
 	Data         string `json:"data"`
 }
 
-// login credetials object
-type LoginCredentials struct {
-	Email_username string `json:"email_username"`
-	Password       string `json:"password"`
-}
-
 // registration details object
 type RegistrationDetails struct {
 	FirstName       string `json:"first_name"`

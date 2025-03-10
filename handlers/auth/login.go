@@ -15,14 +15,16 @@ import (
 
 // LoginHandler handles user login and session creation, as well as preventing login when already logged in.
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
-	var user models.User
-	// var loginCredentials models.LoginCredentials
 
 	if r.Method == http.MethodGet {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		http.ServeFile(w, r, "./web/templates/index1.html")
+		http.ServeFile(w, r, "./web/templates/index.html")
 		return
 	}
+
+	// Declare utility variables
+	var user models.User
+	var loginResponse models.LoginResponse
 
 	// Catch non-Get and non-POST requests
 	if r.Method != "POST" {
@@ -31,18 +33,31 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Populate user credentials
-	// Determine whether input is a valid email
-	emailUsername := html.EscapeString(r.Form.Get("email_username"))
+	// Extract form data
+	err := json.NewDecoder(r.Body).Decode(&loginResponse)
+	if err != nil {
+		log.Printf("REQUEST ERROR: %s", err)
+		errors.BadRequestHandler(w)
+		return
+	}
 
+	// Populate user credentials
+	emailUsername := html.EscapeString(loginResponse.EmailUsername)
+	user.Password = html.EscapeString(loginResponse.Password) // Populate password field
+
+	// Check for empty user input
+	if emailUsername == "" || user.Password == "" {
+		log.Println("ERROR: Empty username or password field")
+		ParseAlertMessage(w, "email and password are required")
+		return
+	}
+
+	// Determine whether input is a valid email
 	if utils.ValidEmail(emailUsername) {
 		user.Email = emailUsername
 	} else {
 		user.Username = emailUsername
 	}
-
-	// Extract form data
-	user.Password = html.EscapeString(r.Form.Get("password")) // Populate password field
 
 	// Attempt to log in the user
 	sessionID, err := database.LoginUser(user.Username, user.Email, user.Password)
@@ -81,7 +96,7 @@ func ParseAlertMessage(w http.ResponseWriter, message string) {
 	alert.ErrorMessage = message
 
 	if err := json.NewEncoder(w).Encode(alert); err != nil {
-		http.Error(w, `{"error_message":"`+alert.ErrorMessage+`"}`, http.StatusOK)
+		errors.InternalServerErrorHandler(w)
 		log.Println("JSON ENCODING ERROR: ", err)
 	}
 }

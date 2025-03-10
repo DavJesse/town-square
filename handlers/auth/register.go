@@ -4,6 +4,7 @@ import (
 	"html"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"forum/database"
@@ -22,6 +23,13 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("LOG OUT ERROR: %v", err)
 		errors.InternalServerErrorHandler(w)
+		return
+	}
+
+	// Serve page at get request
+	if r.Method == http.MethodGet {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		http.ServeFile(w, r, "./web/templates/index.html")
 		return
 	}
 
@@ -67,8 +75,12 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Extract form data
-	user.Email = EscapeFormSpecialCharacters(r, "email")
+	user.FirstName = EscapeFormSpecialCharacters(r, "first_name")
+	user.LastName = EscapeFormSpecialCharacters(r, "last_name")
 	user.Username = EscapeFormSpecialCharacters(r, "username")
+	user.Age, _ = strconv.Atoi(EscapeFormSpecialCharacters(r, "age"))
+	user.Gender = EscapeFormSpecialCharacters(r, "gender")
+	user.Email = EscapeFormSpecialCharacters(r, "email")
 	password := EscapeFormSpecialCharacters(r, "password")
 	confirmPassword := EscapeFormSpecialCharacters(r, "confirm_password")
 	user.Bio = EscapeFormSpecialCharacters(r, "bio")
@@ -138,5 +150,5 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func EscapeFormSpecialCharacters(r *http.Request, elementName string) string {
-	return html.EscapeString(r.FormValue(elementName))
+	return html.EscapeString(r.Form.Get(elementName))
 }

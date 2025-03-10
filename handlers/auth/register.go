@@ -4,6 +4,7 @@ import (
 	"html"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"forum/database"
@@ -74,8 +75,12 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Extract form data
-	user.Email = EscapeFormSpecialCharacters(r, "email")
+	user.FirstName = EscapeFormSpecialCharacters(r, "first_name")
+	user.LastName = EscapeFormSpecialCharacters(r, "last_name")
 	user.Username = EscapeFormSpecialCharacters(r, "username")
+	user.Age, _ = strconv.Atoi(EscapeFormSpecialCharacters(r, "age"))
+	user.Gender = EscapeFormSpecialCharacters(r, "gender")
+	user.Email = EscapeFormSpecialCharacters(r, "email")
 	password := EscapeFormSpecialCharacters(r, "password")
 	confirmPassword := EscapeFormSpecialCharacters(r, "confirm_password")
 	user.Bio = EscapeFormSpecialCharacters(r, "bio")

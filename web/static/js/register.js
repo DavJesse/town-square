@@ -205,37 +205,26 @@ export function renderRegistrationPage() {
 
         if (event.target !== registrationForm) return; // Ensure accurate form submision
 
-        let firstName = document.getElementById('first_name').value;
-        let lastName = document.getElementById('last_name').value;
-        let username = document.getElementById('username').value;
-        let age = document.getElementById('age').value;
-        let gender = document.getElementById('gender').value;
-        let email = document.getElementById('email').value;
-        let password = document.getElementById('password').value;
-        let confirmPassword = document.getElementById('confirm_password').value;
-        let bio = document.getElementById('bio').value;
-        let image = document.getElementById('image').files[0];
+        let formData = new FormData();
+        FormData.append("first_name", document.getElementById('first_name').value);
+        FormData.append("last_name", document.getElementById('last_name').value);
+        FormData.append("username", document.getElementById('username').value);
+        FormData.append("age", document.getElementById('age').value);
+        FormData.append("gender", document.getElementById('gender').value);
+        FormData.append("email", document.getElementById('email').value);
+        FormData.append("password", document.getElementById('password').value);
+        FormData.append("confirm_password", document.getElementById('confirm_password').value);
+        FormData.append("bio", document.getElementById('bio').value);
 
-        let requestBody = JSON.stringify({
-            first_name: firstName,
-            last_name: lastName,
-            username: username,
-            age: age,
-            gender: gender,
-            email: email,
-            password: password,
-            confirm_password: confirmPassword,
-            bio: bio,
-            image: image,
-        });
+        let imageFile = document.getElementById('image').files[0];
+        if (imageFile)  {
+            FormData.append("image", imageFile);
+        }
         
         try {
         let response = await fetch("/register", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: requestBody,
+            body: formData,
         });
 
         let data = await response.json().catch(() => null);

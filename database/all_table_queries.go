@@ -3,9 +3,13 @@ package database
 const (
 	USERS_TABLE_CREATE = `CREATE TABLE IF NOT EXISTS users (
 		id INTEGER PRIMARY KEY,
+		first_name STRING NOT NULL,
+		last_name STRING NOT NULL,
+        age INTEGER CHECK (age >= 13 AND age <= 130),
+        gender STRING CHECK (gender IN ('male', 'female', 'other')),
 		username STRING UNIQUE NOT NULL,
-		email STRING UNIQUE NOT NULL,
-		password STRING NOT NULL,
+        email STRING UNIQUE NOT NULL,
+		password STRING NOT NULL,  
 		bio STRING,
 		image STRING,
 		session_id STRING,

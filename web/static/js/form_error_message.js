@@ -1,6 +1,6 @@
-export async function fetchErrorMessage(errorMessageContainer) {
+export async function fetchErrorMessage(errorMessageContainer, formLink) {
     try {
-        let response =  await fetch('/login');
+        let response =  await fetch(formLink);
         if (!response.ok) {
             let data = await response.json().catch(() => null);
             if (data && data.error_message) {

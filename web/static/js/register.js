@@ -3,7 +3,7 @@ import { fetchErrorMessage } from '/static/js/form_error_message.js'
 export function renderRegistrationPage() {
     document.title = 'sign up - real-time-forum'; // Set document title
 
-    let formContainer = document.CreateElement('div');
+    let formContainer = document.createElement('div');
     formContainer.classList.add('form-container');
 
     // create logo
@@ -25,7 +25,7 @@ export function renderRegistrationPage() {
     formContainer.appendChild(errorText);
     formContainer.appendChild(errorMessageContainer);
     
-    fetchErrorMessage(errorMessageContainer);
+    fetchErrorMessage(errorMessageContainer, '/register');
 
     // Create registration form
     let registrationForm = document.createElement('form');
@@ -39,7 +39,7 @@ export function renderRegistrationPage() {
 
     let firstName = document.createElement('input');
     firstName.type = 'text';
-    firstName.id = 'first-name';
+    firstName.id = 'first_name';
     firstName.name = 'first-name';
     firstName.placeholder = 'first name';
     firstName.required = true;
@@ -47,7 +47,7 @@ export function renderRegistrationPage() {
 
     let lastName = document.createElement('input');
     lastName.type = 'text';
-    lastName.id = 'last-name';
+    lastName.id = 'last_name';
     lastName.name = 'last-name';
     lastName.placeholder = 'last name';
     lastName.required = true;
@@ -79,6 +79,7 @@ export function renderRegistrationPage() {
      let gender = document.createElement('select');
      gender.id = 'gender';
      gender.name = 'gender';
+     gender.textContent = 'gender';
      
      let none = document.createElement('option');
      none.value = 'none';
@@ -121,7 +122,7 @@ export function renderRegistrationPage() {
 
      let confirmPassword = document.createElement('input');
      confirmPassword.type = 'password';
-     confirmPassword.id = 'confirm-password';
+     confirmPassword.id = 'confirm_password';
      confirmPassword.name = 'confirm-password';
      confirmPassword.placeholder = 'confirm password';
      confirmPassword.required = true
@@ -151,9 +152,16 @@ export function renderRegistrationPage() {
 
      // Create upload status section
      let fileName = document.createElement('p');
-     fileName.id = 'file-name';
+     fileName.id = 'file_name';
      fileName.textContent = 'no file chosen';
      imageUpload.appendChild(fileName);
+
+     // Create remove image button
+     let removeImage = document.createElement('button');
+     removeImage.id = 'remove_image';
+     removeImage.classList.add('remove-btn');
+     removeImage.style.display = 'none';
+     removeImage.textContent = 'Remove image';
 
      registrationForm.appendChild(imageUpload);
 
@@ -195,7 +203,25 @@ export function renderRegistrationPage() {
     registrationForm.addEventListener("submit", async function (event) {
         event.preventDefault(); // Prevent full-page reload
 
-        let formData = new FormData(registrationForm);
+        if (event.target !== registrationForm) return; // Ensure accurate form submision
+
+        let formData = new FormData();
+        FormData.append("first_name", document.getElementById('first_name').value);
+        FormData.append("last_name", document.getElementById('last_name').value);
+        FormData.append("username", document.getElementById('username').value);
+        FormData.append("age", document.getElementById('age').value);
+        FormData.append("gender", document.getElementById('gender').value);
+        FormData.append("email", document.getElementById('email').value);
+        FormData.append("password", document.getElementById('password').value);
+        FormData.append("confirm_password", document.getElementById('confirm_password').value);
+        FormData.append("bio", document.getElementById('bio').value);
+
+        let imageFile = document.getElementById('image').files[0];
+        if (imageFile)  {
+            FormData.append("image", imageFile);
+        }
+        
+        try {
         let response = await fetch("/register", {
             method: "POST",
             body: formData,
@@ -204,11 +230,21 @@ export function renderRegistrationPage() {
         let data = await response.json().catch(() => null);
 
         if (response.ok && !data?.error_message) {
-            // Redirect to dashboard on success
-            navigateTo("/");
+            // Redirect to login page on success
+            navigateTo("/login");
         } else {
             // Show error message
             errorText.textContent = data?.error_message || "Registration failed";
         }
+    } catch (error) {
+        console.log(`Fetch Error: ${error}`);
+        errorText.textContent = "Network Error, please try again";
+    }
+    });
+
+     // Prevent 'sign up' link from being blocked
+     registerLink.addEventListener("click", function(event) {
+        event.stopPropagation();
+        navigateTo("/login");
     });
 }

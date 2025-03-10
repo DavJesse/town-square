@@ -34,6 +34,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Parse form data
 	r.ParseMultipartForm(10 << 20)
+	log.Printf("Request Body: %s", r.Body)
 
 	// Populate user credentials
 	emailUsername := html.EscapeString(r.FormValue("email_username"))

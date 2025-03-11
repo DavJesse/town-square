@@ -1,7 +1,7 @@
 package posts
 
 import (
-	"html/template"
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -10,7 +10,7 @@ import (
 	"forum/models"
 )
 
-// SearchHandler handles search requests
+// SearchHandler handles search requests and returns JSON response
 func Search(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 
@@ -34,26 +34,23 @@ func Search(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Create a response structure
 	data := struct {
-		Posts    []models.Post
-		IsLogged bool
-		ProfPic  string
+		Posts    []models.Post `json:"posts"`
+		IsLogged bool          `json:"is_logged"`
+		ProfPic  string        `json:"prof_pic"`
 	}{
 		Posts:    posts,
 		IsLogged: logged,
 		ProfPic:  user.Image,
 	}
 
-	// log.Println(posts) // debug log
-	tmpl, err := template.ParseFiles("web/templates/search_results.html")
-	if err != nil {
-		log.Println("Failed to load template", err)
-		errors.InternalServerErrorHandler(w)
-		return
-	}
+	// Set response header to indicate JSON
+	w.Header().Set("Content-Type", "application/json")
 
-	if err := tmpl.Execute(w, data); err != nil {
-		log.Printf("Error executing template: %v", err)
+	// Encode data into JSON and send it as the response
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		log.Println("Error encoding JSON:", err)
 		errors.InternalServerErrorHandler(w)
 	}
 }

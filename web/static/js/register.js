@@ -169,13 +169,6 @@ export function renderRegistrationPage() {
      fileName.textContent = 'no file chosen';
      imageUpload.appendChild(fileName);
 
-     // Create remove image button
-     let removeImage = document.createElement('button');
-     removeImage.id = 'remove_image';
-     removeImage.classList.add('remove-btn');
-     removeImage.style.display = 'none';
-     removeImage.textContent = 'Remove image';
-
      registrationForm.appendChild(imageUpload);
 
      // Create submit button

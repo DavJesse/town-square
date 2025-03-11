@@ -33,9 +33,8 @@ export function navigateTo(url) {
 // Function to detect the current route and update the DOM
 function handleRouteChange() {
     const path = window.location.pathname;
-    console.log(`Current path: ${path}`);
 
-    document.body.innerHTML = ""
+    document.body.innerHTML = "" // Clear body before rendering page
 
     switch (path) {
         case "/":

@@ -39,7 +39,7 @@ function handleRouteChange() {
 
     switch (path) {
         case "/":
-            app.innerHTML = "<h1>Home Page</h1><p>Welcome to the forum!</p>";
+            document.body.innerHTML = "<h1>Home Page</h1><p>Welcome to the forum!</p>";
             break;
         case "/login":
             renderLoginPage();
@@ -48,10 +48,10 @@ function handleRouteChange() {
             renderRegistrationPage();
             break;
         case "/posts":
-            app.innerHTML = "<h1>Posts</h1><p>Here are some posts.</p>";
+            document.body.innerHTML = "<h1>Posts</h1><p>Here are some posts.</p>";
             break;
         default:
-            app.innerHTML = "<h1>404</h1><p>Page not found.</p>";
+            document.body.innerHTML = "<h1>404</h1><p>Page not found.</p>";
             break;
     }
 }

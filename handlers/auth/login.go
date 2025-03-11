@@ -33,8 +33,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	println("ONE")
-
 	// Extract form data
 	err := json.NewDecoder(r.Body).Decode(&loginResponse)
 	if err != nil {
@@ -42,8 +40,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		errors.BadRequestHandler(w)
 		return
 	}
-
-	println("TWO")
 
 	// Populate user credentials
 	emailUsername := html.EscapeString(loginResponse.EmailUsername)
@@ -58,15 +54,12 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	println("THREE")
 	// Determine whether input is a valid email
 	if utils.ValidEmail(emailUsername) {
 		user.Email = emailUsername
 	} else {
 		user.Username = emailUsername
 	}
-
-	println("FOUR")
 
 	// Attempt to log in the user
 	sessionID, err := database.LoginUser(user.Username, user.Email, user.Password)
@@ -75,8 +68,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		ParseAlertMessage(w, "invalid username or password")
 		return
 	}
-
-	println("FIVE: session id: ", sessionID)
 
 	// Login successful, set the session ID as a cookie
 	cookie := http.Cookie{

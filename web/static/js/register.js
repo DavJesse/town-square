@@ -219,7 +219,7 @@ export function renderRegistrationPage() {
 
         let imageFile = document.getElementById('image').files[0];
         if (imageFile)  {
-            FormData.append("image", imageFile);
+            formData.append("image", imageFile);
         }
         
         try {

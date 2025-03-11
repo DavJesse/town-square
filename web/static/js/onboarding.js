@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     const imageInput = document.getElementById("image");
-    const fileNameDisplay = document.getElementById("file-name");
-    const removeButton = document.getElementById("remove-image");
+    const fileNameDisplay = document.getElementById("file_name");
+    const removeButton = document.getElementById("remove_image");
 
     imageInput.addEventListener("change", function() {
         if (this.files.length > 0) {

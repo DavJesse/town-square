@@ -19,8 +19,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Function to handle navigation updates
-function navigateTo(url) {
-    if (path.startsWith("/posts/")) {
+export function navigateTo(url) {
+    if (url.startsWith("/posts/")) {
         const postId = path.split("/")[2]; // Extract post ID
         app.innerHTML = `<h1>Post ${postId}</h1><p>Details of the post...</p>`;
         return;

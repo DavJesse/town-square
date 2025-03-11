@@ -244,7 +244,7 @@ export function renderRegistrationPage() {
     });
 
      // Prevent 'sign up' link from being blocked
-     registerLink.addEventListener("click", function(event) {
+     loginLink.addEventListener("click", function(event) {
         event.stopPropagation();
         navigateTo("/login");
     });

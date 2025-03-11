@@ -15,10 +15,15 @@
         </a>
         
         <div class="navbar__actions">
-            <form action="/search" method="get" class="navbar__search-form">
+            <!-- <form action="/search" method="get" class="navbar__search-form">
                 <input type="text" name="q" class="navbar__search" placeholder="Search...">
                 <button type="submit" class="navbar__button">Search</button>
+            </form> -->
+            <form id="search-form" class="navbar__search-form">
+                <input type="text" id="search-query" name="q" class="navbar__search" placeholder="Search...">
+                <button type="button" class="navbar__button" onclick="searchPosts()">Search</button>
             </form>
+            
             <a href="/posts/create">
                 <button class="navbar__button" id="create-post-button">Create Post</button>
             </a>
@@ -85,5 +90,6 @@
     <script src="/static/js/profile.js"></script>
     <script src="/static/js/category.js"></script>
     <script src="/static/js/post_display.js"></script>
+    <script src="/static/js/search.js"></script>
 </body>
 </html>

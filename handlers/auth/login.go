@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/json"
+	"fmt"
 	"html"
 	"log"
 	"net/http"
@@ -15,7 +16,6 @@ import (
 
 // LoginHandler handles user login and session creation, as well as preventing login when already logged in.
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
-
 	if r.Method == http.MethodGet {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		http.ServeFile(w, r, "./web/templates/index.html")
@@ -33,6 +33,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	println("ONE")
+
 	// Extract form data
 	err := json.NewDecoder(r.Body).Decode(&loginResponse)
 	if err != nil {
@@ -41,9 +43,13 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	println("TWO")
+
 	// Populate user credentials
 	emailUsername := html.EscapeString(loginResponse.EmailUsername)
 	user.Password = html.EscapeString(loginResponse.Password) // Populate password field
+
+	fmt.Printf("Email: %s, Pass: %s\n", emailUsername, user.Password)
 
 	// Check for empty user input
 	if emailUsername == "" || user.Password == "" {
@@ -52,12 +58,15 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	println("THREE")
 	// Determine whether input is a valid email
 	if utils.ValidEmail(emailUsername) {
 		user.Email = emailUsername
 	} else {
 		user.Username = emailUsername
 	}
+
+	println("FOUR")
 
 	// Attempt to log in the user
 	sessionID, err := database.LoginUser(user.Username, user.Email, user.Password)
@@ -66,6 +75,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		ParseAlertMessage(w, "invalid username or password")
 		return
 	}
+
+	println("FIVE: session id: ", sessionID)
 
 	// Login successful, set the session ID as a cookie
 	cookie := http.Cookie{

@@ -82,10 +82,10 @@ export function renderRegistrationPage() {
      gender.name = 'gender';
      gender.textContent = 'gender';
      
-     let none = document.createElement('option');
-     none.value = 'none';
-     none.textContent = 'none';
-     gender.appendChild(none);
+     let other = document.createElement('option');
+     other.value = 'other';
+     other.textContent = 'other';
+     gender.appendChild(other);
 
      let male = document.createElement('option');
      male.value ='male';

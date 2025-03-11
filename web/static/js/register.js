@@ -231,7 +231,7 @@ export function renderRegistrationPage() {
 
         if (response.ok && !data?.error_message) {
             // Redirect to login page on success
-            navigateTo("/login");
+            window.location.href = "/login";
         } else {
             // Show error message
             errorText.textContent = data?.error_message || "Registration failed";
@@ -245,6 +245,6 @@ export function renderRegistrationPage() {
      // Prevent 'sign up' link from being blocked
      registerLink.addEventListener("click", function(event) {
         event.stopPropagation();
-        navigateTo("/login");
+        window.location.href = "/login";
     });
 }

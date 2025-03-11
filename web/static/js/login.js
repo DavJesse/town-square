@@ -119,7 +119,7 @@ export function renderLoginPage() {
             
             if (response.ok && !data?.error_message) {
                 // Redirect to dashboard on success
-                navigateTo("/");
+                window.location.href = "/";
             } else {
                 // Show error message
                 document.getElementById("error_text").textContent = data?.error_message || "Login failed";
@@ -133,7 +133,7 @@ export function renderLoginPage() {
     // Prevent 'sign up' link from being blocked
     registerLink.addEventListener("click", function(event) {
         event.stopPropagation();
-        navigateTo("/register");
+        window.location.href = "/register";
     });
 }
 

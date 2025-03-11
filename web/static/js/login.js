@@ -1,4 +1,5 @@
 import { fetchErrorMessage } from '/static/js/form_error_message.js'
+import { navigateTo } from '/static/js/routes.js'
 
 export function renderLoginPage() {
     // update document title
@@ -119,7 +120,7 @@ export function renderLoginPage() {
             
             if (response.ok && !data?.error_message) {
                 // Redirect to dashboard on success
-                window.location.href = "/";
+                navigateTo("/");
             } else {
                 // Show error message
                 document.getElementById("error_text").textContent = data?.error_message || "Login failed";
@@ -133,7 +134,7 @@ export function renderLoginPage() {
     // Prevent 'sign up' link from being blocked
     registerLink.addEventListener("click", function(event) {
         event.stopPropagation();
-        window.location.href = "/register";
+        navigateTo("/register");
     });
 }
 

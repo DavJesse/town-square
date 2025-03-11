@@ -43,6 +43,8 @@ export function renderRegistrationPage() {
     firstName.id = 'first_name';
     firstName.name = 'first-name';
     firstName.placeholder = 'first name';
+    firstName.autocomplete = 'given-name';
+    firstName.autocapitalize = 'words';
     firstName.required = true;
     firstLastName.appendChild(firstName);
 
@@ -51,6 +53,7 @@ export function renderRegistrationPage() {
     lastName.id = 'last_name';
     lastName.name = 'last-name';
     lastName.placeholder = 'last name';
+    lastName.autocapitalize = 'words';
     lastName.required = true;
     firstLastName.appendChild(lastName);
 
@@ -62,6 +65,7 @@ export function renderRegistrationPage() {
     username.id = 'username';
     username.name = 'username';
     username.placeholder = 'nickname / username';
+    username.autocomplete = 'username';
     username.required = true;
     registrationForm.appendChild(username);
 
@@ -106,7 +110,8 @@ export function renderRegistrationPage() {
      email.id = 'email';
      email.name = 'email';
      email.placeholder = 'email';
-     email.required = 'true';
+     email.autocomplete = 'email';
+     email.required = true;
      registrationForm.appendChild(email);
 
      // Create password & confirm password fields

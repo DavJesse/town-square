@@ -1,4 +1,5 @@
 import { fetchErrorMessage } from '/static/js/form_error_message.js'
+import { navigateTo } from '/static/js/routes.js'
 
 export function renderRegistrationPage() {
     document.title = 'sign up - real-time-forum'; // Set document title
@@ -231,7 +232,7 @@ export function renderRegistrationPage() {
 
         if (response.ok && !data?.error_message) {
             // Redirect to login page on success
-            window.location.href = "/login";
+            navigateTo("/login");
         } else {
             // Show error message
             errorText.textContent = data?.error_message || "Registration failed";
@@ -245,6 +246,6 @@ export function renderRegistrationPage() {
      // Prevent 'sign up' link from being blocked
      registerLink.addEventListener("click", function(event) {
         event.stopPropagation();
-        window.location.href = "/login";
+        navigateTo("/login");
     });
 }

@@ -148,6 +148,13 @@ export function renderRegistrationPage() {
      let imageUpload = document.createElement('div');
      imageUpload.classList.add('custom-file-upload');
 
+     // Add image upload label
+     let uploadButton = document.createElement('label');
+     uploadButton.htmlFor = 'image';
+     uploadButton.textContent = 'Choose Image';
+     uploadButton.classList.add('upload-btn');
+     imageUpload.appendChild(uploadButton);
+
      // Create image upload field
      let image = document.createElement('input');
      image.type = 'file';
@@ -203,6 +210,9 @@ export function renderRegistrationPage() {
     let scriptTag = document.createElement('script');
     scriptTag.src = '/static/js/onboarding.js';
     scriptTag.defer = true;
+    scriptTag.onload = function() {
+        console.log("onboarding.js loaded successfully");
+    };
     document.body.appendChild(scriptTag);
 
     // Attach event listener to handle registration via AJAX

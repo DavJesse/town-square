@@ -207,15 +207,15 @@ export function renderRegistrationPage() {
         if (event.target !== registrationForm) return; // Ensure accurate form submision
 
         let formData = new FormData();
-        FormData.append("first_name", document.getElementById('first_name').value);
-        FormData.append("last_name", document.getElementById('last_name').value);
-        FormData.append("username", document.getElementById('username').value);
-        FormData.append("age", document.getElementById('age').value);
-        FormData.append("gender", document.getElementById('gender').value);
-        FormData.append("email", document.getElementById('email').value);
-        FormData.append("password", document.getElementById('password').value);
-        FormData.append("confirm_password", document.getElementById('confirm_password').value);
-        FormData.append("bio", document.getElementById('bio').value);
+        formData.append("first_name", document.getElementById('first_name').value);
+        formData.append("last_name", document.getElementById('last_name').value);
+        formData.append("username", document.getElementById('username').value);
+        formData.append("age", document.getElementById('age').value);
+        formData.append("gender", document.getElementById('gender').value);
+        formData.append("email", document.getElementById('email').value);
+        formData.append("password", document.getElementById('password').value);
+        formData.append("confirm_password", document.getElementById('confirm_password').value);
+        formData.append("bio", document.getElementById('bio').value);
 
         let imageFile = document.getElementById('image').files[0];
         if (imageFile)  {

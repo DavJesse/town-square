@@ -6,6 +6,12 @@
     <title>Forum</title>
     <link rel="stylesheet" href="/static/css/main.css">
     <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/category.css">
+    <link rel="stylesheet" href="/static/css/error.css">
+    <link rel="stylesheet" href="/static/css/form.css">
+    <link rel="stylesheet" href="/static/css/onboarding.css">
+    <link rel="stylesheet" href="/static/css/posts_create.css">
+    <link rel="stylesheet" href="/static/css/post_display.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -24,9 +30,8 @@
                 <button type="button" class="navbar__button" onclick="searchPosts()">Search</button>
             </form>
             
-            <a href="/posts/create">
-                <button class="navbar__button" id="create-post-button">Create Post</button>
-            </a>
+            <button class="navbar__button" id="create-post-button">Create Post</button>
+
             {{ if .IsLogged}}
             <form action="/logout" method="POST" style="display: inline;">
                 <button class="navbar__button" id="login-button">Log Out</button>
@@ -87,9 +92,11 @@
         </div>
     </div>
     <script src="/static/js/index.js"></script>
+    <script src="/static/js/onboarding.js"></script>
     <script src="/static/js/profile.js"></script>
     <script src="/static/js/category.js"></script>
     <script src="/static/js/post_display.js"></script>
+    <script src="/static/js/post_create.js"></script>
     <script src="/static/js/search.js"></script>
 </body>
 </html>

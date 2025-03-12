@@ -1,4 +1,4 @@
-export function setupImageUpload () {
+function setupImageUpload () {
     console.log("✅ DOM fully loaded!"); // Check if this prints
 
     const imageInput = document.getElementById("image");

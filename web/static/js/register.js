@@ -204,7 +204,7 @@ export function renderRegistrationPage() {
     scriptTag.src = '/static/js/onboarding.js';
     scriptTag.defer = true;
     scriptTag.onload = function() {
-        console.log("onboarding.js loaded successfully");
+        setupImageUpload();
     };
     document.body.appendChild(scriptTag);
 

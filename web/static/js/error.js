@@ -20,7 +20,7 @@ export function renderErrorPage() {
     errorMessage.id = 'error_message';
     errorContainer.appendChild(errorMessage);
 
-    fetchErrorMessage(errorContainer, '/error')
+    fetchErrorMessage(errorContainer, window.location.pathname)
 
     // Add errorContainer to body
     document.body.appendChild(errorContainer);

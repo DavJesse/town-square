@@ -47,14 +47,6 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Parse form data
-	err = r.ParseForm()
-	if err != nil {
-		log.Println("REQUEST ERROR: bad request")
-		errors.BadRequestHandler(w)
-		return
-	}
-
 	// Validate image uploaded from form
 	if err := r.ParseMultipartForm(MaxUploadSize); err != nil { // max size: 20MB
 		ParseAlertMessage(w, "File upload too large or invalid form data")
@@ -130,9 +122,8 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Capture errors due to missing files
 	} else if err == http.ErrMissingFile {
-		log.Printf("FILE UPLOAD ERROR: %v", err)
-		errors.InternalServerErrorHandler(w)
-		return
+		log.Println("INFO: profile image not uploaded.")
+		user.Image = "" // Or set a default image name if needed
 	}
 
 	// Create new user in the database

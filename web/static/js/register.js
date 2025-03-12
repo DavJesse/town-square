@@ -43,6 +43,8 @@ export function renderRegistrationPage() {
     firstName.id = 'first_name';
     firstName.name = 'first-name';
     firstName.placeholder = 'first name';
+    firstName.autocomplete = 'given-name';
+    firstName.autocapitalize = 'words';
     firstName.required = true;
     firstLastName.appendChild(firstName);
 
@@ -51,6 +53,7 @@ export function renderRegistrationPage() {
     lastName.id = 'last_name';
     lastName.name = 'last-name';
     lastName.placeholder = 'last name';
+    lastName.autocapitalize = 'words';
     lastName.required = true;
     firstLastName.appendChild(lastName);
 
@@ -62,6 +65,7 @@ export function renderRegistrationPage() {
     username.id = 'username';
     username.name = 'username';
     username.placeholder = 'nickname / username';
+    username.autocomplete = 'username';
     username.required = true;
     registrationForm.appendChild(username);
 
@@ -82,10 +86,10 @@ export function renderRegistrationPage() {
      gender.name = 'gender';
      gender.textContent = 'gender';
      
-     let none = document.createElement('option');
-     none.value = 'none';
-     none.textContent = 'none';
-     gender.appendChild(none);
+     let other = document.createElement('option');
+     other.value = 'other';
+     other.textContent = 'other';
+     gender.appendChild(other);
 
      let male = document.createElement('option');
      male.value ='male';
@@ -106,7 +110,8 @@ export function renderRegistrationPage() {
      email.id = 'email';
      email.name = 'email';
      email.placeholder = 'email';
-     email.required = 'true';
+     email.autocomplete = 'email';
+     email.required = true;
      registrationForm.appendChild(email);
 
      // Create password & confirm password fields
@@ -143,6 +148,13 @@ export function renderRegistrationPage() {
      let imageUpload = document.createElement('div');
      imageUpload.classList.add('custom-file-upload');
 
+     // Add image upload label
+     let uploadButton = document.createElement('label');
+     uploadButton.htmlFor = 'image';
+     uploadButton.textContent = 'Choose Image';
+     uploadButton.classList.add('upload-btn');
+     imageUpload.appendChild(uploadButton);
+
      // Create image upload field
      let image = document.createElement('input');
      image.type = 'file';
@@ -156,13 +168,6 @@ export function renderRegistrationPage() {
      fileName.id = 'file_name';
      fileName.textContent = 'no file chosen';
      imageUpload.appendChild(fileName);
-
-     // Create remove image button
-     let removeImage = document.createElement('button');
-     removeImage.id = 'remove_image';
-     removeImage.classList.add('remove-btn');
-     removeImage.style.display = 'none';
-     removeImage.textContent = 'Remove image';
 
      registrationForm.appendChild(imageUpload);
 
@@ -198,6 +203,9 @@ export function renderRegistrationPage() {
     let scriptTag = document.createElement('script');
     scriptTag.src = '/static/js/onboarding.js';
     scriptTag.defer = true;
+    scriptTag.onload = function() {
+        setupImageUpload();
+    };
     document.body.appendChild(scriptTag);
 
     // Attach event listener to handle registration via AJAX
@@ -207,19 +215,19 @@ export function renderRegistrationPage() {
         if (event.target !== registrationForm) return; // Ensure accurate form submision
 
         let formData = new FormData();
-        FormData.append("first_name", document.getElementById('first_name').value);
-        FormData.append("last_name", document.getElementById('last_name').value);
-        FormData.append("username", document.getElementById('username').value);
-        FormData.append("age", document.getElementById('age').value);
-        FormData.append("gender", document.getElementById('gender').value);
-        FormData.append("email", document.getElementById('email').value);
-        FormData.append("password", document.getElementById('password').value);
-        FormData.append("confirm_password", document.getElementById('confirm_password').value);
-        FormData.append("bio", document.getElementById('bio').value);
+        formData.append("first_name", document.getElementById('first_name').value);
+        formData.append("last_name", document.getElementById('last_name').value);
+        formData.append("username", document.getElementById('username').value);
+        formData.append("age", document.getElementById('age').value);
+        formData.append("gender", document.getElementById('gender').value);
+        formData.append("email", document.getElementById('email').value);
+        formData.append("password", document.getElementById('password').value);
+        formData.append("confirm_password", document.getElementById('confirm_password').value);
+        formData.append("bio", document.getElementById('bio').value);
 
         let imageFile = document.getElementById('image').files[0];
         if (imageFile)  {
-            FormData.append("image", imageFile);
+            formData.append("image", imageFile);
         }
         
         try {
@@ -244,7 +252,7 @@ export function renderRegistrationPage() {
     });
 
      // Prevent 'sign up' link from being blocked
-     registerLink.addEventListener("click", function(event) {
+     loginLink.addEventListener("click", function(event) {
         event.stopPropagation();
         navigateTo("/login");
     });

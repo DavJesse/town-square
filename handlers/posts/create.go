@@ -1,29 +1,20 @@
 package posts
 
 import (
+	"encoding/json"
 	"html"
-	"html/template"
 	"log"
 	"net/http"
 	"strconv"
 
 	errors "forum/handlers/errors"
-
 	"forum/database"
 	"forum/models"
 	utils "forum/utils"
 )
 
-// Handler for serving the form and handling form submission
+// PostCreate handles post creation requests and returns JSON
 func PostCreate(w http.ResponseWriter, r *http.Request) {
-	// create template path
-	temPath, err := utils.GetTemplatePath("posts_create.html")
-	if err != nil {
-		errors.NotFoundHandler(w)
-	}
-
-	tmpl := template.Must(template.ParseFiles(temPath))
-
 	var loggedIn bool
 	session, lIn := database.IsLoggedIn(r)
 	if lIn {
@@ -33,19 +24,19 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 	// Retrieve user data
 	userData, _ := database.GetUserbySessionID(session.SessionID)
 
-	// fetch categories from the database
+	// Fetch categories from the database
 	categories, err := database.FetchCategories()
 	if err != nil {
 		errors.InternalServerErrorHandler(w)
 		return
 	}
 
-	// Capture data to be parsed in html template
-	data := struct {
-		Categories []models.Category
-		IsLogged   bool
-		ProfPic    string
-		Message    string
+	// Create a response structure
+	response := struct {
+		Categories []models.Category `json:"categories"`
+		IsLogged   bool              `json:"is_logged"`
+		ProfPic    string            `json:"prof_pic"`
+		Message    string            `json:"message,omitempty"`
 	}{
 		Categories: categories,
 		IsLogged:   loggedIn,
@@ -54,39 +45,47 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 
 	// Handle allowed methods
 	switch r.Method {
-	case http.MethodGet: // Parse form
-		tmpl.Execute(w, data)
-
-		// Qualify data captured in html form
-	case http.MethodPost:
-		// Parse the form with a max size (for the entire form, including file and other form data)
-		if err := r.ParseMultipartForm(26 * 1024 * 1024); err != nil { // Allow 10MB form data for the image + other fields
-			log.Println("INFO: Client form exceeds 26MB")
+	case http.MethodGet:
+		// Return the categories and login status as JSON
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			log.Println("Error encoding JSON:", err)
+			errors.InternalServerErrorHandler(w)
 		}
 
+	case http.MethodPost:
+		// Parse the form data
+		if err := r.ParseMultipartForm(26 * 1024 * 1024); err != nil { // Allow 26MB form data for the image + other fields
+			log.Println("INFO: Client form exceeds 26MB")
+			http.Error(w, "Form size too large", http.StatusRequestEntityTooLarge)
+			return
+		}
+
+		// Capture form values
 		title := r.FormValue("title")
 		content := html.EscapeString(r.FormValue("content"))
-		categoryIDs := r.Form["categories"] // Get selected category IDs
+		categoryIDs := r.Form["categories"]
 
-		// if no categories are selected, default to category ID 1
+		// Default category if none are selected
 		if len(categoryIDs) == 0 {
 			categoryIDs = append(categoryIDs, "1")
 		}
 
-		// handle the uploaded file if present
+		// Handle file upload if present
 		var filename string
 		file, handler, err := r.FormFile("image")
-		if err == nil { // Only process the file if it's uploaded
+		if err == nil {
 			defer file.Close()
 
-			// Check the file size (if greater than 4MB, return an error)
-			if handler.Size > 20*1024*1024 { // 20MB in bytes
-				data.Message = "image exceeds 20MB"
-				ParseFormMessage(w, tmpl, data)
+			// Validate file size
+			if handler.Size > 20*1024*1024 {
+				response.Message = "image exceeds 20MB"
+				w.Header().Set("Content-Type", "application/json")
+				json.NewEncoder(w).Encode(response)
 				return
 			}
 
-			// Validate the file extension type
+			// Validate file type
 			allowedTypes := map[string]bool{
 				"image/png":  true,
 				"image/jpeg": true,
@@ -94,12 +93,13 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 			}
 			fileType := handler.Header.Get("Content-Type")
 			if !allowedTypes[fileType] {
-				data.Message = "Invalid file type. Only GIF, PNG, and JPG images are allowed."
-				ParseFormMessage(w, tmpl, data)
+				response.Message = "Invalid file type. Only GIF, PNG, and JPG images are allowed."
+				w.Header().Set("Content-Type", "application/json")
+				json.NewEncoder(w).Encode(response)
 				return
 			}
 
-			// Save the image to disk
+			// Save the image
 			filename, err = utils.SaveImage(fileType, file, utils.MEDIA)
 			if err != nil {
 				log.Println("ERROR: Failed to save image")
@@ -108,7 +108,7 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		// Convert category IDs from strings to integers
+		// Convert category IDs to integers
 		var categoryIDsInt []int
 		for _, idStr := range categoryIDs {
 			id, err := strconv.Atoi(idStr)
@@ -120,7 +120,7 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 			categoryIDsInt = append(categoryIDsInt, id)
 		}
 
-		// Validate that the selected categories exist in the database
+		// Validate categories
 		if err := database.ValidateCategories(categoryIDsInt); err != nil {
 			log.Printf("INFO: Invalid category %v", err)
 			errors.BadRequestHandler(w)
@@ -134,7 +134,7 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Create the post with categories
+		// Create post
 		_, err = database.CreatePostWithCategories(userID, title, content, filename, categoryIDsInt)
 		if err != nil {
 			log.Printf("ERROR: Failed to create post: %v", err)
@@ -142,21 +142,13 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		http.Redirect(w, r, "/", http.StatusFound)
-		return
+		// Send success response
+		response.Message = "Post created successfully"
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
 
 	default:
 		errors.MethodNotAllowedHandler(w)
 		log.Println("METHOD ERROR: method not allowed")
-	}
-}
-
-func ParseFormMessage(w http.ResponseWriter, tmpl *template.Template, data interface{}) {
-	// Execute the page
-	err := tmpl.Execute(w, data)
-	if err != nil {
-		errors.InternalServerErrorHandler(w)
-		log.Printf("TEMPLATE EXECUTION ERROR: %v", err)
-		return
 	}
 }

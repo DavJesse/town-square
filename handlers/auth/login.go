@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/json"
+	"fmt"
 	"html"
 	"log"
 	"net/http"
@@ -15,7 +16,6 @@ import (
 
 // LoginHandler handles user login and session creation, as well as preventing login when already logged in.
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
-
 	if r.Method == http.MethodGet {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		http.ServeFile(w, r, "./web/templates/index.html")
@@ -44,6 +44,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// Populate user credentials
 	emailUsername := html.EscapeString(loginResponse.EmailUsername)
 	user.Password = html.EscapeString(loginResponse.Password) // Populate password field
+
+	fmt.Printf("Email: %s, Pass: %s\n", emailUsername, user.Password)
 
 	// Check for empty user input
 	if emailUsername == "" || user.Password == "" {

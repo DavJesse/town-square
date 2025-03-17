@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 export async function navigateTo(url) {
     try {
         if (url.startsWith("/posts/")) {
-            const postId = path.split("/")[2]; // Extract post ID
+            const postId = url.split("/")[2]; // Extract post ID
             app.innerHTML = `<h1>Post ${postId}</h1><p>Details of the post...</p>`;
             return;
         } 

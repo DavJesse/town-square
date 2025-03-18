@@ -114,7 +114,7 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 			id, err := strconv.Atoi(idStr)
 			if err != nil {
 				log.Println("INFO: Invalid category ID")
-				errors.BadRequestHandler(w)
+				errors.BadRequestHandler(w, r)
 				return
 			}
 			categoryIDsInt = append(categoryIDsInt, id)
@@ -123,7 +123,7 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 		// Validate categories
 		if err := database.ValidateCategories(categoryIDsInt); err != nil {
 			log.Printf("INFO: Invalid category %v", err)
-			errors.BadRequestHandler(w)
+			errors.BadRequestHandler(w, r)
 			return
 		}
 

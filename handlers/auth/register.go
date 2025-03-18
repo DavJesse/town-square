@@ -36,14 +36,14 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 	// Handle non-GET and non-POST requests
 	if r.Method != http.MethodPost {
 		log.Println("REQUEST ERROR: bad request")
-		errors.BadRequestHandler(w)
+		errors.BadRequestHandler(w, r)
 		return
 	}
 
 	// Check content type
 	contentType := r.Header.Get("Content-Type")
 	if !strings.HasPrefix(contentType, "multipart/form-data") {
-		errors.BadRequestHandler(w)
+		errors.BadRequestHandler(w, r)
 		return
 	}
 

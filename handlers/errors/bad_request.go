@@ -7,10 +7,11 @@ import (
 )
 
 // Serves Bad Request error page
-func BadRequestHandler(w http.ResponseWriter) {
+func BadRequestHandler(w http.ResponseWriter, r *http.Request) {
 	// Set relevant headers
 	w.WriteHeader(http.StatusBadRequest)
 	w.Header().Set("Content-Type", "application/json")
+	http.ServeFile(w, r, "./web/templates/index.html")
 
 	// Set parameters of error
 	hitch.Code = http.StatusBadRequest

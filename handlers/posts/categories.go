@@ -51,13 +51,13 @@ func SingleCategoryPosts(w http.ResponseWriter, r *http.Request) {
 	// Extract the category ID from the URL path
 	pathParts := strings.Split(r.URL.Path, "/")
 	if len(pathParts) < 3 {
-		errors.BadRequestHandler(w)
+		errors.BadRequestHandler(w, r)
 		return
 	}
 	categoryID := pathParts[2]
 	ID, err := strconv.Atoi(categoryID)
 	if err != nil {
-		errors.BadRequestHandler(w)
+		errors.BadRequestHandler(w, r)
 		return
 	}
 

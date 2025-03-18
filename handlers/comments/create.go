@@ -25,7 +25,7 @@ func Comment(w http.ResponseWriter, r *http.Request) {
 	// Parse form data (assuming the form contains a comment and post UUID)
 	err := r.ParseForm()
 	if err != nil {
-		errors.BadRequestHandler(w)
+		errors.BadRequestHandler(w, r)
 		log.Printf("REQUEST ERROR: %v", err)
 		return
 	}

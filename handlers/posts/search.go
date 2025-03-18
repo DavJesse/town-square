@@ -22,7 +22,7 @@ func Search(w http.ResponseWriter, r *http.Request) {
 
 	query := r.URL.Query().Get("q")
 	if query == "" {
-		errors.BadRequestHandler(w)
+		errors.BadRequestHandler(w, r)
 		log.Println("Query parameter is missing")
 		return
 	}

@@ -17,7 +17,7 @@ func Comment(w http.ResponseWriter, r *http.Request) {
 
 	// Only allow POST requests for submitting a comment
 	if r.Method != http.MethodPost {
-		errors.MethodNotAllowedHandler(w)
+		errors.MethodNotAllowedHandler(w, r)
 		log.Println("METHOD ERROR: method not allowed")
 		return
 	}

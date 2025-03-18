@@ -7,10 +7,11 @@ import (
 )
 
 // Serves Bad Request error page
-func MethodNotAllowedHandler(w http.ResponseWriter) {
+func MethodNotAllowedHandler(w http.ResponseWriter, r *http.Request) {
 	// Set response headers
 	w.Header().Set("content-type", "application/json")
 	w.WriteHeader(http.StatusMethodNotAllowed)
+	http.ServeFile(w, r, "./web/templates/index.html")
 
 	// Set parameters of error
 	hitch.Code = http.StatusBadRequest

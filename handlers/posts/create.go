@@ -148,7 +148,7 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 
 	default:
-		errors.MethodNotAllowedHandler(w)
+		errors.MethodNotAllowedHandler(w, r)
 		log.Println("METHOD ERROR: method not allowed")
 	}
 }

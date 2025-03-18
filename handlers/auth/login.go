@@ -29,7 +29,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// Catch non-Get and non-POST requests
 	if r.Method != "POST" {
 		log.Println("METHOD ERROR: method not allowed")
-		errors.MethodNotAllowedHandler(w)
+		errors.MethodNotAllowedHandler(w, r)
 		return
 	}
 

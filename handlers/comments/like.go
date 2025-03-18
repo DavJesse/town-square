@@ -12,7 +12,7 @@ import (
 
 func LikeCommentHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		errors.MethodNotAllowedHandler(w)
+		errors.MethodNotAllowedHandler(w, r)
 		log.Printf("METHOD ERROR: method not allowed")
 		return
 	}

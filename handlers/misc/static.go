@@ -12,7 +12,7 @@ import (
 func Static(w http.ResponseWriter, r *http.Request) {
 	// Restric requests to "GET"
 	if r.Method != "GET" {
-		errors.MethodNotAllowedHandler(w)
+		errors.MethodNotAllowedHandler(w, r)
 		log.Printf("METHOD ERROR: method not allowed")
 		return
 	}

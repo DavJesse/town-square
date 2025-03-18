@@ -16,7 +16,7 @@ import (
 // GetCategoriesHandler handles requests to retrieve all categories.
 func GetCategories(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		errors.MethodNotAllowedHandler(w)
+		errors.MethodNotAllowedHandler(w, r)
 		log.Println("METHOD ERROR: method not allowed")
 		return
 	}

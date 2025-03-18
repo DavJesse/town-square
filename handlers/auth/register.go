@@ -22,7 +22,7 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 	err := LogOutSession(w, r)
 	if err != nil {
 		log.Printf("LOG OUT ERROR: %v", err)
-		errors.InternalServerErrorHandler(w)
+		errors.InternalServerErrorHandler(w, r)
 		return
 	}
 
@@ -113,7 +113,7 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 		filename, err = utils.SaveImage(fileType, file, utils.IMAGES)
 		if err != nil {
 			log.Printf("IMAGE SAVING ERROR: %v", err)
-			errors.InternalServerErrorHandler(w)
+			errors.InternalServerErrorHandler(w, r)
 			return
 		}
 

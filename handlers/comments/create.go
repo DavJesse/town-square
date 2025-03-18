@@ -43,7 +43,7 @@ func Comment(w http.ResponseWriter, r *http.Request) {
 	// Call the CreateComment function to insert the comment into the database
 	_, err = database.CreateComment(userID, postUUID, commentText)
 	if err != nil {
-		errors.InternalServerErrorHandler(w)
+		errors.InternalServerErrorHandler(w, r)
 		log.Printf("DATABASE ERROR: %v", err)
 		return
 	}

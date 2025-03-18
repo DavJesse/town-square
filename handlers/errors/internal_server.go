@@ -11,10 +11,11 @@ import (
 var hitch models.WebError
 
 // Serves Internal Server Error page
-func InternalServerErrorHandler(w http.ResponseWriter) {
+func InternalServerErrorHandler(w http.ResponseWriter, r *http.Request) {
 	// Set relevant headers
 	w.WriteHeader(http.StatusInternalServerError)
 	w.Header().Set("Content-Type", "application/json")
+	http.ServeFile(w, r, "./web/templates/index.html")
 
 	// Set parameters of error
 	hitch.Code = http.StatusInternalServerError

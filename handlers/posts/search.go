@@ -30,7 +30,7 @@ func Search(w http.ResponseWriter, r *http.Request) {
 	posts, err := database.SearchPosts(query)
 	if err != nil {
 		log.Println("Error searching posts:", err)
-		errors.InternalServerErrorHandler(w)
+		errors.InternalServerErrorHandler(w, r)
 		return
 	}
 
@@ -51,6 +51,6 @@ func Search(w http.ResponseWriter, r *http.Request) {
 	// Encode data into JSON and send it as the response
 	if err := json.NewEncoder(w).Encode(data); err != nil {
 		log.Println("Error encoding JSON:", err)
-		errors.InternalServerErrorHandler(w)
+		errors.InternalServerErrorHandler(w, r)
 	}
 }

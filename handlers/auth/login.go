@@ -98,7 +98,7 @@ func ParseAlertMessage(w http.ResponseWriter, message string) {
 	alert.ErrorMessage = message
 
 	if err := json.NewEncoder(w).Encode(alert); err != nil {
-		errors.InternalServerErrorHandler(w)
+		errors.InternalServerErrorHandler(w, r)
 		log.Println("JSON ENCODING ERROR: ", err)
 	}
 }

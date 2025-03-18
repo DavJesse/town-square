@@ -23,7 +23,7 @@ func GetCategories(w http.ResponseWriter, r *http.Request) {
 
 	categories, err := database.FetchCategories()
 	if err != nil {
-		errors.InternalServerErrorHandler(w)
+		errors.InternalServerErrorHandler(w, r)
 		log.Printf("DATABASE ERROR: %v", err)
 		return
 	}
@@ -42,7 +42,7 @@ func SingleCategoryPosts(w http.ResponseWriter, r *http.Request) {
 	if loggedIn {
 		userData, err = database.GetUserbySessionID(session.SessionID)
 		if err != nil {
-			errors.InternalServerErrorHandler(w)
+			errors.InternalServerErrorHandler(w, r)
 			log.Printf("Error getting user: %v\n", err)
 			return
 		}

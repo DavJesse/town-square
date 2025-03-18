@@ -21,7 +21,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	err := LogOutSession(w, r)
 	if err != nil {
 		log.Printf("LOG OUT ERROR: %v", err)
-		errors.InternalServerErrorHandler(w)
+		errors.InternalServerErrorHandler(w, r)
 		return
 	}
 

@@ -27,7 +27,7 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 	// Fetch categories from the database
 	categories, err := database.FetchCategories()
 	if err != nil {
-		errors.InternalServerErrorHandler(w)
+		errors.InternalServerErrorHandler(w, r)
 		return
 	}
 
@@ -50,7 +50,7 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		if err := json.NewEncoder(w).Encode(response); err != nil {
 			log.Println("Error encoding JSON:", err)
-			errors.InternalServerErrorHandler(w)
+			errors.InternalServerErrorHandler(w, r)
 		}
 
 	case http.MethodPost:
@@ -103,7 +103,7 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 			filename, err = utils.SaveImage(fileType, file, utils.MEDIA)
 			if err != nil {
 				log.Println("ERROR: Failed to save image")
-				errors.InternalServerErrorHandler(w)
+				errors.InternalServerErrorHandler(w, r)
 				return
 			}
 		}
@@ -138,7 +138,7 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 		_, err = database.CreatePostWithCategories(userID, title, content, filename, categoryIDsInt)
 		if err != nil {
 			log.Printf("ERROR: Failed to create post: %v", err)
-			errors.InternalServerErrorHandler(w)
+			errors.InternalServerErrorHandler(w, r)
 			return
 		}
 

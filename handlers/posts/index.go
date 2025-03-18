@@ -27,7 +27,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.URL.String() != "/" {
-		errors.NotFoundHandler(w)
+		errors.NotFoundHandler(w, r)
 		return
 	}
 

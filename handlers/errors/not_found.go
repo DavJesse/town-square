@@ -7,10 +7,11 @@ import (
 )
 
 // Serves Not Found error page
-func NotFoundHandler(w http.ResponseWriter) {
+func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	// Set relevant header
 	w.WriteHeader(http.StatusNotFound)
 	w.Header().Set("Content-Type", "application/json")
+	http.ServeFile(w, r, "./web/templates/index.html")
 
 	// Set parameters of error
 	hitch.Code = http.StatusNotFound

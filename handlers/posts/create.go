@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
-	errors "forum/handlers/errors"
 	"forum/database"
+	errors "forum/handlers/errors"
 	"forum/models"
 	utils "forum/utils"
 )

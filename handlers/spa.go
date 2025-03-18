@@ -27,7 +27,7 @@ func SPA(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.URL.String() != "/spa" {
-		errors.NotFoundHandler(w)
+		errors.NotFoundHandler(w, r)
 		return
 	}
 

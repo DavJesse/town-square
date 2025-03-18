@@ -64,7 +64,7 @@ func SingleCategoryPosts(w http.ResponseWriter, r *http.Request) {
 	// Fetch posts from the database
 	posts, err := database.FetchCategoryPostsWithID(ID)
 	if err != nil {
-		errors.NotFoundHandler(w)
+		errors.NotFoundHandler(w, r)
 		return
 	}
 

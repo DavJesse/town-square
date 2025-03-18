@@ -8,6 +8,7 @@ import (
 type WebError struct {
 	Code  int    `json:"code"`
 	Issue string `json:"issue"`
+	Path  string `json:"path"`
 }
 
 // Form error object

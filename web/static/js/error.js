@@ -20,24 +20,34 @@ export function renderErrorPage() {
     errorMessage.id = 'error_message';
     errorContainer.appendChild(errorMessage);
 
-    fetchErrorMessage(errorContainer, window.location.pathname)
+    fetchErrorMessage(errorContainer)
 
     // Add errorContainer to body
     document.body.appendChild(errorContainer);
 }
 
-async function fetchErrorMessage(errorContainer, errorLink) {
+async function fetchErrorMessage(errorContainer) {
     try {
-        let response =  await fetch(errorLink);
-        if (!response.ok) {
-            let data = await response.json().catch(() => null);
-            
-            setErrorMessage(errorContainer, data.issue, data.code);
-        }
+        // Extract query parameters (e.g., "?path=/hj")
+        let queryParams = window.location.search;
+
+        // Fetch the correct error message from `/error`
+        let response = await fetch(`/error`, {
+            headers: { "Accept": "application/json" } // Tell Go to return JSON
+        });
+
+        if (!response.ok) throw new Error("Error Loading Failed");
+
+        let data = await response.json();
+        console.log(data); // Debugging
+
+        // Update the error message
+        setErrorMessage(errorContainer, data.issue, data.code, data.path);
     } catch (error) {
         console.error(`Error fetching message: ${error}`);
     }
 }
+
 
 function setErrorMessage(errorMessageContainer, message, code) {
     errorMessageContainer.value = message;

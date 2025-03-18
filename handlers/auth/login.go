@@ -50,7 +50,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// Check for empty user input
 	if emailUsername == "" || user.Password == "" {
 		log.Println("ERROR: Empty username or password field")
-		ParseAlertMessage(w, "email and password are required")
+		ParseAlertMessage(w, r, "email and password are required")
 		return
 	}
 
@@ -65,7 +65,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	sessionID, err := database.LoginUser(user.Username, user.Email, user.Password)
 	if err != nil {
 		log.Printf("LOGIN ERROR: %v", err)
-		ParseAlertMessage(w, "invalid username or password")
+		ParseAlertMessage(w, r, "invalid username or password")
 		return
 	}
 
@@ -87,7 +87,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // ParseAlertMessage is used for displaying alert messages in templates.
-func ParseAlertMessage(w http.ResponseWriter, message string) {
+func ParseAlertMessage(w http.ResponseWriter, r *http.Request, message string) {
 	var alert models.FormError
 
 	// Set relevant headers

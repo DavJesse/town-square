@@ -67,7 +67,7 @@ function handleRouteChange() {
             document.body.innerHTML = "<h1>Posts</h1><p>Here are some posts.</p>";
             break;
         default:
-            document.body.innerHTML = "<h1>404</h1><p>Page not found.</p>";
+            renderErrorPage();
             break;
     }
 }

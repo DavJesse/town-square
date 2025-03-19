@@ -7,19 +7,19 @@ import (
 	"forum/models"
 )
 
+var ErrorResponse models.WebError
+
 // Serves Not Found error page
-func ErrorHandler(errResponse models.WebError, w http.ResponseWriter, r *http.Request) {
+func ErrorHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusNotFound)
 
-	json.NewEncoder(w).Encode(errResponse)
+	json.NewEncoder(w).Encode(ErrorResponse)
 }
 
 func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
-	errResponse := models.WebError{
-		Code:  http.StatusNotFound,
-		Issue: "Not Found",
-	}
+	ErrorResponse.Code = http.StatusNotFound
+	ErrorResponse.Issue = "Not Found"
 
-	ErrorHandler(errResponse, w, r)
+	ErrorHandler(w, r)
 }

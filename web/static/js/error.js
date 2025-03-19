@@ -30,9 +30,10 @@ async function fetchErrorMessage(errorContainer) {
     try {
         // Extract query parameters (e.g., "?path=/hj")
         let queryParams = window.location.search;
+        console.log(queryParams)
 
         // Fetch the correct error message from `/error`
-        let response = await fetch(`/error`, {
+        let response = await fetch("/error", {
             headers: { "Accept": "application/json" } // Tell Go to return JSON
         });
 
@@ -50,7 +51,7 @@ async function fetchErrorMessage(errorContainer) {
 
 
 function setErrorMessage(errorMessageContainer, message, code) {
-    errorMessageContainer.value = message;
+    
     let errorMessage = document.getElementById('error_message');
     let errorCode = document.getElementById('error_code');
 

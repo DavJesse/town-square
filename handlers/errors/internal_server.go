@@ -6,8 +6,6 @@ import (
 	"forum/models"
 )
 
-var hitch models.WebError
-
 // Serves Internal Server Error page
 func InternalServerErrorHandler(w http.ResponseWriter, r *http.Request) {
 	// Populate error message and code

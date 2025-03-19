@@ -11,7 +11,7 @@ func MethodNotAllowedHandler(w http.ResponseWriter, r *http.Request) {
 	// Populate error message and code
 	errResponse := models.WebError{
 		Code:  http.StatusMethodNotAllowed,
-		Issue: "MethodNotAllowed",
+		Issue: "Method Not Allowed",
 	}
 
 	ErrorHandler(errResponse, w, r)

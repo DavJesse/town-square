@@ -1,24 +1,18 @@
 package errors
 
 import (
-	"encoding/json"
-	"log"
 	"net/http"
+
+	"forum/models"
 )
 
-// Serves Bad Request error page
+// Serves Method Not Allowed error page
 func MethodNotAllowedHandler(w http.ResponseWriter, r *http.Request) {
-	// Set response headers
-	w.Header().Set("content-type", "application/json")
-	w.WriteHeader(http.StatusMethodNotAllowed)
-	http.ServeFile(w, r, "./web/templates/index.html")
-
-	// Set parameters of error
-	hitch.Code = http.StatusBadRequest
-	hitch.Issue = "Method Not Allowed!"
-
-	if err := json.NewEncoder(w).Encode(hitch); err != nil {
-		http.Error(w, `{"code::500, "issue":"internal server error"}`, http.StatusInternalServerError)
-		log.Println("JSON ENCODING ERROR: ", err)
+	// Populate error message and code
+	errResponse := models.WebError{
+		Code:  http.StatusMethodNotAllowed,
+		Issue: "MethodNotAllowed",
 	}
+
+	ErrorHandler(errResponse, w, r)
 }

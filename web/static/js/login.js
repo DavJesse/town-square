@@ -43,7 +43,7 @@ export function renderLoginPage() {
 
     // create login form
     let loginForm = document.createElement('form');
-    loginForm.method = 'PUT';
+    loginForm.method = 'POST';
     loginForm.action = '/login';
 
     // create email/username input

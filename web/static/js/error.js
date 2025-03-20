@@ -28,22 +28,16 @@ export function renderErrorPage() {
 
 async function fetchErrorMessage(errorContainer) {
     try {
-        // Extract query parameters (e.g., "?path=/hj")
-        let queryParams = window.location.search;
-        console.log(queryParams)
-
         // Fetch the correct error message from `/error`
         let response = await fetch("/error", {
             headers: { "Accept": "application/json" } // Tell Go to return JSON
         });
 
-        if (!response.ok) throw new Error("Error Loading Failed");
-
         let data = await response.json();
         console.log(data); // Debugging
 
         // Update the error message
-        setErrorMessage(errorContainer, data.issue, data.code, data.path);
+        setErrorMessage(data.issue, data.code, data.path);
     } catch (error) {
         console.error(`Error fetching message: ${error}`);
     }

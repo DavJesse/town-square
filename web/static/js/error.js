@@ -50,11 +50,11 @@ async function fetchErrorMessage(errorContainer) {
 }
 
 
-function setErrorMessage(errorMessageContainer, message, code) {
+function setErrorMessage(message, code) {
     
     let errorMessage = document.getElementById('error_message');
     let errorCode = document.getElementById('error_code');
 
     errorCode.textContent = code
-        errorMessage.textContent = message;
+    errorMessage.textContent = message;
 }

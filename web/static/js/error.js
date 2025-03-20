@@ -34,8 +34,7 @@ async function fetchErrorMessage(errorContainer) {
         });
 
         let data = await response.json();
-        console.log(data); // Debugging
-
+        
         // Update the error message
         setErrorMessage(data.issue, data.code, data.path);
     } catch (error) {
@@ -45,10 +44,14 @@ async function fetchErrorMessage(errorContainer) {
 
 
 function setErrorMessage(message, code) {
-    
     let errorMessage = document.getElementById('error_message');
     let errorCode = document.getElementById('error_code');
-
-    errorCode.textContent = code
-    errorMessage.textContent = message;
+    
+    if (code === 0 && message === "") {
+        errorCode.textContent = "404";
+        errorMessage.textContent = "Not Found";
+    } else {
+        errorCode.textContent = code;
+        errorMessage.textContent = message;
+    }
 }

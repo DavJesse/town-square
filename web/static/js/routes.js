@@ -67,6 +67,7 @@ function handleRouteChange() {
             document.body.innerHTML = "<h1>Posts</h1><p>Here are some posts.</p>";
             break;
         default:
+            window.history.pushState({}, "", "/404") // Re-route page URL without reloading
             renderErrorPage();
             break;
     }

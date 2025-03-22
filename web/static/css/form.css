@@ -26,6 +26,20 @@ a {
     flex-direction: column;
 }
 
+.form-container input[type="text"],
+.form-container input[type="number"],
+.form-container input[type="email"],
+.form-container input[type="password"],
+.form-container select {
+    margin: 0 auto 15px auto;
+}
+
+#shared_input_containers {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
 /* Style the bio textarea */
 textarea {
     width: 100%;          /* Make it full-width inside the form */

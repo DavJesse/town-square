@@ -104,6 +104,14 @@ input[type="file"] {
     background-color: #0056b3;
 }
 
+#gender {
+    font-size: 16px;
+    height: 44px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin: auto auto auto auto;
+}
+
 /* Show selected file name */
 #file-name {
     display: block;

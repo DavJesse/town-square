@@ -83,6 +83,10 @@ form label {
     margin: auto;
 }
 
+#file_name {
+    margin: 0 auto 15px auto;
+}
+
 /* Hide the default file input */
 input[type="file"] {
     display: none;  /* Hide the original input */
@@ -230,7 +234,6 @@ button:hover {
     /* Adjust textareas */
     textarea {
         width: 100%;
-        max-width: 90%;
     }
 
     /* Adjust input fields for smaller screens */
@@ -246,7 +249,7 @@ button:hover {
         padding: 8px;
         width: 90%;
         display: block; /* Makes the button take up the full width of its container */
-        margin: 10px auto; /* Centers it horizontally */
+        margin: 0 auto 15px auto; /* Centers it horizontally */
         text-align: center; /* Ensures text inside is centered */
     }
 

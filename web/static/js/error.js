@@ -2,7 +2,7 @@ export function renderErrorPage() {
     document.title = 'Error!';
 
     // Create errorContainer
-    let errorContainer = document.createElement('div');
+    let errorContainer = document.createElement('section');
     errorContainer.classList.add('error-code');
 
     // Create h2 to introduce error
@@ -13,14 +13,29 @@ export function renderErrorPage() {
     // Create error message
    let errorCode = document.createElement('p');
    errorCode.id = 'error_code';
+   errorCode.classList.add('code');
    errorContainer.appendChild(errorCode);
 
     // Create error message
     let errorMessage = document.createElement('p');
     errorMessage.id = 'error_message';
+    errorMessage.classList.add('issue');
     errorContainer.appendChild(errorMessage);
 
     fetchErrorMessage()
+
+    // Create home link container
+    let homeLink = document.createElement('div');
+    homeLink.classList.add('home');
+
+    // Create home link text
+    let homeLinkText = document.createElement('a');
+    homeLinkText.id = 'return_home_link';
+    homeLinkText.href = '/';
+    homeLinkText.textContent = 'Return to Homepage';
+    homeLink.appendChild(homeLinkText);
+
+    errorContainer.appendChild(homeLink);
 
     // Add errorContainer to body
     document.body.appendChild(errorContainer);

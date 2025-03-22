@@ -68,7 +68,7 @@ h1 {
 
 /* Style the labels */
 form label {
-    display: block;  /* Ensures labels are on their own line */
+    display: block;
     text-align: left;
     font-size: 14px;
     font-weight: bold;
@@ -76,6 +76,15 @@ form label {
     margin-top: 10px;
     margin-left: 15px;
     letter-spacing: 1px;
+}
+
+#gender_label {
+    font-size: 18px;
+    margin: auto;
+}
+
+#file_name {
+    margin: 0 auto 15px auto;
 }
 
 /* Hide the default file input */
@@ -102,6 +111,14 @@ input[type="file"] {
 /* Hover effect */
 .custom-file-upload label[for="image"]:hover {
     background-color: #0056b3;
+}
+
+#gender {
+    font-size: 16px;
+    height: 44px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin: auto auto auto auto;
 }
 
 /* Show selected file name */
@@ -217,7 +234,6 @@ button:hover {
     /* Adjust textareas */
     textarea {
         width: 100%;
-        max-width: 90%;
     }
 
     /* Adjust input fields for smaller screens */
@@ -231,9 +247,8 @@ button:hover {
     button, .upload-btn, .remove-btn {
         font-size: 16px; /* Smaller button font */
         padding: 8px;
-        width: 90%;
         display: block; /* Makes the button take up the full width of its container */
-        margin: 10px auto; /* Centers it horizontally */
+        margin: 0 auto 15px auto; /* Centers it horizontally */
         text-align: center; /* Ensures text inside is centered */
     }
 
@@ -243,6 +258,14 @@ button:hover {
         margin-right: 15px;
         font-size: 16px;
         align-items: center;
+    }
+
+    #gender_label {
+        font-size: 16px;
+    }
+
+    #gender {
+        font-size: 14px;
     }
 }
 

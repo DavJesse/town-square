@@ -84,6 +84,7 @@ export function renderRegistrationPage() {
      // Add gender label
      let genderLabel = document.createElement('label');
      genderLabel.htmlFor = 'gender';
+     genderLabel.id = 'gender_label';
      genderLabel.textContent = 'gender:';
      ageGender.appendChild(genderLabel);
  

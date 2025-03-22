@@ -183,16 +183,6 @@ button:hover {
         max-width: 90%; /* Make inputs full-width */
     }
 
-    /* Adjust button size */
-    button, .upload-btn, .remove-btn {
-        font-size: 16px; /* Smaller button font */
-        padding: 8px;
-        width: 90%;
-        display: block; /* Makes the button take up the full width of its container */
-        margin: 10px auto; /* Centers it horizontally */
-        text-align: center; /* Ensures text inside is centered */
-    }
-
     #login_btn {
         max-width: 90%;
     }

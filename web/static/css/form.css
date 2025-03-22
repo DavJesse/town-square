@@ -247,7 +247,6 @@ button:hover {
     button, .upload-btn, .remove-btn {
         font-size: 16px; /* Smaller button font */
         padding: 8px;
-        width: 90%;
         display: block; /* Makes the button take up the full width of its container */
         margin: 0 auto 15px auto; /* Centers it horizontally */
         text-align: center; /* Ensures text inside is centered */

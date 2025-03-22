@@ -27,19 +27,19 @@ func SPA(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.URL.String() != "/spa" {
-		errors.NotFoundHandler(w)
+		errors.NotFoundHandler(w, r)
 		return
 	}
 
 	// Fetch posts from the database
 	posts, err := database.GetAllPosts()
 	if err != nil {
-		errors.InternalServerErrorHandler(w)
+		errors.InternalServerErrorHandler(w, r)
 		return
 	}
 	categories, err := database.FetchCategories()
 	if err != nil {
-		errors.InternalServerErrorHandler(w)
+		errors.InternalServerErrorHandler(w, r)
 		return
 	}
 	// Load the HTML template

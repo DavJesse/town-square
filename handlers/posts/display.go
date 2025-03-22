@@ -30,7 +30,7 @@ func PostDisplay(w http.ResponseWriter, r *http.Request) {
 
 	postData, err := database.GetPostByUUID(postID)
 	if err != nil {
-		errors.NotFoundHandler(w)
+		errors.NotFoundHandler(w, r)
 		log.Println("Error getting post data: ", err)
 		return
 	}

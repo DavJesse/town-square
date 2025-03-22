@@ -11,6 +11,7 @@ import (
 
 	auth "forum/handlers/auth"
 	comments "forum/handlers/comments"
+	errors "forum/handlers/errors"
 	"forum/handlers/middleware"
 	"forum/handlers/misc"
 	posts "forum/handlers/posts"
@@ -72,6 +73,9 @@ func main() {
 	http.Handle("/comments/like", middleware.AuthMiddleware(http.HandlerFunc(comments.LikeCommentHandler)))
 	http.Handle("/comments/dislike", middleware.AuthMiddleware(http.HandlerFunc(comments.DislikeCommentHandler)))
 	http.Handle("/comment", middleware.AuthMiddleware(http.HandlerFunc(comments.Comment)))
+
+	// errors
+	http.HandleFunc("/error", errors.ErrorHandler)
 
 	// start the server, handle emerging errors
 	fmt.Printf("Server runing on http://localhost%s\n", port)

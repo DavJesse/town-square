@@ -22,7 +22,7 @@ export function renderLoginPage() {
     // create login tagline
     let loginTagline = document.createElement('h2');
     loginTagline.classList.add('login-tagline');
-    loginTagline.textContent = 'Welcome back, sign in to continue';
+    loginTagline.textContent = 'Sign in to Continue';
     loginSubContainer.appendChild(loginTagline);
 
     // create error message container
@@ -67,6 +67,7 @@ export function renderLoginPage() {
     // create submit button
     let loginButton = document.createElement('button');
     loginButton.type ='submit';
+    loginButton.id = 'login_btn';
     loginButton.textContent = 'login';
     loginForm.appendChild(loginButton)
     
@@ -78,6 +79,7 @@ export function renderLoginPage() {
     accountIssues.classList.add('account-issues');
 
     let registerOption = document.createElement('p');
+    registerOption.id = 'register_options';
     registerOption.textContent = 'Don\'t have an account? ';
 
     let registerLink = document.createElement('a');

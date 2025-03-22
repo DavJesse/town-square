@@ -1,5 +1,6 @@
 import { renderRegistrationPage } from "/static/js/register.js";
 import { renderLoginPage } from "/static/js/login.js";
+import { renderErrorPage } from "/static/js/error.js";
 
 // routes.js
 document.addEventListener("DOMContentLoaded", () => {
@@ -19,15 +20,31 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Function to handle navigation updates
-export function navigateTo(url) {
-    if (url.startsWith("/posts/")) {
-        const postId = path.split("/")[2]; // Extract post ID
-        app.innerHTML = `<h1>Post ${postId}</h1><p>Details of the post...</p>`;
-        return;
-    }
+export async function navigateTo(url) {
+    try {
+        if (url.startsWith("/posts/")) {
+            const postId = url.split("/")[2]; // Extract post ID
+            app.innerHTML = `<h1>Post ${postId}</h1><p>Details of the post...</p>`;
+            return;
+        } 
     
-    history.pushState(null, "", url); // Change URL without reloading
-    handleRouteChange(); // Handle the new route
+        let response = await fetch(url);
+
+        if (!response.ok) {
+            console.error(`Error: ${response.status} - ${response.statusText}`)
+            renderErrorPage();
+            return;
+        }
+        
+        let content = await response.text();
+        document.body.innerHTML = content;
+
+        history.pushState(null, "", url); // Change URL without reloading
+        handleRouteChange(); // Handle the new route
+
+    } catch (error) {
+        console.error(`Navigation Error: ${error}`)
+    }
 }
 
 // Function to detect the current route and update the DOM
@@ -50,7 +67,8 @@ function handleRouteChange() {
             document.body.innerHTML = "<h1>Posts</h1><p>Here are some posts.</p>";
             break;
         default:
-            document.body.innerHTML = "<h1>404</h1><p>Page not found.</p>";
+            window.history.pushState({}, "", "/404") // Re-route page URL without reloading
+            renderErrorPage();
             break;
     }
 }

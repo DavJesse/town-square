@@ -5,7 +5,7 @@ export function renderRegistrationPage() {
     document.title = 'sign up - real-time-forum'; // Set document title
 
     let formContainer = document.createElement('div');
-    formContainer.classList.add('form-container');
+    formContainer.classList.add('registration-form-container');
 
     // create logo
     let heading = document.createElement('h1');
@@ -36,7 +36,7 @@ export function renderRegistrationPage() {
 
     // Create first and lastname fields
     let firstLastName = document.createElement('div');
-    firstLastName.classList.add('shared-field');
+    firstLastName.id ='shared_input_containers';
 
     let firstName = document.createElement('input');
     firstName.type = 'text';
@@ -71,7 +71,7 @@ export function renderRegistrationPage() {
 
      // Create age and gender fields
      let ageGender = document.createElement('div');
-     ageGender.classList.add('shared-field');
+     ageGender.id ='shared_input_containers';
  
      let age = document.createElement('input');
      age.type = 'number';
@@ -116,7 +116,7 @@ export function renderRegistrationPage() {
 
      // Create password & confirm password fields
      let passwordConfirmPassword = document.createElement('div');
-     passwordConfirmPassword.classList.add('shared-field');
+     passwordConfirmPassword.id = 'shared_input_containers';
 
      let password = document.createElement('input');
      password.type = 'password';
@@ -151,7 +151,7 @@ export function renderRegistrationPage() {
      // Add image upload label
      let uploadButton = document.createElement('label');
      uploadButton.htmlFor = 'image';
-     uploadButton.textContent = 'Choose Image';
+     uploadButton.textContent = 'choose image';
      uploadButton.classList.add('upload-btn');
      imageUpload.appendChild(uploadButton);
 

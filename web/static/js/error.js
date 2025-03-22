@@ -13,11 +13,13 @@ export function renderErrorPage() {
     // Create error message
    let errorCode = document.createElement('p');
    errorCode.id = 'error_code';
+   errorCode.classList.add('code');
    errorContainer.appendChild(errorCode);
 
     // Create error message
     let errorMessage = document.createElement('p');
     errorMessage.id = 'error_message';
+    errorMessage.classList.add('issue');
     errorContainer.appendChild(errorMessage);
 
     fetchErrorMessage()

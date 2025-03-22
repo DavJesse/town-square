@@ -68,18 +68,6 @@ form {
     flex-direction: column;
 }
 
-/* Style the labels */
-form label {
-    display: block;  /* Ensures labels are on their own line */
-    text-align: left;
-    font-size: 14px;
-    font-weight: bold;
-    color: #000000;
-    margin-top: 10px;
-    margin-left: 15px;
-    letter-spacing: 1px;
-}
-
 /* Style login form */
 .login-container form input, .forgot-password-container form input {
     display: block;

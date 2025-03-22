@@ -36,7 +36,7 @@ export function renderRegistrationPage() {
 
     // Create first and lastname fields
     let firstLastName = document.createElement('div');
-    firstLastName.classList.add('shared-field');
+    firstLastName.id ='shared_input_fields';
 
     let firstName = document.createElement('input');
     firstName.type = 'text';
@@ -71,7 +71,7 @@ export function renderRegistrationPage() {
 
      // Create age and gender fields
      let ageGender = document.createElement('div');
-     ageGender.classList.add('shared-field');
+     firstLastName.id ='shared_input_fields';
  
      let age = document.createElement('input');
      age.type = 'number';

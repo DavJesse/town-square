@@ -79,6 +79,7 @@ export function renderLoginPage() {
     accountIssues.classList.add('account-issues');
 
     let registerOption = document.createElement('p');
+    registerOption.id = 'register_options';
     registerOption.textContent = 'Don\'t have an account? ';
 
     let registerLink = document.createElement('a');

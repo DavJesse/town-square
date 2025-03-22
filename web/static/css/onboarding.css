@@ -130,8 +130,7 @@ button:hover {
 
 /* Account issues text */
 .account-issues {
-    text-align: left;
-    margin-left: 12px;
+    text-align: center;
     font-size: 18px;
 }
 

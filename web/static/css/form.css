@@ -43,15 +43,13 @@ a {
 /* Style the bio textarea */
 textarea {
     width: 100%;          /* Make it full-width inside the form */
-    max-width: 450px;     /* Set a max width */
     height: 100px;        /* Set a fixed height */
     resize: none;         /* Disable resizing */
     padding: 10px;        /* Add padding for spacing */
     border: 1px solid #ccc; /* Light border */
     border-radius: 5px;   /* Rounded edges */
     font-size: 14px;      /* Set font size */
-    margin-left: 12px;
-    margin-right: 12px;
+    margin: 0 auto 15px auto;
 }
 
 h1 {

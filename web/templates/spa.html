@@ -21,10 +21,6 @@
         </a>
         
         <div class="navbar__actions">
-            <!-- <form action="/search" method="get" class="navbar__search-form">
-                <input type="text" name="q" class="navbar__search" placeholder="Search...">
-                <button type="submit" class="navbar__button">Search</button>
-            </form> -->
             <form id="search-form" class="navbar__search-form">
                 <input type="text" id="search-query" name="q" class="navbar__search" placeholder="Search...">
                 <button type="button" class="navbar__button" onclick="searchPosts()">Search</button>
@@ -66,31 +62,10 @@
         </div>
         
         <div class="main-content" id="main-content">
-            {{range .Posts}}
-            <div class="card">
-                <p class="card__title">
-                    <a href="#" onclick="fetchPostDisplay('{{.UUID}}')" style="color: #0172eb;">{{.Title}}</a>
-                </p>
-                <p class="card__subject">{{.Creator}}</p>
-                <p class="card__description">{{.Content | replaceNewlines}}</p>
-                {{if .Media}}
-                <img src="/static/media/{{.Media}}" alt="Post Image" style="width: 70px; aspect-ratio: 1/1;">
-                {{end}}
-        
-                <div class="actions">
-                    <form action="/posts/like" method="post">
-                        <input type="hidden" name="post-id" value="{{.UUID}}">
-                        <button type="submit">{{.LikesCount}} Like</button>
-                    </form>
-                    <form action="/posts/dislike" method="post">
-                        <input type="hidden" name="post-id" value="{{.UUID}}">
-                        <button type="submit">{{.DislikesCount}} Dislike</button>
-                    </form>
-                </div>
-            </div>
-            {{end}}
+            <!-- Posts will be dynamically loaded here using JavaScript -->
         </div>
     </div>
+
     <script src="/static/js/index.js"></script>
     <script src="/static/js/onboarding.js"></script>
     <script src="/static/js/profile.js"></script>
@@ -98,5 +73,55 @@
     <script src="/static/js/post_display.js"></script>
     <script src="/static/js/post_create.js"></script>
     <script src="/static/js/search.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Fetch posts data when the page loads
+            fetchPosts();
+        });
+
+        function fetchPosts() {
+            fetch('/posts')  // Assuming '/posts' returns a JSON array of posts
+                .then(response => response.json())
+                .then(posts => {
+                    // Generate HTML for posts dynamically
+                    let postsHtml = '';
+                    posts.forEach(post => {
+                        postsHtml += `
+                            <div class="card">
+                                <p class="card__title">
+                                    <a href="#" onclick="fetchPostDisplay('${post.UUID}')" style="color: #0172eb;">${post.Title}</a>
+                                </p>
+                                <p class="card__subject">${post.Creator}</p>
+                                <p class="card__description">${replaceNewlines(post.Content)}</p>
+                                ${post.Media ? `<img src="/static/media/${post.Media}" alt="Post Image" style="width: 70px; aspect-ratio: 1/1;">` : ''}
+                                
+                                <div class="actions">
+                                    <form action="/posts/like" method="post">
+                                        <input type="hidden" name="post-id" value="${post.UUID}">
+                                        <button type="submit">${post.LikesCount} Like</button>
+                                    </form>
+                                    <form action="/posts/dislike" method="post">
+                                        <input type="hidden" name="post-id" value="${post.UUID}">
+                                        <button type="submit">${post.DislikesCount} Dislike</button>
+                                    </form>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    document.getElementById('main-content').innerHTML = postsHtml;
+                })
+                .catch(error => {
+                    console.error('Error fetching posts:', error);
+                    document.getElementById('main-content').innerHTML = '<p>Error loading posts.</p>';
+                });
+        }
+
+        // Helper function to replace newlines with <br>
+        function replaceNewlines(text) {
+            return text.replace(/\n/g, '<br>');
+        }
+    </script>
+
 </body>
 </html>

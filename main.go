@@ -47,6 +47,7 @@ func main() {
 
 	// authentication
 	http.HandleFunc("/", posts.Index)
+	
 	http.HandleFunc("/static/", misc.Static)
 	http.HandleFunc("/login", auth.LoginHandler)
 	// http.HandleFunc("/forgot-password", auth.ForgotPassword) // Unmute when retrieval logic is implemented

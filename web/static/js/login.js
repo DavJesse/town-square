@@ -91,8 +91,6 @@ export function renderLoginPage() {
 
     document.body.appendChild(loginContainer);
     
-    
-
         // Attach event listener to handle login via AJAX
         loginForm.addEventListener("submit", async function (event) {
             event.preventDefault(); // Prevent full-page reload

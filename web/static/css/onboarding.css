@@ -103,6 +103,7 @@ input {
 
 /* Style buttons */
 button {
+    width: 100%;
     background-color: #0172eb;
     color: white;
     padding: 10px;
@@ -110,9 +111,7 @@ button {
     border-radius: 5px;
     font-size: 20px;
     cursor: pointer;
-    margin-top: 10px;
-    margin-left: 12px;
-    margin-right: 12px;
+    margin: 0 auto 15px auto;
     letter-spacing: 2px;
 }
 

@@ -167,12 +167,6 @@ button:hover {
         font-size: 24px;
     }
 
-    /* Adjust textareas */
-    textarea {
-        width: 100%;
-        max-width: 90%;
-    }
-
     /* Adjust logo size */
     .logo {
         font-size: 40px;

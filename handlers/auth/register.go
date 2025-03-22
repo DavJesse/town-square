@@ -22,7 +22,7 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 	err := LogOutSession(w, r)
 	if err != nil {
 		log.Printf("LOG OUT ERROR: %v", err)
-		errors.InternalServerErrorHandler(w)
+		errors.InternalServerErrorHandler(w, r)
 		return
 	}
 
@@ -36,33 +36,33 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 	// Handle non-GET and non-POST requests
 	if r.Method != http.MethodPost {
 		log.Println("REQUEST ERROR: bad request")
-		errors.BadRequestHandler(w)
+		errors.BadRequestHandler(w, r)
 		return
 	}
 
 	// Check content type
 	contentType := r.Header.Get("Content-Type")
 	if !strings.HasPrefix(contentType, "multipart/form-data") {
-		errors.BadRequestHandler(w)
+		errors.BadRequestHandler(w, r)
 		return
 	}
 
 	// Validate image uploaded from form
 	if err := r.ParseMultipartForm(MaxUploadSize); err != nil { // max size: 20MB
-		ParseAlertMessage(w, "File upload too large or invalid form data")
+		ParseAlertMessage(w, r, "File upload too large or invalid form data")
 		return
 	}
 
 	// Validate email format
 	if !utils.ValidEmail(EscapeFormSpecialCharacters(r, "email")) {
-		ParseAlertMessage(w, "Invalid email format")
+		ParseAlertMessage(w, r, "Invalid email format")
 		return
 	}
 
 	// Check if email is taken
 	existingUser, _ := database.GetUserByEmailOrUsername(EscapeFormSpecialCharacters(r, "email"), EscapeFormSpecialCharacters(r, "username"))
 	if existingUser.Username != "" {
-		ParseAlertMessage(w, "the email/username taken")
+		ParseAlertMessage(w, r, "the email/username taken")
 		return
 	}
 
@@ -79,13 +79,13 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Validate passwords
 	if password != confirmPassword {
-		ParseAlertMessage(w, "Passwords do not match")
+		ParseAlertMessage(w, r, "Passwords do not match")
 		return
 	}
 
 	// Check password strength
 	if err = utils.PasswordStrength(password); err != nil {
-		ParseAlertMessage(w, err.Error())
+		ParseAlertMessage(w, r, err.Error())
 		return
 	}
 
@@ -105,7 +105,7 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		fileType := handler.Header.Get("Content-Type")
 		if !allowedTypes[fileType] {
-			ParseAlertMessage(w, "Invalid file type. Only PNG and JPG images are allowed")
+			ParseAlertMessage(w, r, "Invalid file type. Only PNG and JPG images are allowed")
 			return
 		}
 
@@ -113,7 +113,7 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 		filename, err = utils.SaveImage(fileType, file, utils.IMAGES)
 		if err != nil {
 			log.Printf("IMAGE SAVING ERROR: %v", err)
-			errors.InternalServerErrorHandler(w)
+			errors.InternalServerErrorHandler(w, r)
 			return
 		}
 
@@ -130,7 +130,7 @@ func RegistrationHandler(w http.ResponseWriter, r *http.Request) {
 	_, err = database.CreateNewUser(user)
 	if err != nil {
 		log.Printf("DATABASE ERROR: %v", err)
-		ParseAlertMessage(w, "Registration failed, try again")
+		ParseAlertMessage(w, r, "Registration failed, try again")
 		return
 	}
 

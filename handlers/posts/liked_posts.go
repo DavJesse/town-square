@@ -21,7 +21,7 @@ type TemplateData struct {
 
 func ShowLikedPosts(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		errors.MethodNotAllowedHandler(w)
+		errors.MethodNotAllowedHandler(w, r)
 		log.Println("METHOD ERROR: method not allowed")
 		return
 	}

@@ -271,14 +271,14 @@ footer a:hover {
         gap: 10px; /* Adds spacing between input and button */
     }
 
-    form input[type="text"] {
-        width: 100%; /* Ensures input takes full width */
-        max-width: 400px; /* Limits the width for readability */
+    /* form input[type="text"] {
+        width: 100%;
+        max-width: 400px;
         padding: 10px;
         border: 1px solid #ccc;
         border-radius: 5px;
-        text-align: center; /* Centers text inside input */
-    }
+        text-align: center;
+    } */
 
     .form-container form button {
         width: auto;

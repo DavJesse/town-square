@@ -12,7 +12,7 @@ import (
 func Static(w http.ResponseWriter, r *http.Request) {
 	// Restric requests to "GET"
 	if r.Method != "GET" {
-		errors.MethodNotAllowedHandler(w)
+		errors.MethodNotAllowedHandler(w, r)
 		log.Printf("METHOD ERROR: method not allowed")
 		return
 	}
@@ -30,7 +30,7 @@ func Static(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !valid {
-		errors.NotFoundHandler(w)
+		errors.NotFoundHandler(w, r)
 		log.Println("DIRECTORY AVAILABILITY ERROR: directory not found")
 		return
 	}
@@ -39,14 +39,14 @@ func Static(w http.ResponseWriter, r *http.Request) {
 	filePath := "./web/" + path
 	fileInfo, err := os.Stat(filePath)
 	if err != nil {
-		errors.NotFoundHandler(w)
+		errors.NotFoundHandler(w, r)
 		log.Printf("FILE AVAILABILITY ERROR: %v", err)
 		return
 	}
 
 	// Restrict access to directories
 	if fileInfo.IsDir() {
-		errors.NotFoundHandler(w)
+		errors.NotFoundHandler(w, r)
 		log.Println("DIRECTORY AVAILABILITY ERROR: directory not found")
 		return
 	}

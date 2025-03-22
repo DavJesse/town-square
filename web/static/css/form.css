@@ -26,18 +26,30 @@ a {
     flex-direction: column;
 }
 
+.form-container input[type="text"],
+.form-container input[type="number"],
+.form-container input[type="email"],
+.form-container input[type="password"],
+.form-container select {
+    margin: 0 auto 15px auto;
+}
+
+#shared_input_containers {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
 /* Style the bio textarea */
 textarea {
     width: 100%;          /* Make it full-width inside the form */
-    max-width: 450px;     /* Set a max width */
     height: 100px;        /* Set a fixed height */
     resize: none;         /* Disable resizing */
     padding: 10px;        /* Add padding for spacing */
     border: 1px solid #ccc; /* Light border */
     border-radius: 5px;   /* Rounded edges */
     font-size: 14px;      /* Set font size */
-    margin-left: 12px;
-    margin-right: 12px;
+    margin: 0 auto 15px auto;
 }
 
 h1 {
@@ -72,26 +84,23 @@ input[type="file"] {
 }
 
 /* Style the label to act as a button */
-label[for="image"] {
-    width: 450px;
+.custom-file-upload label[for="image"] {
+    width: 100%;
     display: inline-block;
     background-color: #0172eb;
     color: white;
     padding: 10px;
     border: none;
     border-radius: 5px;
-    font-size: 20px;  /* Match font size */
-    font-weight: 400;
-    font-family: 'Roboto', sans-serif; /* Match font family */
+    font-size: 1rem;  /* Match font size */
     cursor: pointer;
     text-align: center;
     transition: background-color 0.3s;
-    margin-left: 12px;
-    margin-right: 12px;
+    margin: 0 auto 15px auto;
 }
 
 /* Hover effect */
-label[for="image"]:hover {
+.custom-file-upload label[for="image"]:hover {
     background-color: #0056b3;
 }
 

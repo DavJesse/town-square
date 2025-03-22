@@ -16,14 +16,14 @@ import (
 // GetCategoriesHandler handles requests to retrieve all categories.
 func GetCategories(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		errors.MethodNotAllowedHandler(w)
+		errors.MethodNotAllowedHandler(w, r)
 		log.Println("METHOD ERROR: method not allowed")
 		return
 	}
 
 	categories, err := database.FetchCategories()
 	if err != nil {
-		errors.InternalServerErrorHandler(w)
+		errors.InternalServerErrorHandler(w, r)
 		log.Printf("DATABASE ERROR: %v", err)
 		return
 	}
@@ -42,7 +42,7 @@ func SingleCategoryPosts(w http.ResponseWriter, r *http.Request) {
 	if loggedIn {
 		userData, err = database.GetUserbySessionID(session.SessionID)
 		if err != nil {
-			errors.InternalServerErrorHandler(w)
+			errors.InternalServerErrorHandler(w, r)
 			log.Printf("Error getting user: %v\n", err)
 			return
 		}
@@ -51,20 +51,20 @@ func SingleCategoryPosts(w http.ResponseWriter, r *http.Request) {
 	// Extract the category ID from the URL path
 	pathParts := strings.Split(r.URL.Path, "/")
 	if len(pathParts) < 3 {
-		errors.BadRequestHandler(w)
+		errors.BadRequestHandler(w, r)
 		return
 	}
 	categoryID := pathParts[2]
 	ID, err := strconv.Atoi(categoryID)
 	if err != nil {
-		errors.BadRequestHandler(w)
+		errors.BadRequestHandler(w, r)
 		return
 	}
 
 	// Fetch posts from the database
 	posts, err := database.FetchCategoryPostsWithID(ID)
 	if err != nil {
-		errors.NotFoundHandler(w)
+		errors.NotFoundHandler(w, r)
 		return
 	}
 

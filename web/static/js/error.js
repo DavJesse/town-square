@@ -2,7 +2,7 @@ export function renderErrorPage() {
     document.title = 'Error!';
 
     // Create errorContainer
-    let errorContainer = document.createElement('div');
+    let errorContainer = document.createElement('section');
     errorContainer.classList.add('error-code');
 
     // Create h2 to introduce error

@@ -24,6 +24,19 @@ export function renderErrorPage() {
 
     fetchErrorMessage()
 
+    // Create home link container
+    let homeLink = document.createElement('div');
+    homeLink.classList.add('home');
+
+    // Create home link text
+    let homeLinkText = document.createElement('a');
+    homeLinkText.id = 'return_home_link';
+    homeLinkText.href = '/';
+    homeLinkText.textContent = 'Return to Homepage';
+    homeLink.appendChild(homeLinkText);
+
+    errorContainer.appendChild(homeLink);
+
     // Add errorContainer to body
     document.body.appendChild(errorContainer);
 }

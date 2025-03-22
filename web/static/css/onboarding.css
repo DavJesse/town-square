@@ -82,14 +82,14 @@ form label {
 
 /* Style login form */
 .login-container form input, .forgot-password-container form input {
-    display: block;       /* Ensures each input takes a full line */
-    width: 100%;           /* Adjust width as needed */
-    max-width: 300px;     /* Prevents input from becoming too large */
-    margin: 0 auto;       /* Centers the input horizontally */
-    padding: 10px;        /* Adds space inside the input box */
-    border: 1px solid #ccc; /* Light border for structure */
-    border-radius: 5px;   /* Soft rounded edges */
-    font-size: 14px;      /* Readable text size */
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto 15px auto; /* Add space below each input */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
 }
 
 input {

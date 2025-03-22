@@ -5,7 +5,7 @@ export function renderRegistrationPage() {
     document.title = 'sign up - real-time-forum'; // Set document title
 
     let formContainer = document.createElement('div');
-    formContainer.classList.add('form-container');
+    formContainer.classList.add('registration-form-container');
 
     // create logo
     let heading = document.createElement('h1');

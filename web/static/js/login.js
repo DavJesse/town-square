@@ -22,7 +22,7 @@ export function renderLoginPage() {
     // create login tagline
     let loginTagline = document.createElement('h2');
     loginTagline.classList.add('login-tagline');
-    loginTagline.textContent = 'Welcome back, sign in to continue';
+    loginTagline.textContent = 'Sign in to Continue';
     loginSubContainer.appendChild(loginTagline);
 
     // create error message container

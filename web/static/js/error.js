@@ -20,13 +20,13 @@ export function renderErrorPage() {
     errorMessage.id = 'error_message';
     errorContainer.appendChild(errorMessage);
 
-    fetchErrorMessage(errorContainer)
+    fetchErrorMessage()
 
     // Add errorContainer to body
     document.body.appendChild(errorContainer);
 }
 
-async function fetchErrorMessage(errorContainer) {
+async function fetchErrorMessage() {
     try {
         // Fetch the correct error message from `/error`
         let response = await fetch("/error", {

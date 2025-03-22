@@ -32,10 +32,16 @@ h2 {
     color: #666;
 }
 
-.error-link {
+/* .error-link {
     text-decoration: none;
     color: #ffffff;
     font-size: 24px;
+} */
+
+#return_home_link {
+        text-decoration: none;
+        color: #ffffff;
+        font-size: 24px;
 }
 
 .home {

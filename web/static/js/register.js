@@ -80,6 +80,12 @@ export function renderRegistrationPage() {
      age.placeholder = 'age';
      age.required = true;
      ageGender.appendChild(age);
+
+     // Add gender label
+     let genderLabel = document.createElement('label');
+     genderLabel.htmlFor = 'gender';
+     genderLabel.textContent = 'gender:';
+     ageGender.appendChild(genderLabel);
  
      let gender = document.createElement('select');
      gender.id = 'gender';

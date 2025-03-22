@@ -36,7 +36,7 @@ export function renderRegistrationPage() {
 
     // Create first and lastname fields
     let firstLastName = document.createElement('div');
-    firstLastName.id ='shared_input_fields';
+    firstLastName.id ='shared_input_containers';
 
     let firstName = document.createElement('input');
     firstName.type = 'text';
@@ -71,7 +71,7 @@ export function renderRegistrationPage() {
 
      // Create age and gender fields
      let ageGender = document.createElement('div');
-     firstLastName.id ='shared_input_fields';
+     ageGender.id ='shared_input_containers';
  
      let age = document.createElement('input');
      age.type = 'number';
@@ -116,7 +116,7 @@ export function renderRegistrationPage() {
 
      // Create password & confirm password fields
      let passwordConfirmPassword = document.createElement('div');
-     passwordConfirmPassword.classList.add('shared-field');
+     passwordConfirmPassword.id = 'shared_input_containers';
 
      let password = document.createElement('input');
      password.type = 'password';

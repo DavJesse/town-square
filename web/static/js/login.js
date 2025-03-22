@@ -67,6 +67,7 @@ export function renderLoginPage() {
     // create submit button
     let loginButton = document.createElement('button');
     loginButton.type ='submit';
+    loginButton.id = 'login_btn';
     loginButton.textContent = 'login';
     loginForm.appendChild(loginButton)
     

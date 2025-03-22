@@ -1,6 +1,3 @@
-function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('active');
-}
 
 function renderPage(data) {
     renderNavbar(data);

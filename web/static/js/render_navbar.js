@@ -1,6 +1,5 @@
 window.renderNavbar = function(data) {
     const navbarHtml = `
-        <div class="navbar">
             <a href="/">
                 <h1 class="navbar__title">forum</h1>
             </a>
@@ -28,7 +27,6 @@ window.renderNavbar = function(data) {
                         `}
                     </div>
             </div>
-        </div>
     `;
     document.querySelector('.navbar').outerHTML = navbarHtml;
     document.getElementById('create-post-button').addEventListener('click', renderCreatePostForm);

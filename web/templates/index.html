@@ -13,11 +13,14 @@
     <link rel="stylesheet" href="/static/css/posts_create.css">
     <link rel="stylesheet" href="/static/css/post_display.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@700&display=swap" rel="stylesheet">
+    <script defer type="module" src="/static/js/toggle_sidebar.js"></script>
 </head>
 <body>
     {{ if .Redirect }}
+        <script defer type="module" src="/static/js/routes.js"></script>
         <script defer type="module" src="/static/js/login.js"></script>
     {{ else }}
+        <script defer type="module" src="/static/js/routes.js"></script>
         <script defer type="module" src="/static/js/onboarding.js"></script>
         <script defer type="module" src="/static/js/search_posts.js"></script>
         <script defer type="module" src="/static/js/profile.js"></script>
@@ -28,19 +31,18 @@
         <script defer type="module" src="/static/js/fetch_post_display.js"></script>
         <script defer type="module" src="/static/js/fetch_category_posts.js"></script>
         <script defer type="module" src="/static/js/index.js"></script>
-    
+    {{ end }}
+        <div class="navbar"></div>
         <div class="container">
             <!-- For mobile devices -->
             <button class="hamburger" onclick="toggleSidebar()">☰</button>
 
-            <div class="navbar"></div>
             <div class="sidebar" id="sidebar">
                 <button class="sidebar__close" onclick="toggleSidebar()">✖</button>
                 <h3 class="sidebar__heading">Categories</h3>
                 <div id="categories-list"></div>
             </div>
+            <div class="main-content" id="main-content">
         </div>
-    {{ end }}
-    <div class="main-content" id="main-content">
 </body>
 </html>

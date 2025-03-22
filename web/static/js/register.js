@@ -151,7 +151,7 @@ export function renderRegistrationPage() {
      // Add image upload label
      let uploadButton = document.createElement('label');
      uploadButton.htmlFor = 'image';
-     uploadButton.textContent = 'Choose Image';
+     uploadButton.textContent = 'choose image';
      uploadButton.classList.add('upload-btn');
      imageUpload.appendChild(uploadButton);
 

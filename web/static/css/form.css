@@ -259,6 +259,14 @@ button:hover {
         font-size: 16px;
         align-items: center;
     }
+
+    #gender_label {
+        font-size: 16px;
+    }
+
+    #gender {
+        font-size: 14px;
+    }
 }
 
 /* Media queries */

@@ -1,4 +1,4 @@
-function fetchPostDisplay(postID) {
+window.fetchPostDisplay = function(postID) {
     fetch(`/posts/display?pid=${postID}`, {
         method: 'GET',
         credentials: 'include', // Ensure cookies are sent with the request
@@ -8,6 +8,7 @@ function fetchPostDisplay(postID) {
     })
     .then(response => response.json())
     .then(data => {
+        console.log("POST: ", data)
         const postContentContainer = document.getElementById('main-content');
         postContentContainer.innerHTML = '';
 

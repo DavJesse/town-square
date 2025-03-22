@@ -1,4 +1,4 @@
-function searchPosts() {
+window.searchPosts = function() {
     const query = document.getElementById('search-query').value;
 
     if (!query) {

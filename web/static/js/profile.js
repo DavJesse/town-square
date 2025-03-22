@@ -1,4 +1,4 @@
-function profile() {
+window.profile = function() {
     fetch('/profile', {
         method: 'GET',
         credentials: 'include' // ensure cookies are sent with the request

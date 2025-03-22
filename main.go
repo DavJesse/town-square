@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"forum/database"
-	"forum/handlers"
 
 	auth "forum/handlers/auth"
 	comments "forum/handlers/comments"
@@ -44,10 +43,9 @@ func main() {
 		return
 	}
 
-	http.HandleFunc("/spa", handlers.SPA)
-
 	// authentication
 	http.HandleFunc("/", posts.Index)
+
 	http.HandleFunc("/static/", misc.Static)
 	http.HandleFunc("/login", auth.LoginHandler)
 	// http.HandleFunc("/forgot-password", auth.ForgotPassword) // Unmute when retrieval logic is implemented
@@ -59,6 +57,7 @@ func main() {
 	// http.HandleFunc("GET /user/update", middleware.AuthMiddleware(http.HandlerFunc(handlers.UpdateUserProfile))) // Protected
 
 	// posts
+	http.HandleFunc("/posts", posts.Posts)
 	http.HandleFunc("/posts/display", posts.PostDisplay)
 	http.HandleFunc("/categories", posts.GetCategories)
 	http.HandleFunc("/categories/", posts.SingleCategoryPosts)

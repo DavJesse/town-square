@@ -1,74 +1,76 @@
-import { renderRegistrationPage } from "/static/js/register.js";
-import { renderLoginPage } from "/static/js/login.js";
-import { renderErrorPage } from "/static/js/error.js";
+// import { renderRegistrationPage } from "/static/js/register.js";
+// import { renderLoginPage } from "/static/js/login.js";
+// import { renderErrorPage } from "/static/js/error.js";
 
-// routes.js
-document.addEventListener("DOMContentLoaded", () => {
-    handleRouteChange(); // Run when the page loads
+// // routes.js
+// document.addEventListener("DOMContentLoaded", () => {
+//     handleRouteChange(); // Run when the page loads
 
-    // Listen for back/forward navigation
-    window.addEventListener("popstate", handleRouteChange);
+//     // Listen for back/forward navigation
+//     window.addEventListener("popstate", handleRouteChange);
 
-    // Attach event listeners to links for single-page navigation
-    document.body.addEventListener("click", (event) => {
-        const target = event.target.closest("a"); // Check if an <a> was clicked
-        if (target && target.getAttribute("href") && !target.target) {
-            event.preventDefault(); // Prevent full page reload
-            navigateTo(target.getAttribute("href")); // Handle navigation
-        }
-    });
-});
+//     // Attach event listeners to links for single-page navigation
+//     document.body.addEventListener("click", (event) => {
+//         const target = event.target.closest("a"); // Check if an <a> was clicked
+//         if (target && target.getAttribute("href") && !target.target) {
+//             event.preventDefault(); // Prevent full page reload
+//             navigateTo(target.getAttribute("href")); // Handle navigation
+//         }
+//     });
+// });
 
-// Function to handle navigation updates
-export async function navigateTo(url) {
-    try {
-        if (url.startsWith("/posts/")) {
-            const postId = url.split("/")[2]; // Extract post ID
-            app.innerHTML = `<h1>Post ${postId}</h1><p>Details of the post...</p>`;
-            return;
-        } 
+// // Function to handle navigation updates
+// export async function navigateTo(url) {
+//     console.log("URL: ", url)
+
+//     try {
+//         if (url.startsWith("/posts/")) {
+//             const postId = url.split("/")[2]; // Extract post ID
+//             app.innerHTML = `<h1>Post ${postId}</h1><p>Details of the post...</p>`;
+//             return;
+//         } 
     
-        let response = await fetch(url);
+//         let response = await fetch(url);
 
-        if (!response.ok) {
-            console.error(`Error: ${response.status} - ${response.statusText}`)
-            renderErrorPage();
-            return;
-        }
+//         if (!response.ok) {
+//             console.error(`Error: ${response.status} - ${response.statusText}`)
+//             renderErrorPage();
+//             return;
+//         }
         
-        let content = await response.text();
-        document.body.innerHTML = content;
+//         let content = await response.text();
+//         document.body.innerHTML = content;
 
-        history.pushState(null, "", url); // Change URL without reloading
-        handleRouteChange(); // Handle the new route
+//         history.pushState(null, "", url); // Change URL without reloading
+//         handleRouteChange(); // Handle the new route
 
-    } catch (error) {
-        console.error(`Navigation Error: ${error}`)
-    }
-}
+//     } catch (error) {
+//         console.error(`Navigation Error: ${error}`)
+//     }
+// }
 
-// Function to detect the current route and update the DOM
-function handleRouteChange() {
-    const path = window.location.pathname;
+// // Function to detect the current route and update the DOM
+// function handleRouteChange() {
+//     const path = window.location.pathname;
 
-    document.body.innerHTML = "" // Clear body before rendering page
+//     // document.body.innerHTML = "" // Clear body before rendering page
 
-    switch (path) {
-        case "/":
-            document.body.innerHTML = "<h1>Home Page</h1><p>Welcome to the forum!</p>";
-            break;
-        case "/login":
-            renderLoginPage();
-            break;
-        case "/register":
-            renderRegistrationPage();
-            break;
-        case "/posts":
-            document.body.innerHTML = "<h1>Posts</h1><p>Here are some posts.</p>";
-            break;
-        default:
-            window.history.pushState({}, "", "/404") // Re-route page URL without reloading
-            renderErrorPage();
-            break;
-    }
-}
+//     switch (path) {
+//         case "/":
+//             document.body.innerHTML = "<h1>Home Page</h1><p>Welcome to the forum!</p>";
+//             break;
+//         case "/login":
+//             renderLoginPage();
+//             break;
+//         case "/register":
+//             renderRegistrationPage();
+//             break;
+//         case "/posts":
+//             document.body.innerHTML = "<h1>Posts</h1><p>Here are some posts.</p>";
+//             break;
+//         default:
+//             window.history.pushState({}, "", "/404") // Re-route page URL without reloading
+//             renderErrorPage();
+//             break;
+//     }
+// }

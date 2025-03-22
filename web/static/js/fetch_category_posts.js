@@ -1,27 +1,5 @@
-// Fetch categories
-fetch('/categories', {
-    method: 'GET',
-    credentials: 'include' // Ensure cookies are sent with the request
-})
-.then(response => response.json())
-.then(data => {
-    const categoriesList = document.getElementById('categories-list');
-    categoriesList.innerHTML = '';
-
-    data.forEach(category => {
-        const categoryButton = document.createElement('button');
-        categoryButton.classList.add('sidebar__list-item');
-        categoryButton.textContent = category.name;
-        categoryButton.onclick = () => fetchCategoryPosts(category.id);
-        categoriesList.appendChild(categoryButton);
-    });
-})
-.catch(error => {
-    console.error('Error fetching categories:', error);
-});
-
 // Function to fetch posts by category
-function fetchCategoryPosts(categoryID) {
+window.fetchCategoryPosts = function(categoryID) {
     fetch(`/categories/${categoryID}`, {
         method: 'GET',
         credentials: 'include' // Ensure cookies are sent with the request

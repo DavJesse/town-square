@@ -68,7 +68,7 @@ h1 {
 
 /* Style the labels */
 form label {
-    display: block;  /* Ensures labels are on their own line */
+    display: block;
     text-align: left;
     font-size: 14px;
     font-weight: bold;
@@ -76,6 +76,11 @@ form label {
     margin-top: 10px;
     margin-left: 15px;
     letter-spacing: 1px;
+}
+
+#gender_label {
+    font-size: 18px;
+    margin: auto;
 }
 
 /* Hide the default file input */

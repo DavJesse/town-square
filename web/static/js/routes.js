@@ -21,6 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Function to handle navigation updates
 export async function navigateTo(url) {
+    console.log("URL: ", url)
+
     try {
         if (url.startsWith("/posts/")) {
             const postId = url.split("/")[2]; // Extract post ID
@@ -51,7 +53,7 @@ export async function navigateTo(url) {
 function handleRouteChange() {
     const path = window.location.pathname;
 
-    document.body.innerHTML = "" // Clear body before rendering page
+    // document.body.innerHTML = "" // Clear body before rendering page
 
     switch (path) {
         case "/":

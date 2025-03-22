@@ -1,5 +1,5 @@
-import { fetchErrorMessage } from '/static/js/form_error_message.js'
-import { navigateTo } from '/static/js/routes.js'
+// import { fetchErrorMessage } from '/static/js/form_error_message.js'
+// import { navigateTo } from '/static/js/routes.js'
 
 export function renderLoginPage() {
     // update document title
@@ -39,7 +39,7 @@ export function renderLoginPage() {
     loginSubContainer.appendChild(errorText);
     loginSubContainer.appendChild(errorMessageContainer);
     
-    fetchErrorMessage(errorMessageContainer, '/login');
+    // fetchErrorMessage(errorMessageContainer, '/login');
 
     // create login form
     let loginForm = document.createElement('form');
@@ -91,23 +91,25 @@ export function renderLoginPage() {
     accountIssues.appendChild(registerOption);
     loginContainer.appendChild(accountIssues);
 
-    document.body.appendChild(loginContainer);
-    
-        // Attach event listener to handle login via AJAX
-        loginForm.addEventListener("submit", async function (event) {
-            event.preventDefault(); // Prevent full-page reload
-        
-            if (event.target !== loginForm) return; // Ensure accurate form submision
+    document.getElementById("main-content").append(loginContainer);
 
-            let emailUsername = document.getElementById("email_username").value;
-            let password = document.getElementById("password").value;
-            
-            let requestBody = JSON.stringify({
-                email_username: emailUsername,
-                password: password,
-            });
-            
-            try {
+    console.log(loginContainer)
+    
+    // Attach event listener to handle login via AJAX
+    loginForm.addEventListener("submit", async function (event) {
+        event.preventDefault(); // Prevent full-page reload
+    
+        if (event.target !== loginForm) return; // Ensure accurate form submision
+
+        let emailUsername = document.getElementById("email_username").value;
+        let password = document.getElementById("password").value;
+        
+        let requestBody = JSON.stringify({
+            email_username: emailUsername,
+            password: password,
+        });
+        
+        try {
             let response = await fetch("/login", {
                 method: "POST",
                 headers: {
@@ -120,7 +122,9 @@ export function renderLoginPage() {
             
             if (response.ok && !data?.error_message) {
                 // Redirect to dashboard on success
-                navigateTo("/");
+                window.location.href = "/"
+                history.pushState(null, "", "/login")
+                // navigateTo("/");
             } else {
                 // Show error message
                 document.getElementById("error_text").textContent = data?.error_message || "Login failed";
@@ -130,11 +134,12 @@ export function renderLoginPage() {
             document.getElementById("error_text").textContent = "Network Error, please try again";
         }
     });
-    
+
     // Prevent 'sign up' link from being blocked
     registerLink.addEventListener("click", function(event) {
         event.stopPropagation();
-        navigateTo("/register");
+        // navigateTo("/register");
     });
 }
 
+renderLoginPage();

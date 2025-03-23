@@ -11,13 +11,21 @@ import (
 // fetches all posts from the database with the creator's names and the number of likes and dislikes
 func GetAllPosts() ([]models.PostWithUsername, error) {
 	query := `
-		SELECT p.uuid, p.title, p.content, p.media, p.created_at, u.username,
-		    COALESCE((SELECT COUNT(*) FROM likes l WHERE l.post_id = p.uuid), 0) AS likes_count,
-		    COALESCE((SELECT COUNT(*) FROM dislikes d WHERE d.post_id = p.uuid), 0) AS dislikes_count
+		SELECT 
+			p.uuid, 
+			p.title, 
+			p.content, 
+			p.media, 
+			p.created_at, 
+			u.username,
+			COALESCE((SELECT COUNT(*) FROM likes l WHERE l.post_id = p.uuid), 0) AS likes_count,
+			COALESCE((SELECT COUNT(*) FROM dislikes d WHERE d.post_id = p.uuid), 0) AS dislikes_count
 		FROM posts p
 		JOIN users u ON u.id = p.user_id
 		GROUP BY p.uuid, u.username
+		ORDER BY p.created_at DESC
 	`
+
 	rows, err := db.Query(query)
 	if err != nil {
 		return nil, err

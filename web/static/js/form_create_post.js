@@ -30,7 +30,7 @@ window.renderCreatePostForm = function() {
                         </div>
 
                         <div class="categories-container">
-                            <label for="categories" class="select-categories">Select Categories</label>
+                            <label class="select-categories">Select Categories</label>
                             ${data.categories.map(category => `
                                 <div class="category-item">
                                     <input type="checkbox" id="category-${category.id}" name="categories" value="${category.id}">
@@ -63,12 +63,8 @@ window.renderCreatePostForm = function() {
             .then(data => {
                 if (data.message) {
                     alert(data.message);  // Show the message (success or error)
-
-                    /*---------------------------------------------
-                    * TODO
-                    ---------------------------------------------*/
-                    // fetchAllPosts();
-                    
+                    renderMainLayout();
+                    fetchAllPosts();
                 }
             })
             .catch(error => console.error('Error creating post:', error));

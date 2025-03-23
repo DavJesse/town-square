@@ -9,9 +9,15 @@ import (
 // Fetches all posts from the database where the user ID matches the provided ID
 func GetPostsByUserID(id int) ([]models.Post, error) {
 	query := `
-		SELECT uuid, title, content, media, created_at 
-		FROM posts 
-		WHERE user_id = ?
+		SELECT 
+			p.uuid, 
+			p.title, 
+			p.content, 
+			p.media, 
+			p.created_at
+		FROM posts p
+		WHERE p.user_id = ?
+		ORDER BY p.created_at DESC
 	`
 
 	rows, err := db.Query(query, id)

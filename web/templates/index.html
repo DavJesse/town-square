@@ -21,6 +21,7 @@
         <script defer type="module" src="/static/js/login.js"></script>
     {{ else }}
         <script defer type="module" src="/static/js/routes.js"></script>
+        <script defer type="module" src="/static/js/render_main_layout.js"></script>
         <script defer type="module" src="/static/js/onboarding.js"></script>
         <script defer type="module" src="/static/js/search_posts.js"></script>
         <script defer type="module" src="/static/js/profile.js"></script>
@@ -32,17 +33,5 @@
         <script defer type="module" src="/static/js/fetch_category_posts.js"></script>
         <script defer type="module" src="/static/js/index.js"></script>
     {{ end }}
-        <div class="navbar"></div>
-        <div class="container">
-            <!-- For mobile devices -->
-            <button class="hamburger" onclick="toggleSidebar()">☰</button>
-
-            <div class="sidebar" id="sidebar">
-                <button class="sidebar__close" onclick="toggleSidebar()">✖</button>
-                <h3 class="sidebar__heading">Categories</h3>
-                <div id="categories-list"></div>
-            </div>
-            <div class="main-content" id="main-content">
-        </div>
 </body>
 </html>

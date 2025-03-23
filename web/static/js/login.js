@@ -2,6 +2,7 @@
 // import { navigateTo } from '/static/js/routes.js'
 
 export function renderLoginPage() {
+    
     // update document title
     document.title = 'login - real-time-forum';
 
@@ -91,9 +92,8 @@ export function renderLoginPage() {
     accountIssues.appendChild(registerOption);
     loginContainer.appendChild(accountIssues);
 
-    document.getElementById("main-content").append(loginContainer);
+    document.body.appendChild(loginContainer);
 
-    console.log(loginContainer)
     
     // Attach event listener to handle login via AJAX
     loginForm.addEventListener("submit", async function (event) {

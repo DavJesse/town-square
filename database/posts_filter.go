@@ -29,7 +29,7 @@ func PostsFilterByCategory(categoryID int) ([]models.Post, error) {
 }
 
 func PostsFilterByUser(userID int) ([]models.Post, error) {
-	query := `SELECT uuid, title, content, media, created_at FROM posts WHERE user_id = ?`
+	query := `SELECT p.uuid, p.title, p.content, p.media, p.created_at FROM posts p WHERE user_id = ? ORDER BY p.created_at DESC`
 	rows, err := db.Query(query, userID)
 	if err != nil {
 		return nil, err

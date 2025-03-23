@@ -67,7 +67,3 @@ func ViewUserProfile(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(req)
 }
-
-// func UpdateUserProfile(){
-// 	// Update user profile
-// }

@@ -6,7 +6,7 @@ function renderPage(data) {
 }
 
 
-(() => {
+window.fetchAllPosts = function(){
     fetch('/posts')  // Assuming '/posts' returns a JSON array of posts
         .then(response => response.json())
         .then(data => {
@@ -23,4 +23,11 @@ function renderPage(data) {
             console.error('Error fetching posts:', error);
             document.getElementById('main-content').innerHTML = '<p>Error loading posts.</p>';
         });
-})();
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    renderMainLayout();
+});
+
+fetchAllPosts();

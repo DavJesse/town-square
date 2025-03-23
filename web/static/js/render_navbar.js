@@ -28,6 +28,11 @@ window.renderNavbar = function(data) {
                     </div>
             </div>
     `;
-    document.querySelector('.navbar').outerHTML = navbarHtml;
+    let navbar = document.querySelector('.navbar');
+    if(!navbar){
+        navbar = document.createElement("div");
+        document.body.appendChild(navbar);
+    }
+    navbar.outerHTML = navbarHtml;
     document.getElementById('create-post-button').addEventListener('click', renderCreatePostForm);
 }

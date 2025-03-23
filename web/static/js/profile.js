@@ -1,4 +1,6 @@
-function profile() {
+import { renderNavBar } from '/static/js/navbar.js';
+export function renderProfilePage() {
+    renderNavBar();
     fetch('/profile', {
         method: 'GET',
         credentials: 'include' // ensure cookies are sent with the request
@@ -100,4 +102,6 @@ function profile() {
         .catch(error => {
             console.error('Error:', error);
         });
+
+        document.title = `${data.data.User.first_name}'s profile`
 }

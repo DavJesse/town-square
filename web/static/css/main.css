@@ -36,7 +36,7 @@ a {
 .navbar__title {
     font-size: 30px; /* Adjusted for mobile */
     letter-spacing: 3px;
-    color: #0172eb;
+    color: #0000EE;
     font-weight: 700;                  /* Add spacing below */
 }
 
@@ -68,13 +68,13 @@ a {
 }
 
 .navbar__search:focus {
-    border-color: #0172eb;
+    border-color: #0000EE;
     outline: none;
 }
 
 .navbar__button, .navbar__form__button {
     padding: 8px 15px;
-    background-color: #0172eb;
+    background-color: #0000EE;
     color: white;
     border: none;
     border-radius: 5px;

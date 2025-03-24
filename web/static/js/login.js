@@ -143,5 +143,3 @@ export function renderLoginPage() {
         // navigateTo("/register");
     });
 }
-
-renderLoginPage();

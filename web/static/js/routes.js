@@ -1,7 +1,7 @@
 import { renderRegistrationPage } from "/static/js/register.js";
 import { renderLoginPage } from "/static/js/login.js";
 import { renderErrorPage } from "/static/js/error.js";
-import { renderProfilePage } from "/static/js/profile.js";
+import { renderNavBar } from "/static/js/navbar.js";
 
 // routes.js
 document.addEventListener("DOMContentLoaded", () => {
@@ -51,8 +51,8 @@ export async function navigateTo(url) {
 // Function to detect the current route and update the DOM
 function handleRouteChange() {
     const path = window.location.pathname;
-
-    document.body.innerHTML = "" // Clear body before rendering page
+    const app = document.getElementById("app");
+    app.innerHTML = ""; // Clear only the app div
 
     switch (path) {
         case "/":
@@ -68,7 +68,7 @@ function handleRouteChange() {
             document.body.innerHTML = "<h1>Posts</h1><p>Here are some posts.</p>";
             break;
         case "/profile":
-            renderProfilePage();
+            renderNavBar();
             break;
         default:
             window.history.pushState({}, "", "/404") // Re-route page URL without reloading

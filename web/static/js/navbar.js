@@ -102,6 +102,7 @@ export function renderNavBar() {
   
   let searchIcon = document.createElement('span');
   searchIcon.classList.add('material-symbols-outlined');
+  searchIcon.id ='search_icon';
   searchIcon.textContent = 'search';
   
   searchButton.appendChild(searchIcon);

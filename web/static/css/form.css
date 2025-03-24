@@ -110,7 +110,7 @@ input[type="file"] {
 
 /* Hover effect */
 .custom-file-upload label[for="image"]:hover {
-    background-color: #0056b3;
+    background-color: #1e1e99;
 }
 
 #gender {
@@ -166,7 +166,7 @@ button {
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #1e1e99;
 }
 
 .custom-file-upload {
@@ -189,7 +189,7 @@ button:hover {
 }
 
 .upload-btn:hover {
-    background-color: #0056b3;
+    background-color: #1e1e99;
 }
 
 #image {

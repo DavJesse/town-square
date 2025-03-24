@@ -92,7 +92,9 @@ export function renderLoginPage() {
     accountIssues.appendChild(registerOption);
     loginContainer.appendChild(accountIssues);
 
-    document.body.appendChild(loginContainer);
+    // Add login container to #app div
+    const app = document.getElementById("app");
+    app.appendChild(loginContainer);
 
     
     // Attach event listener to handle login via AJAX

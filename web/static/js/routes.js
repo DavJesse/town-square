@@ -1,7 +1,7 @@
 import { renderRegistrationPage } from "/static/js/register.js";
 import { renderLoginPage } from "/static/js/login.js";
 import { renderErrorPage } from "/static/js/error.js";
-import { renderNavBar } from "/static/js/navbar.js";
+import { renderProfilePage } from "/static/js/profile.js";
 
 // routes.js
 document.addEventListener("DOMContentLoaded", () => {
@@ -68,7 +68,7 @@ function handleRouteChange() {
             app.innerHTML = "<h1>Posts</h1><p>Here are some posts.</p>";
             break;
         case "/profile":
-            renderNavBar();
+            renderProfilePage();
             break;
         default:
             window.history.pushState({}, "", "/404") // Re-route page URL without reloading

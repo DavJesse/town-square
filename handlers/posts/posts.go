@@ -34,7 +34,7 @@ func Posts(w http.ResponseWriter, r *http.Request) {
 		// not logged in -> redirect to login page
 		errors.RedirectHandler(w, "/login")
 		return
-		
+
 	}
 
 	// Fetch posts from the database
@@ -54,7 +54,7 @@ func Posts(w http.ResponseWriter, r *http.Request) {
 	data := struct {
 		Posts      []models.PostWithUsername
 		Categories []models.Category
-		IsLogged   bool `json:"isLogged"`
+		IsLogged   bool   `json:"isLogged"`
 		ProfPic    string `json:"ProfPic"`
 	}{
 		Posts:      posts,
@@ -64,9 +64,9 @@ func Posts(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jsonResponse := models.Response{
-		Code:     http.StatusOK,
-		Message:  "Success",
-		Data:     data,
+		Code:    http.StatusOK,
+		Message: "Success",
+		Data:    data,
 	}
 
 	w.Header().Set("Content-Type", "application/json")

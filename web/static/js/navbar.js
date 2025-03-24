@@ -25,7 +25,7 @@ export function renderNavBar() {
   homeIconLink.href = '/';
   
   let homeIcon = document.createElement('span');
-  homeIcon.classList.add('material-icons');
+  homeIcon.classList.add('material-symbols-outlined');
   homeIcon.id = 'home_icon';
   homeIcon.textContent = 'home';
   homeIconLink.appendChild(homeIcon);
@@ -37,7 +37,7 @@ export function renderNavBar() {
   likeIconLink.href = '/liked-posts';
   
   let likeIcon = document.createElement('span');
-  likeIcon.classList.add('material-icons');
+  likeIcon.classList.add('material-symbols-outlined');
   likeIcon.id = 'like_icon';
   likeIcon.textContent = 'thumb_up';
   likeIconLink.appendChild(likeIcon);
@@ -80,6 +80,11 @@ export function renderNavBar() {
   searchBar.action = '/search';
   searchBar.classList.add('navbar__search-form');
   searchBar.id = 'search_bar';
+
+   // Create right navbar cluster container
+   let searchCluster = document.createElement('div');
+   searchCluster.classList.add('search-cluster');
+   searchCluster.id = 'search_cluster';
   
   // Create search bar input field
   let searchInput = document.createElement('input');
@@ -88,7 +93,7 @@ export function renderNavBar() {
   searchInput.id = 'search_input';
   searchInput.placeholder = 'Search...';    
   searchInput.classList.add('navbar__search');
-  searchBar.appendChild(searchInput);
+  searchCluster.appendChild(searchInput);
   
   // Create search button
   let searchButton = document.createElement('button');
@@ -96,11 +101,12 @@ export function renderNavBar() {
   searchButton.id = 'search_btn';
   
   let searchIcon = document.createElement('span');
-  searchIcon.classList.add('search-icon', 'material-symbols-outlined');
+  searchIcon.classList.add('material-symbols-outlined');
   searchIcon.textContent = 'search';
   
   searchButton.appendChild(searchIcon);
-  searchBar.appendChild(searchButton); 
+  searchCluster.appendChild(searchButton);
+  searchBar.appendChild(searchCluster);
   rightCluster.appendChild(searchBar);
   navBarContainer.appendChild(rightCluster);
 

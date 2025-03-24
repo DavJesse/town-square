@@ -56,7 +56,7 @@ function handleRouteChange() {
 
     switch (path) {
         case "/":
-            document.body.innerHTML = "<h1>Home Page</h1><p>Welcome to the forum!</p>";
+            app.innerHTML = "<h1>Home Page</h1><p>Welcome to the forum!</p>";
             break;
         case "/login":
             renderLoginPage();
@@ -65,7 +65,7 @@ function handleRouteChange() {
             renderRegistrationPage();
             break;
         case "/posts":
-            document.body.innerHTML = "<h1>Posts</h1><p>Here are some posts.</p>";
+            app.innerHTML = "<h1>Posts</h1><p>Here are some posts.</p>";
             break;
         case "/profile":
             renderNavBar();

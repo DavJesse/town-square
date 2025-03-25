@@ -3,7 +3,6 @@ import { renderLoginPage } from "/static/js/login.js";
 import { renderErrorPage } from "/static/js/error.js";
 import { renderProfilePage } from "/static/js/profile.js";
 
-// routes.js
 document.addEventListener("DOMContentLoaded", () => {
     handleRouteChange(); // Run when the page loads
 
@@ -21,42 +20,26 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Function to handle navigation updates
-export async function navigateTo(url) {
-    try {
-        if (url.startsWith("/posts/")) {
-            const postId = url.split("/")[2]; // Extract post ID
-            app.innerHTML = `<h1>Post ${postId}</h1><p>Details of the post...</p>`;
-            return;
-        } 
-    
-        let response = await fetch(url);
-
-        if (!response.ok) {
-            console.error(`Error: ${response.status} - ${response.statusText}`)
-            renderErrorPage();
-            return;
-        }
-        
-        let content = await response.text();
-        document.body.innerHTML = content;
-
-        history.pushState(null, "", url); // Change URL without reloading
-        handleRouteChange(); // Handle the new route
-
-    } catch (error) {
-        console.error(`Navigation Error: ${error}`)
-    }
+export function navigateTo(url) {
+    history.pushState(null, "", url); // Change URL without reloading
+    handleRouteChange(); // Trigger re-rendering logic
 }
 
 // Function to detect the current route and update the DOM
 function handleRouteChange() {
     const path = window.location.pathname;
+    console.log("PATH: ", path)
     const app = document.getElementById("app");
     app.innerHTML = ""; // Clear only the app div
+    console.log("Script loaded");
 
     switch (path) {
         case "/":
-            app.innerHTML = "<h1>Home Page</h1><p>Welcome to the forum!</p>";
+            app.innerHTML = `<h1>Home Page</h1>
+            <p>Welcome to the forum!</p>
+            <div>
+            <a href="/profile">Profile Page</a>
+            </div>`;
             break;
         case "/login":
             renderLoginPage();
@@ -68,6 +51,7 @@ function handleRouteChange() {
             app.innerHTML = "<h1>Posts</h1><p>Here are some posts.</p>";
             break;
         case "/profile":
+            console.log("PROFILE")
             renderProfilePage();
             break;
         default:

@@ -4,6 +4,11 @@ export function renderProfilePage() {
     renderNavBar();
 
     // Add container to hold left cluster of page
+    let profilePage = document.createElement('div');
+    profilePage.classList.add('profile-page');
+    profilePage.id = 'profile_page';
+
+    // Add container to hold left cluster of page
     let leftCluster = document.createElement('div');
     leftCluster.classList.add('left-cluster');
     leftCluster.id = 'left_cluster';
@@ -175,9 +180,9 @@ export function renderProfilePage() {
     
     // Append clusters to app
     let app = document.getElementById("app")
-    app.appendChild(leftCluster);
-    app.appendChild(centerCluster);
-    app.appendChild(rightCluster);
+    profilePage.appendChild(leftCluster);
+    profilePage.appendChild(centerCluster);
+    app.appendChild(profilePage);
 
     // Add script tag and link to js
     let script = document.createElement('script');

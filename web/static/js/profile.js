@@ -2,16 +2,95 @@ import { renderNavBar } from '/static/js/navbar.js';
 
 export function renderProfilePage() {
     renderNavBar();
-    let profileBody = document.createElement('div');
-    profileBody.classList.add('container');
 
-    let userBody = document.createElement('div');
-    userBody.classList.add('main-content');
-    userBody.id = 'main_content';
-    profileBody.appendChild(userBody);
+    // Add container to hold left cluster of page
+    let leftCluster = document.createElement('div');
+    leftCluster.classList.add('left-cluster');
+    leftCluster.id = 'left_cluster';
 
-    let app = document.getElementById("app")
-    app.appendChild(profileBody);
+    // Add card to hold online users
+    let onlineUsersCard = document.createElement('div');
+    onlineUsersCard.classList.add('online-users-card');
+    onlineUsersCard.id = 'online_users_card';
+
+    // Add title for online users card
+    let onlineUsersTitle = document.createElement('h3');
+    onlineUsersTitle.id = 'online_users_title';
+    onlineUsersTitle.textContent = 'who\'s online?';
+    onlineUsersCard.appendChild(onlineUsersTitle);
+
+    // Add container for center cluster
+    let centerCluster = document.createElement('div');
+    centerCluster.classList.add('center-cluster');
+    centerCluster.id = 'center_cluster';
+
+    // Add bio card to hold user's basic information
+    let bioCard = document.createElement('div');
+    bioCard.classList.add('bio-card');
+    bioCard.id = 'bio_card';
+
+    // Add user image for bio card
+    let profilePic = document.createElement('img');
+    profilePic.id = 'profile_pic';
+    profilePic.alt = 'profile image';
+
+    // Add title for bio card
+    let bioTitle = document.createElement('h3');
+    bioTitle.id = 'bio_title';
+
+    // Add user nickname for bio card
+    let nickname = document.createElement('p');
+    nickname.id = 'nickname';
+
+    // Add user email for bio card
+    let email = document.createElement('p');
+    email.id = 'email';
+
+    // Add user gender for bio card
+    let gender = document.createElement('p');
+    gender.id = 'gender';
+
+    // Add user age for bio card
+    let age = document.createElement('p');
+    age.id = 'age';
+    
+    // Add bio paragraph
+    let bioParagraph = document.createElement('p');
+    bioParagraph.id = 'bio_paragraph';
+    
+    // Add posts card to hold user's recent posts
+    let postsCard = document.createElement('div');
+    postsCard.classList.add('posts-card');
+    postsCard.id = 'posts_card';
+
+    // Add posts card to hold user's recent posts
+    let postsButtonContainer = document.createElement('div');
+    postsButtonContainer.classList.add('posts-button-container');
+    postsButtonContainer.id = 'posts_button_container';
+
+    // Create buttons to toggle prefered posts
+    let likedPostsLink = document.createElement('a');
+    likedPostsLink.href = '/liked-posts';
+    likedPostsLink.textContent = 'posts I\'ve liked';
+
+    let likedPostsButton = document.createElement('button');
+    likedPostsButton.classList.add('posts-button');
+    likedPostsLink.appendChild(likedPostsButton);
+    postsButtonContainer.appendChild(likedPostsLink);
+
+    let myPostsLink = document.createElement('a');
+    myPostsLink.href = '/my-posts';
+    myPostsLink.textContent = 'my posts';
+
+    let myPostsButton = document.createElement('button');
+    myPostsButton.classList.add('posts-button');
+    myPostsLink.appendChild(myPostsButton);
+    postsButtonContainer.appendChild(myPostsLink);
+    postsCard.appendChild(postsButtonContainer);    
+    
+    // Add Posts Section            
+    let postsContainer = document.createElement('div');
+    postsContainer.id = 'posts-container';
     
     fetch('/profile', {
         method: 'GET',
@@ -22,82 +101,62 @@ export function renderProfilePage() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Profile data:', data);
         if (data.code === 200) {
+            
+            // Extract data
             const user = data.data.User;
             const posts = data.data.Posts;
             document.title = user.username;
+            
+            // Populate bioCard with user data
+            bioTitle.textContent = `${user.first_name} ${user.last_name}`;
+            nickname.textContent = `@${user.username}`;
+            email.textContent = user.email;
+            gender.textContent = user.gender;
+            age.textContent = user.age;
+            bioParagraph.textContent = user.bio;
+            profilePic.src = user?.image?`/static/images/${user.image}` : '/static/user-circle-svgrepo-com.svg';
 
-            const mainContent = document.getElementById('main_content');
-            mainContent.innerHTML = ''; // Clear existing content
-
-            const profileHeading = document.createElement('h3');
-            profileHeading.classList.add('main-content__heading');
-            profileHeading.id = 'profile-heading';
-            profileHeading.textContent = `${user.username}'s Profile`;
-            mainContent.appendChild(profileHeading);
-
-            // Add Profile Details
-            const profileCard = document.createElement('div');
-            profileCard.classList.add('card');
-            profileCard.id = 'profile-card';
-
-            const profileInfo = document.createElement('div');
-            profileInfo.classList.add('profile-info');
-
-            const profileImage = document.createElement('img');
-            profileImage.id = 'profile-image';
-            profileImage.src = user?.image ? `/static/images/${user.image}` : '/static/user-circle-svgrepo-com.svg';
-            profileInfo.appendChild(profileImage);
-
-            const profileDetails = document.createElement('div');
-            profileDetails.classList.add('profile-details');
-
-            const emailParagraph = document.createElement('p');
-            emailParagraph.innerHTML = `<strong>Email:</strong> <span id="user-email">${user.email}</span>`;
-            profileDetails.appendChild(emailParagraph);
-
-            const bioParagraph = document.createElement('p');
-            bioParagraph.innerHTML = `<strong>Bio:</strong> <span id="user-bio">${user?.bio || 'No Bio'}</span>`;
-            profileDetails.appendChild(bioParagraph);
-
-            const likedPostsLink = document.createElement('a');
-            likedPostsLink.href = '/liked-posts';
-            likedPostsLink.innerHTML = `<button class="navbar__button">View posts I've liked</button>`;
-            profileDetails.appendChild(likedPostsLink);
-
-            profileInfo.appendChild(profileDetails);
-            profileCard.appendChild(profileInfo);
-            mainContent.appendChild(profileCard);
-
-            // Add Posts Section
-            const postsHeading = document.createElement('h3');
-            postsHeading.classList.add('main-content__heading');
-            postsHeading.textContent = 'Posts';
-            mainContent.appendChild(postsHeading);
-
-            const postsContainer = document.createElement('div');
-            postsContainer.id = 'posts-container';
-            mainContent.appendChild(postsContainer);
-
+            // Append user details to bioCard
+            bioCard.appendChild(bioTitle);
+            bioCard.appendChild(nickname);
+            bioCard.appendChild(email);
+            bioCard.appendChild(gender);
+            bioCard.appendChild(age);
+            bioCard.appendChild(bioParagraph);
+            bioCard.appendChild(profilePic);            
+            
             // Add Posts
             if (posts?.length > 0) {
                 posts.forEach(post => {
-                    const postElement = document.createElement('div');
+                    let postElement = document.createElement('div');
                     postElement.classList.add('card');
-                    postElement.innerHTML = `
-                        <p class="card__title">
-                            <a href="#" onclick="fetchPostDisplay('${post.uuid}')" style="color: #0172eb;">
-                                ${post.title}
-                            </a>
-                        </p>
-                        <p class="card__description">${post.content}</p>
-                        ${post.Media ? `<img src="/static/media/${post.media}" alt="Post Image" style="width: 70px; aspect-ratio: 1/1;">` : ''}
-                    `;
+
+                    let postTitle = document.createElement('p');
+                    postTitle.classList.add('card__title');
+                    postTitle.id = 'post_title';
+                    postTitle.textContent = post.title;
+                    postElement.appendChild(postTitle);
+
+                    let postContent = document.createElement('p');
+                    postContent.classList.add('card__description');
+                    postContent.id = 'post_content';
+                    postContent.textContent = post.content;
+                    postElement.appendChild(postContent);
+
+                    if (post.media) {
+                        let postMedia = document.createElement('img');
+                        postMedia.id = 'post_media';
+                        postMedia.src = `/static/media/${post.media}`;
+                        postElement.appendChild(postMedia);
+                    }
                     postsContainer.appendChild(postElement);
                 });
             } else {
-                postsContainer.innerHTML = '<p>No posts available</p>';
+                let noPostsAlerts = document.createElement('p');
+                noPostsAlerts.id = 'no_posts';
+                noPostsAlerts.textContent = 'No posts available';
+                postsContainer.appendChild(noPostsAlerts);
             }
         } else {
             console.error('Error fetching profile data:', data.message);
@@ -106,4 +165,24 @@ export function renderProfilePage() {
     .catch(error => {
         console.error('Error:', error);
     });
+    // Append elements to left cluster
+    leftCluster.appendChild(onlineUsersCard);
+
+    // Append elements to center cluster
+    centerCluster.appendChild(bioCard);
+    centerCluster.appendChild(postsCard);
+    centerCluster.appendChild(postsContainer);
+    
+    // Append clusters to app
+    let app = document.getElementById("app")
+    app.appendChild(leftCluster);
+    app.appendChild(centerCluster);
+    app.appendChild(rightCluster);
+
+    // Add script tag and link to js
+    let script = document.createElement('script');
+    script.src = '/static/js/index.js';
+    script.type = 'module';
+    script.defer = true;
+    document.body.appendChild(script);
 }

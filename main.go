@@ -5,12 +5,12 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"text/template"
 
 	"forum/database"
 
 	auth "forum/handlers/auth"
 	comments "forum/handlers/comments"
+	errors "forum/handlers/errors"
 	"forum/handlers/middleware"
 	"forum/handlers/misc"
 	posts "forum/handlers/posts"
@@ -39,14 +39,13 @@ func main() {
 	// Restrict arguments parsed
 	if len(os.Args) != 1 {
 		log.Println("Too many arguments")
-		log.Println("Usage: go run main.go")
+		log.Println("Usage: go run .")
 		return
 	}
 
-	http.HandleFunc("/spa", SPA)
 	// authentication
-
 	http.HandleFunc("/", posts.Index)
+
 	http.HandleFunc("/static/", misc.Static)
 	http.HandleFunc("/login", auth.LoginHandler)
 	// http.HandleFunc("/forgot-password", auth.ForgotPassword) // Unmute when retrieval logic is implemented
@@ -58,9 +57,10 @@ func main() {
 	// http.HandleFunc("GET /user/update", middleware.AuthMiddleware(http.HandlerFunc(handlers.UpdateUserProfile))) // Protected
 
 	// posts
+	http.HandleFunc("/posts", posts.Posts)
 	http.HandleFunc("/posts/display", posts.PostDisplay)
-	http.HandleFunc("/categories", posts.CategoriesPage)
-	http.HandleFunc("/categories/", posts.SingeCategoryPosts)
+	http.HandleFunc("/categories", posts.GetCategories)
+	http.HandleFunc("/categories/", posts.SingleCategoryPosts)
 	http.HandleFunc("/search", posts.Search)
 	http.HandleFunc("/liked-posts", posts.ShowLikedPosts)
 
@@ -73,6 +73,9 @@ func main() {
 	http.Handle("/comments/dislike", middleware.AuthMiddleware(http.HandlerFunc(comments.DislikeCommentHandler)))
 	http.Handle("/comment", middleware.AuthMiddleware(http.HandlerFunc(comments.Comment)))
 
+	// errors
+	http.HandleFunc("/error", errors.ErrorHandler)
+
 	// start the server, handle emerging errors
 	fmt.Printf("Server runing on http://localhost%s\n", port)
 	err := http.ListenAndServe(port, nil)
@@ -80,10 +83,4 @@ func main() {
 		log.Println("Failed to start server: ", err)
 		return
 	}
-}
-
-func SPA(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	tmpl := template.Must(template.ParseFiles(("web/templates/spa.html")))
-	tmpl.Execute(w, nil)
 }

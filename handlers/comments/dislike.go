@@ -11,7 +11,7 @@ import (
 
 func DislikeCommentHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		errors.MethodNotAllowedHandler(w)
+		errors.MethodNotAllowedHandler(w, r)
 		log.Printf("METHOD ERROR: method not allowed")
 		return
 	}
@@ -27,7 +27,7 @@ func DislikeCommentHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = database.DislikeComment(userID, commentID)
 	if err != nil {
-		errors.InternalServerErrorHandler(w)
+		errors.InternalServerErrorHandler(w, r)
 		fmt.Printf("DISLIKE ERROR: %v", err)
 		return
 	}

@@ -1,7 +1,8 @@
 import { renderRegistrationPage } from "/static/js/register.js";
 import { renderLoginPage } from "/static/js/login.js";
+import { renderErrorPage } from "/static/js/error.js";
+import { renderProfilePage } from "/static/js/profile.js";
 
-// routes.js
 document.addEventListener("DOMContentLoaded", () => {
     handleRouteChange(); // Run when the page loads
 
@@ -19,27 +20,24 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Function to handle navigation updates
-function navigateTo(url) {
-    if (path.startsWith("/posts/")) {
-        const postId = path.split("/")[2]; // Extract post ID
-        app.innerHTML = `<h1>Post ${postId}</h1><p>Details of the post...</p>`;
-        return;
-    }
-    
+export function navigateTo(url) {
     history.pushState(null, "", url); // Change URL without reloading
-    handleRouteChange(); // Handle the new route
+    handleRouteChange(); // Trigger re-rendering logic
 }
 
 // Function to detect the current route and update the DOM
 function handleRouteChange() {
     const path = window.location.pathname;
-    console.log(`Current path: ${path}`);
-
-    document.body.innerHTML = ""
+    const app = document.getElementById("app");
+    app.innerHTML = ""; // Clear only the app div
 
     switch (path) {
         case "/":
-            app.innerHTML = "<h1>Home Page</h1><p>Welcome to the forum!</p>";
+            app.innerHTML = `<h1>Home Page</h1>
+            <p>Welcome to the forum!</p>
+            <div>
+            <a href="/profile">Profile Page</a>
+            </div>`;
             break;
         case "/login":
             renderLoginPage();
@@ -50,8 +48,13 @@ function handleRouteChange() {
         case "/posts":
             app.innerHTML = "<h1>Posts</h1><p>Here are some posts.</p>";
             break;
+        case "/profile":
+            console.log("PROFILE")
+            renderProfilePage();
+            break;
         default:
-            app.innerHTML = "<h1>404</h1><p>Page not found.</p>";
+            window.history.pushState({}, "", "/404") // Re-route page URL without reloading
+            renderErrorPage();
             break;
     }
 }

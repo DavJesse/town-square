@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/json"
+	"fmt"
 	"html"
 	"log"
 	"net/http"
@@ -15,7 +16,6 @@ import (
 
 // LoginHandler handles user login and session creation, as well as preventing login when already logged in.
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
-
 	if r.Method == http.MethodGet {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		http.ServeFile(w, r, "./web/templates/index.html")
@@ -29,7 +29,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// Catch non-Get and non-POST requests
 	if r.Method != "POST" {
 		log.Println("METHOD ERROR: method not allowed")
-		errors.MethodNotAllowedHandler(w)
+		errors.MethodNotAllowedHandler(w, r)
 		return
 	}
 
@@ -37,7 +37,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&loginResponse)
 	if err != nil {
 		log.Printf("REQUEST ERROR: %s", err)
-		errors.BadRequestHandler(w)
+		errors.BadRequestHandler(w, r)
 		return
 	}
 
@@ -45,10 +45,12 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	emailUsername := html.EscapeString(loginResponse.EmailUsername)
 	user.Password = html.EscapeString(loginResponse.Password) // Populate password field
 
+	fmt.Printf("Email: %s, Pass: %s\n", emailUsername, user.Password)
+
 	// Check for empty user input
 	if emailUsername == "" || user.Password == "" {
 		log.Println("ERROR: Empty username or password field")
-		ParseAlertMessage(w, "email and password are required")
+		ParseAlertMessage(w, r, "email and password are required")
 		return
 	}
 
@@ -63,7 +65,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	sessionID, err := database.LoginUser(user.Username, user.Email, user.Password)
 	if err != nil {
 		log.Printf("LOGIN ERROR: %v", err)
-		ParseAlertMessage(w, "invalid username or password")
+		ParseAlertMessage(w, r, "invalid username or password")
 		return
 	}
 
@@ -85,7 +87,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // ParseAlertMessage is used for displaying alert messages in templates.
-func ParseAlertMessage(w http.ResponseWriter, message string) {
+func ParseAlertMessage(w http.ResponseWriter, r *http.Request, message string) {
 	var alert models.FormError
 
 	// Set relevant headers
@@ -96,7 +98,7 @@ func ParseAlertMessage(w http.ResponseWriter, message string) {
 	alert.ErrorMessage = message
 
 	if err := json.NewEncoder(w).Encode(alert); err != nil {
-		errors.InternalServerErrorHandler(w)
+		errors.InternalServerErrorHandler(w, r)
 		log.Println("JSON ENCODING ERROR: ", err)
 	}
 }

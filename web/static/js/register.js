@@ -1,10 +1,11 @@
 import { fetchErrorMessage } from '/static/js/form_error_message.js'
+import { navigateTo } from '/static/js/routes.js'
 
 export function renderRegistrationPage() {
     document.title = 'sign up - real-time-forum'; // Set document title
 
     let formContainer = document.createElement('div');
-    formContainer.classList.add('form-container');
+    formContainer.classList.add('registration-form-container');
 
     // create logo
     let heading = document.createElement('h1');
@@ -35,13 +36,15 @@ export function renderRegistrationPage() {
 
     // Create first and lastname fields
     let firstLastName = document.createElement('div');
-    firstLastName.classList.add('shared-field');
+    firstLastName.id ='shared_input_containers';
 
     let firstName = document.createElement('input');
     firstName.type = 'text';
     firstName.id = 'first_name';
     firstName.name = 'first-name';
     firstName.placeholder = 'first name';
+    firstName.autocomplete = 'given-name';
+    firstName.autocapitalize = 'words';
     firstName.required = true;
     firstLastName.appendChild(firstName);
 
@@ -50,6 +53,7 @@ export function renderRegistrationPage() {
     lastName.id = 'last_name';
     lastName.name = 'last-name';
     lastName.placeholder = 'last name';
+    lastName.autocapitalize = 'words';
     lastName.required = true;
     firstLastName.appendChild(lastName);
 
@@ -61,12 +65,13 @@ export function renderRegistrationPage() {
     username.id = 'username';
     username.name = 'username';
     username.placeholder = 'nickname / username';
+    username.autocomplete = 'username';
     username.required = true;
     registrationForm.appendChild(username);
 
      // Create age and gender fields
      let ageGender = document.createElement('div');
-     ageGender.classList.add('shared-field');
+     ageGender.id ='shared_input_containers';
  
      let age = document.createElement('input');
      age.type = 'number';
@@ -75,16 +80,23 @@ export function renderRegistrationPage() {
      age.placeholder = 'age';
      age.required = true;
      ageGender.appendChild(age);
+
+     // Add gender label
+     let genderLabel = document.createElement('label');
+     genderLabel.htmlFor = 'gender';
+     genderLabel.id = 'gender_label';
+     genderLabel.textContent = 'gender:';
+     ageGender.appendChild(genderLabel);
  
      let gender = document.createElement('select');
      gender.id = 'gender';
      gender.name = 'gender';
      gender.textContent = 'gender';
      
-     let none = document.createElement('option');
-     none.value = 'none';
-     none.textContent = 'none';
-     gender.appendChild(none);
+     let other = document.createElement('option');
+     other.value = 'other';
+     other.textContent = 'other';
+     gender.appendChild(other);
 
      let male = document.createElement('option');
      male.value ='male';
@@ -105,12 +117,13 @@ export function renderRegistrationPage() {
      email.id = 'email';
      email.name = 'email';
      email.placeholder = 'email';
-     email.required = 'true';
+     email.autocomplete = 'email';
+     email.required = true;
      registrationForm.appendChild(email);
 
      // Create password & confirm password fields
      let passwordConfirmPassword = document.createElement('div');
-     passwordConfirmPassword.classList.add('shared-field');
+     passwordConfirmPassword.id = 'shared_input_containers';
 
      let password = document.createElement('input');
      password.type = 'password';
@@ -142,6 +155,13 @@ export function renderRegistrationPage() {
      let imageUpload = document.createElement('div');
      imageUpload.classList.add('custom-file-upload');
 
+     // Add image upload label
+     let uploadButton = document.createElement('label');
+     uploadButton.htmlFor = 'image';
+     uploadButton.textContent = 'choose image';
+     uploadButton.classList.add('upload-btn');
+     imageUpload.appendChild(uploadButton);
+
      // Create image upload field
      let image = document.createElement('input');
      image.type = 'file';
@@ -155,13 +175,6 @@ export function renderRegistrationPage() {
      fileName.id = 'file_name';
      fileName.textContent = 'no file chosen';
      imageUpload.appendChild(fileName);
-
-     // Create remove image button
-     let removeImage = document.createElement('button');
-     removeImage.id = 'remove_image';
-     removeImage.classList.add('remove-btn');
-     removeImage.style.display = 'none';
-     removeImage.textContent = 'Remove image';
 
      registrationForm.appendChild(imageUpload);
 
@@ -191,13 +204,18 @@ export function renderRegistrationPage() {
      accountIssues.appendChild(loginText)
      formContainer.appendChild(accountIssues);
 
-    document.body.appendChild(formContainer);
+    // Add login container to #app div
+    const app = document.getElementById("app");
+    app.appendChild(formContainer);
 
     // Create script tag and link to js
     let scriptTag = document.createElement('script');
     scriptTag.src = '/static/js/onboarding.js';
     scriptTag.defer = true;
-    document.body.appendChild(scriptTag);
+    scriptTag.onload = function() {
+        setupImageUpload();
+    };
+    app.appendChild(scriptTag);
 
     // Attach event listener to handle registration via AJAX
     registrationForm.addEventListener("submit", async function (event) {
@@ -206,19 +224,19 @@ export function renderRegistrationPage() {
         if (event.target !== registrationForm) return; // Ensure accurate form submision
 
         let formData = new FormData();
-        FormData.append("first_name", document.getElementById('first_name').value);
-        FormData.append("last_name", document.getElementById('last_name').value);
-        FormData.append("username", document.getElementById('username').value);
-        FormData.append("age", document.getElementById('age').value);
-        FormData.append("gender", document.getElementById('gender').value);
-        FormData.append("email", document.getElementById('email').value);
-        FormData.append("password", document.getElementById('password').value);
-        FormData.append("confirm_password", document.getElementById('confirm_password').value);
-        FormData.append("bio", document.getElementById('bio').value);
+        formData.append("first_name", document.getElementById('first_name').value);
+        formData.append("last_name", document.getElementById('last_name').value);
+        formData.append("username", document.getElementById('username').value);
+        formData.append("age", document.getElementById('age').value);
+        formData.append("gender", document.getElementById('gender').value);
+        formData.append("email", document.getElementById('email').value);
+        formData.append("password", document.getElementById('password').value);
+        formData.append("confirm_password", document.getElementById('confirm_password').value);
+        formData.append("bio", document.getElementById('bio').value);
 
         let imageFile = document.getElementById('image').files[0];
         if (imageFile)  {
-            FormData.append("image", imageFile);
+            formData.append("image", imageFile);
         }
         
         try {
@@ -243,7 +261,7 @@ export function renderRegistrationPage() {
     });
 
      // Prevent 'sign up' link from being blocked
-     registerLink.addEventListener("click", function(event) {
+     loginLink.addEventListener("click", function(event) {
         event.stopPropagation();
         navigateTo("/login");
     });

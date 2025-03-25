@@ -1,6 +1,7 @@
-import { fetchErrorMessage } from '/static/js/form_error_message.js'
+import { navigateTo } from '/static/js/routes.js'
 
 export function renderLoginPage() {
+    
     // update document title
     document.title = 'login - real-time-forum';
 
@@ -21,7 +22,7 @@ export function renderLoginPage() {
     // create login tagline
     let loginTagline = document.createElement('h2');
     loginTagline.classList.add('login-tagline');
-    loginTagline.textContent = 'Welcome back, sign in to continue';
+    loginTagline.textContent = 'Sign in to Continue';
     loginSubContainer.appendChild(loginTagline);
 
     // create error message container
@@ -37,8 +38,6 @@ export function renderLoginPage() {
     errorText.style.color = 'red';
     loginSubContainer.appendChild(errorText);
     loginSubContainer.appendChild(errorMessageContainer);
-    
-    fetchErrorMessage(errorMessageContainer, '/login');
 
     // create login form
     let loginForm = document.createElement('form');
@@ -66,6 +65,7 @@ export function renderLoginPage() {
     // create submit button
     let loginButton = document.createElement('button');
     loginButton.type ='submit';
+    loginButton.id = 'login_btn';
     loginButton.textContent = 'login';
     loginForm.appendChild(loginButton)
     
@@ -77,6 +77,7 @@ export function renderLoginPage() {
     accountIssues.classList.add('account-issues');
 
     let registerOption = document.createElement('p');
+    registerOption.id = 'register_options';
     registerOption.textContent = 'Don\'t have an account? ';
 
     let registerLink = document.createElement('a');
@@ -88,25 +89,26 @@ export function renderLoginPage() {
     accountIssues.appendChild(registerOption);
     loginContainer.appendChild(accountIssues);
 
-    document.body.appendChild(loginContainer);
-    
-    
+    // Add login container to #app div
+    const app = document.getElementById("app");
+    app.appendChild(loginContainer);
 
-        // Attach event listener to handle login via AJAX
-        loginForm.addEventListener("submit", async function (event) {
-            event.preventDefault(); // Prevent full-page reload
+    
+    // Attach event listener to handle login via AJAX
+    loginForm.addEventListener("submit", async function (event) {
+        event.preventDefault(); // Prevent full-page reload
+    
+        if (event.target !== loginForm) return; // Ensure accurate form submision
+
+        let emailUsername = document.getElementById("email_username").value;
+        let password = document.getElementById("password").value;
         
-            if (event.target !== loginForm) return; // Ensure accurate form submision
-
-            let emailUsername = document.getElementById("email_username").value;
-            let password = document.getElementById("password").value;
-            
-            let requestBody = JSON.stringify({
-                email_username: emailUsername,
-                password: password,
-            });
-            
-            try {
+        let requestBody = JSON.stringify({
+            email_username: emailUsername,
+            password: password,
+        });
+        
+        try {
             let response = await fetch("/login", {
                 method: "POST",
                 headers: {
@@ -129,11 +131,10 @@ export function renderLoginPage() {
             document.getElementById("error_text").textContent = "Network Error, please try again";
         }
     });
-    
+
     // Prevent 'sign up' link from being blocked
     registerLink.addEventListener("click", function(event) {
         event.stopPropagation();
         navigateTo("/register");
     });
 }
-

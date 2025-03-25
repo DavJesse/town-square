@@ -13,7 +13,7 @@ func CreateUser(username, email, password string) (int64, error) {
 
 func CreateNewUser(user models.User) (int64, error) {
 	query := `INSERT INTO users (first_name, last_name, age, gender, username, email, password, bio, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-	result, err := db.Exec(query, user.Username, user.Email, user.Password, user.Bio, user.Image)
+	result, err := db.Exec(query, user.FirstName, user.LastName, user.Age, user.Gender, user.Username, user.Email, user.Password, user.Bio, user.Image)
 	if err != nil {
 		return 0, err
 	}

@@ -26,18 +26,30 @@ a {
     flex-direction: column;
 }
 
+.form-container input[type="text"],
+.form-container input[type="number"],
+.form-container input[type="email"],
+.form-container input[type="password"],
+.form-container select {
+    margin: 0 auto 15px auto;
+}
+
+#shared_input_containers {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
 /* Style the bio textarea */
 textarea {
     width: 100%;          /* Make it full-width inside the form */
-    max-width: 450px;     /* Set a max width */
     height: 100px;        /* Set a fixed height */
     resize: none;         /* Disable resizing */
     padding: 10px;        /* Add padding for spacing */
     border: 1px solid #ccc; /* Light border */
     border-radius: 5px;   /* Rounded edges */
     font-size: 14px;      /* Set font size */
-    margin-left: 12px;
-    margin-right: 12px;
+    margin: 0 auto 15px auto;
 }
 
 h1 {
@@ -56,7 +68,7 @@ h1 {
 
 /* Style the labels */
 form label {
-    display: block;  /* Ensures labels are on their own line */
+    display: block;
     text-align: left;
     font-size: 14px;
     font-weight: bold;
@@ -66,33 +78,47 @@ form label {
     letter-spacing: 1px;
 }
 
+#gender_label {
+    font-size: 18px;
+    margin: auto;
+}
+
+#file_name {
+    margin: 0 auto 15px auto;
+}
+
 /* Hide the default file input */
 input[type="file"] {
     display: none;  /* Hide the original input */
 }
 
 /* Style the label to act as a button */
-label[for="image"] {
-    width: 450px;
+.custom-file-upload label[for="image"] {
+    width: 100%;
     display: inline-block;
-    background-color: #0172eb;
+    background-color: #0000EE;
     color: white;
     padding: 10px;
     border: none;
     border-radius: 5px;
-    font-size: 20px;  /* Match font size */
-    font-weight: 400;
-    font-family: 'Roboto', sans-serif; /* Match font family */
+    font-size: 1rem;  /* Match font size */
     cursor: pointer;
     text-align: center;
     transition: background-color 0.3s;
-    margin-left: 12px;
-    margin-right: 12px;
+    margin: 0 auto 15px auto;
 }
 
 /* Hover effect */
-label[for="image"]:hover {
-    background-color: #0056b3;
+.custom-file-upload label[for="image"]:hover {
+    background-color: #1e1e99;
+}
+
+#gender {
+    font-size: 16px;
+    height: 44px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin: auto auto auto auto;
 }
 
 /* Show selected file name */
@@ -126,7 +152,7 @@ input {
 
 /* Style buttons */
 button {
-    background-color: #0172eb;
+    background-color: #0000EE;
     color: white;
     padding: 10px;
     border: none;
@@ -140,7 +166,7 @@ button {
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #1e1e99;
 }
 
 .custom-file-upload {
@@ -151,7 +177,7 @@ button:hover {
 }
 
 .upload-btn {
-    background-color: #007bff;
+    background-color: #0000EE;
     color: white;
     padding: 8px 15px;
     border-radius: 5px;
@@ -163,7 +189,7 @@ button:hover {
 }
 
 .upload-btn:hover {
-    background-color: #0056b3;
+    background-color: #1e1e99;
 }
 
 #image {
@@ -186,7 +212,7 @@ button:hover {
     font-size: 14px;
     font-weight: bold;
     margin-top: 5px;
-    display: inline-block;
+    display: none;
 }
 
 .remove-btn:hover {
@@ -208,7 +234,6 @@ button:hover {
     /* Adjust textareas */
     textarea {
         width: 100%;
-        max-width: 90%;
     }
 
     /* Adjust input fields for smaller screens */
@@ -222,9 +247,8 @@ button:hover {
     button, .upload-btn, .remove-btn {
         font-size: 16px; /* Smaller button font */
         padding: 8px;
-        width: 90%;
         display: block; /* Makes the button take up the full width of its container */
-        margin: 10px auto; /* Centers it horizontally */
+        margin: 0 auto 15px auto; /* Centers it horizontally */
         text-align: center; /* Ensures text inside is centered */
     }
 
@@ -234,6 +258,14 @@ button:hover {
         margin-right: 15px;
         font-size: 16px;
         align-items: center;
+    }
+
+    #gender_label {
+        font-size: 16px;
+    }
+
+    #gender {
+        font-size: 14px;
     }
 }
 

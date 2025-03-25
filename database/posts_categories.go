@@ -1,12 +1,12 @@
 package database
 
 import (
+	"database/sql"
 	"fmt"
+	"log"
 	"strings"
 
-	"database/sql"
 	"forum/models"
-	"log"
 )
 
 // initializes the categories table with the predefined categories
@@ -105,13 +105,32 @@ func FetchCategoryPostsWithID(categoryID int) ([]models.PostWithCategories, erro
 
 	// Fetch posts for the category
 	query := `
-        SELECT p.uuid, p.title, p.content, p.media, p.user_id, p.created_at,
-               COALESCE(l.likes_count, 0) AS likes_count, COALESCE(d.dislikes_count, 0) AS dislikes_count
-        FROM posts p
-        JOIN post_categories pc ON p.uuid = pc.post_id
-        LEFT JOIN (SELECT post_id, COUNT(*) AS likes_count FROM likes GROUP BY post_id) l ON p.uuid = l.post_id
-        LEFT JOIN (SELECT post_id, COUNT(*) AS dislikes_count FROM dislikes GROUP BY post_id) d ON p.uuid = d.post_id
-        WHERE pc.category_id = ?`
+		SELECT 
+			p.uuid,
+			p.title,
+			p.content,
+			p.media,
+			p.user_id,
+			p.created_at,
+			COALESCE(l.likes_count, 0) AS likes_count,
+			COALESCE(d.dislikes_count, 0) AS dislikes_count
+		FROM posts p
+		INNER JOIN post_categories pc ON p.uuid = pc.post_id
+		LEFT JOIN (
+			SELECT post_id, COUNT(*) AS likes_count 
+			FROM likes 
+			GROUP BY post_id
+		) l ON p.uuid = l.post_id
+		LEFT JOIN (
+			SELECT post_id, COUNT(*) AS dislikes_count 
+			FROM dislikes 
+			GROUP BY post_id
+		) d ON p.uuid = d.post_id
+		WHERE pc.category_id = ?
+		GROUP BY p.uuid  -- Added to handle potential duplicates
+		ORDER BY p.created_at DESC
+	`
+
 	rows, err := db.Query(query, categoryID)
 	if err != nil {
 		log.Println("Error querying posts by category ID:", err)

@@ -204,7 +204,9 @@ export function renderRegistrationPage() {
      accountIssues.appendChild(loginText)
      formContainer.appendChild(accountIssues);
 
-    document.body.appendChild(formContainer);
+    // Add login container to #app div
+    const app = document.getElementById("app");
+    app.appendChild(formContainer);
 
     // Create script tag and link to js
     let scriptTag = document.createElement('script');
@@ -213,7 +215,7 @@ export function renderRegistrationPage() {
     scriptTag.onload = function() {
         setupImageUpload();
     };
-    document.body.appendChild(scriptTag);
+    app.appendChild(scriptTag);
 
     // Attach event listener to handle registration via AJAX
     registrationForm.addEventListener("submit", async function (event) {

@@ -1,0 +1,54 @@
+.navbar-center {
+    display: flex;
+    justify-content: space-evenly; /* Ensures even spacing */
+    align-items: center;
+    width: 33%; /* Adjust as needed */
+    margin: 0 auto; /* Centers the navbar */
+    padding: 10px 0;
+}
+
+.navbar-center .material-symbols-outlined {
+    font-size: 36px; /* Adjust size */
+    cursor: pointer;
+    transition: color 0.3s ease-in-out;
+}
+
+.navbar-center .material-symbols-outlined:hover {
+    color: #1e1e99; /* Change color on hover */
+}
+
+#search_cluster {
+    display: flex;
+    flex-direction: row;
+}
+
+#search_cluster {
+    border: 1px solid #ccc;
+    border-radius: 35px;
+    width: max-content;
+    height: 45px;
+    align-items: center;
+}
+
+#search_btn {
+    border: none;
+    background: none;
+    margin: auto;
+    width: max-content;
+}
+
+#search_icon {
+    font-size: 35px;
+    color: #0000EE;
+    margin: auto 0 auto auto;
+}
+
+#search_input {
+    font-size: 16px;
+    color: #333333;
+    outline: none;
+    border: none;
+    background: transparent;
+    width: calc(100% - 40px);
+    margin-left: 10px;
+}

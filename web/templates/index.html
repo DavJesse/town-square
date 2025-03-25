@@ -10,28 +10,15 @@
     <link rel="stylesheet" href="/static/css/error.css">
     <link rel="stylesheet" href="/static/css/form.css">
     <link rel="stylesheet" href="/static/css/onboarding.css">
-    <link rel="stylesheet" href="/static/css/posts_create.css">
+    <link rel="stylesheet" href="/static/css/navbar.css">
+    <!-- <link rel="stylesheet" href="/static/css/posts_create.css"> -->
     <link rel="stylesheet" href="/static/css/post_display.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@700&display=swap" rel="stylesheet">
-    <script defer type="module" src="/static/js/toggle_sidebar.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@700&display=swap" >
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    
 </head>
 <body>
-    {{ if .Redirect }}
+    <div id="app"></div>
         <script defer type="module" src="/static/js/routes.js"></script>
-        <script defer type="module" src="/static/js/login.js"></script>
-    {{ else }}
-        <script defer type="module" src="/static/js/routes.js"></script>
-        <script defer type="module" src="/static/js/render_main_layout.js"></script>
-        <script defer type="module" src="/static/js/onboarding.js"></script>
-        <script defer type="module" src="/static/js/search_posts.js"></script>
-        <script defer type="module" src="/static/js/profile.js"></script>
-        <script defer type="module" src="/static/js/form_create_post.js"></script>
-        <script defer type="module" src="/static/js/render_navbar.js"></script>
-        <script defer type="module" src="/static/js/render_posts.js"></script>
-        <script defer type="module" src="/static/js/render_categories.js"></script>
-        <script defer type="module" src="/static/js/fetch_post_display.js"></script>
-        <script defer type="module" src="/static/js/fetch_category_posts.js"></script>
-        <script defer type="module" src="/static/js/index.js"></script>
-    {{ end }}
 </body>
 </html>

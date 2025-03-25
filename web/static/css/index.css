@@ -49,7 +49,7 @@
 }
 
 .sidebar__list-item:hover {
-    background-color: #0172eb;
+    background-color: #1e1e99;
     color: white;
     transform: scale(1.05);
 }
@@ -70,7 +70,7 @@
 .main-content__heading {
     font-size: 26px;
     letter-spacing: 1px;
-    color: #0172eb;
+    color: #0000EE;
     margin-bottom: 20px;
     font-weight: 800;
 }
@@ -121,7 +121,7 @@
 .actions button {
     padding: 8px 15px;
     font-size: 14px;
-    background-color: #0172eb;
+    background-color: #0000EE;
     color: white;
     border: none;
     border-radius: 5px;
@@ -130,7 +130,7 @@
 }
 
 .actions button:hover {
-    background-color: #0056b3;
+    background-color: #1e1e99;
 }
 
 .header-buttons {

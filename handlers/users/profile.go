@@ -13,57 +13,38 @@ import (
 func ViewUserProfile(w http.ResponseWriter, r *http.Request) {
 	session, logged := database.IsLoggedIn(r)
 	if !logged {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 
 	userData, err := database.GetUserbySessionID(session.SessionID)
-	// fmt.Printf("UserData retrieved: %+v\n", userData)  // Add debug logging
 	if err != nil {
-		log.Printf("Error getting user: %v\n", err) // Add error logging
-		w.Header().Set("Content-Type", "application/json")
-		r := models.Response{
-			Code:     http.StatusTemporaryRedirect,
-			Message:  "Error getting user",
-			Redirect: "/login",
-		}
-		json.NewEncoder(w).Encode(r)
-		// http.Redirect(w, r, "/login", http.StatusSeeOther)
+		log.Printf("Error getting user: %v\n", err)
+		http.Error(w, "Error retrieving user data", http.StatusInternalServerError)
 		return
 	}
 
-	UserPosts, err := database.PostsFilterByUser(userData.ID)
+	userPosts, err := database.PostsFilterByUser(userData.ID)
 	if err != nil {
-		log.Printf("Error getting posts: %v\n", err) // Add error logging
-		// w.Header().Set("Content-Type", "application/json")
-		// r := models.Response{
-		// 	Code:     http.StatusOK,
-		// 	Message:  "Error getting posts",
-		// 	Redirect: "/login",
-		// }
-		// json.NewEncoder(w).Encode(r)
-		// return
+		log.Printf("Error getting posts: %v\n", err)
+		// Continue execution but return empty posts if an error occurs
+		userPosts = []models.Post{}
 	}
 
-	// Combine user data and user posts into a single struct
+	// Combine user data and user posts
 	profileData := struct {
-		User  models.User
-		Posts []models.Post
+		User  models.User   `json:"user"`
+		Posts []models.Post `json:"posts"`
 	}{
 		User:  userData,
-		Posts: UserPosts,
+		Posts: userPosts,
 	}
-	// Debug logs
-	// fmt.Println(profileData.User)
-	// fmt.Println("-------")
-	// fmt.Println(profileData.Posts)
 
 	w.Header().Set("Content-Type", "application/json")
-	req := models.Response{
-		Code:     http.StatusOK,
-		Message:  "Error getting posts",
-		Redirect: "",
-		Data:     profileData,
-	}
-	json.NewEncoder(w).Encode(req)
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(models.Response{
+		Code:    http.StatusOK,
+		Message: "Profile data retrieved",
+		Data:    profileData,
+	})
 }

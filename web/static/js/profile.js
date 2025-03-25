@@ -1,11 +1,6 @@
 import { renderNavBar } from '/static/js/navbar.js';
 
-(() => {
-    console.log('render');
-})();
-
 export function renderProfilePage() {
-    console.log("renderProfilePage() is being called");
     renderNavBar();
     let profileBody = document.createElement('div');
     profileBody.classList.add('container');

@@ -99,7 +99,7 @@ export function renderProfilePage() {
     
     // Add Posts Section            
     let postsContainer = document.createElement('div');
-    postsContainer.id = 'posts-container';
+    postsContainer.id = 'posts_container';
     
     fetch('/profile', {
         method: 'GET',

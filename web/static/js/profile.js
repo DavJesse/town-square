@@ -84,7 +84,7 @@ export function renderProfilePage() {
     
     let likedPostsButton = document.createElement('button');
     likedPostsButton.classList.add('posts-button');
-    likedPostsLink.appendChild(likedPostsButton);
+    likedPostsButton.appendChild(likedPostsLink);
     postsButtonContainer.appendChild(likedPostsLink);
     
     let myPostsLink = document.createElement('a');
@@ -93,7 +93,7 @@ export function renderProfilePage() {
     
     let myPostsButton = document.createElement('button');
     myPostsButton.classList.add('posts-button');
-    myPostsLink.appendChild(myPostsButton);
+    myPostsButton.appendChild(myPostsLink);
     postsButtonContainer.appendChild(myPostsLink);
     postsCard.appendChild(postsButtonContainer);    
     

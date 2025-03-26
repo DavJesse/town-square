@@ -54,6 +54,18 @@
     background-color: #FFFFFF;
     border-radius: 15px;
     min-height: 300px;
+    display: flex;
+    flex-direction: row;
+}
+
+#image_container {
+    width: fit-content;
+}
+
+#profile_info_container {
+    margin: 0 auto 0 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 #profile_pic {

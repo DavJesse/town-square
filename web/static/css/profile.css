@@ -2,7 +2,10 @@
     display: flex;
     justify-content: space-evenly; /* Ensures even spacing */
     align-items: center;
-    width: 33%; /* Adjust as needed */
-    margin: 0 auto; /* Centers the navbar */
-    padding: 10px 0;
+    width: 100vw;  /* Full viewport width */
+    margin: 0;     /* Remove auto margin if it's centering the content */
+}
+
+#left_cluster, #center_cluster, #right_cluster {
+    width: 33.3%;
 }

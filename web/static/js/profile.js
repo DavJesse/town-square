@@ -1,9 +1,10 @@
 import { renderNavBar } from '/static/js/navbar.js';
+import { renderLoginPage } from '/static/js/login.js';
 
 export function renderProfilePage() {
     renderNavBar();
 
-    // Add container to hold left cluster of page
+    // Add container to hold left profile page content
     let profilePage = document.createElement('div');
     profilePage.classList.add('profile-page');
     profilePage.id = 'profile_page';
@@ -28,6 +29,11 @@ export function renderProfilePage() {
     let centerCluster = document.createElement('div');
     centerCluster.classList.add('center-cluster');
     centerCluster.id = 'center_cluster';
+
+     // Add container for right cluster
+     let rightCluster = document.createElement('div');
+     rightCluster.classList.add('right-cluster');
+     rightCluster.id = 'right_cluster';
 
     // Add bio card to hold user's basic information
     let bioCard = document.createElement('div');
@@ -104,7 +110,19 @@ export function renderProfilePage() {
             'Accept': 'application/json'
         }
     })
-    .then(response => response.json())
+
+    .then(response => {
+        if (!response.ok) { 
+            // If the response is not OK, check if it's a 401 (Unauthorized)
+            if (response.status === 401) {
+                renderLoginPage();  // Redirect to login page
+                return;
+            }
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+
     .then(data => {
         if (data.code === 200) {
             
@@ -180,8 +198,10 @@ export function renderProfilePage() {
     
     // Append clusters to app
     let app = document.getElementById("app")
+    app.innerHTML = ""
     profilePage.appendChild(leftCluster);
     profilePage.appendChild(centerCluster);
+    profilePage.appendChild(rightCluster)
     app.appendChild(profilePage);
 
     // Add script tag and link to js

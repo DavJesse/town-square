@@ -86,9 +86,8 @@ export function renderProfilePage() {
     myPostsButton.classList.add('posts-button');
     myPostsButton.id = 'my_posts_button';
     myPostsButton.appendChild(myPostsLink);
-    postsButtonContainer.appendChild(myPostsLink);
-    postsCard.appendChild(postsButtonContainer);    
-
+    postsButtonContainer.appendChild(myPostsButton);
+    
     let likedPostsLink = document.createElement('a');
     likedPostsLink.href = '/liked-posts';
     likedPostsLink.textContent = 'posts I\'ve liked';
@@ -97,11 +96,13 @@ export function renderProfilePage() {
     likedPostsButton.classList.add('posts-button');
     likedPostsButton.id = 'liked_posts_button';
     likedPostsButton.appendChild(likedPostsLink);
-    postsButtonContainer.appendChild(likedPostsLink);    
+    postsButtonContainer.appendChild(likedPostsButton);    
+    postsCard.appendChild(postsButtonContainer);    
     
     // Add Posts Section            
     let postsContainer = document.createElement('div');
     postsContainer.id = 'posts_container';
+    postsCard.appendChild(postsContainer);
     
     fetch('/profile', {
         method: 'GET',
@@ -188,13 +189,13 @@ export function renderProfilePage() {
     .catch(error => {
         console.error('Error:', error);
     });
+
     // Append elements to left cluster
     leftCluster.appendChild(onlineUsersCard);
     
     // Append elements to center cluster
     centerCluster.appendChild(bioCard);
     centerCluster.appendChild(postsCard);
-    centerCluster.appendChild(postsContainer);
     
     // Append page elements to app
     let app = document.getElementById("app")

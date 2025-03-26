@@ -37,6 +37,16 @@ export function renderProfilePage() {
     let bioCard = document.createElement('div');
     bioCard.classList.add('bio-card');
     bioCard.id = 'bio_card';
+
+    // Add container to hold user's image information
+    let imageContainer = document.createElement('div');
+    imageContainer.classList.add('image-container');
+    imageContainer.id = 'image_container';
+
+    // Add container to hold user's text information
+    let profileInfoContainer = document.createElement('div');
+    profileInfoContainer.classList.add('profile-info-container');
+    profileInfoContainer.id = 'profile_info_container';
     
     // Add user image for bio card
     let profilePic = document.createElement('img');
@@ -144,13 +154,15 @@ export function renderProfilePage() {
             profilePic.src = user?.image?`/static/images/${user.image}` : '/static/user-circle-svgrepo-com.svg';
             
             // Append user details to bioCard
-            bioCard.appendChild(bioTitle);
-            bioCard.appendChild(nickname);
-            bioCard.appendChild(email);
-            bioCard.appendChild(gender);
-            bioCard.appendChild(age);
-            bioCard.appendChild(bioParagraph);
-            bioCard.appendChild(profilePic);            
+            profileInfoContainer.appendChild(bioTitle);
+            profileInfoContainer.appendChild(nickname);
+            profileInfoContainer.appendChild(email);
+            profileInfoContainer.appendChild(gender);
+            profileInfoContainer.appendChild(age);
+            profileInfoContainer.appendChild(bioParagraph);
+            imageContainer.appendChild(profilePic);
+            bioCard.appendChild(profileInfoContainer);
+            bioCard.appendChild(imageContainer);            
             
             // Add Posts
             if (posts?.length > 0) {

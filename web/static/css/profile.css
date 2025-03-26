@@ -1,3 +1,4 @@
+/* General page rules */
 #profile_page {
     display: flex;
     justify-content: space-evenly; /* Ensures even spacing */
@@ -17,6 +18,22 @@
     width: 25%;
 }
 
+/* Left cluster rules */
+#online_users_card {
+    margin: 40px auto auto auto;
+    width: 90%;
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    min-height: 300px;
+}
+
+#online_users_title {
+    margin: 10px auto auto 30px;
+    color: #0000EE;
+    font-size: 24px;
+}
+
+/* Center cluster */
 #center_cluster {
     width: 50%;
     gap: 20px;
@@ -30,26 +47,20 @@
     margin: 0 auto;
 }
 
-#online_users_card {
-    margin: 80px auto auto auto;
-    width: 90%;
-    background-color: #FFFFFF;
-    border-radius: 15px;
-    min-height: 300px;
-}
-
-#online_users_title {
-    margin: 10px auto auto 30px;
-    color: #0000EE;
-    font-size: 24px;
-}
 
 #bio_card {
-    margin: 80px auto auto auto;
+    margin: 40px auto auto auto;
     width: 95%;
     background-color: #FFFFFF;
     border-radius: 15px;
     min-height: 300px;
+}
+
+#profile_pic {
+    width: 250px;  /* Adjust to preferred size */
+    height: 250px;
+    object-fit: cover; /* Prevents stretching */
+    border-radius: 50%; /* Optional: Makes it circular */
 }
 
 #posts_container {

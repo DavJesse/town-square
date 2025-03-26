@@ -30,22 +30,24 @@ func VerifyUser(email, password string) (bool, error) {
 
 // GetUserbySessionID function
 func GetUserbySessionID(UUID string) (models.User, error) {
-	// fmt.Println("Session ID:", UUID)
-	query := `SELECT id, username, email, bio, image, created_at FROM users WHERE session_id = ?`
+	query := `SELECT id, first_name, last_name, age, gender, username, email, bio, image, created_at 
+	          FROM users WHERE session_id = ?`
 
 	var user models.User
 	var bio, image sql.NullString // Use sql.NullString for nullable fields
+	var firstName, lastName, gender sql.NullString
+	var age sql.NullInt64 // Use sql.NullInt64 for nullable integers
 
 	err := db.QueryRow(query, UUID).Scan(
 		&user.ID,
-		&user.FirstName,
-		&user.LastName,
-		&user.Age,
-		&user.Gender,
+		&firstName,
+		&lastName,
+		&age,
+		&gender,
 		&user.Username,
 		&user.Email,
-		&bio,   // Scan into NullString
-		&image, // Scan into NullString
+		&bio,
+		&image,
 		&user.CreatedAt,
 	)
 
@@ -54,7 +56,19 @@ func GetUserbySessionID(UUID string) (models.User, error) {
 		return models.User{}, err
 	}
 
-	// Convert NullString to string, using empty string if NULL
+	// Convert NullString to string (use empty string if NULL)
+	if firstName.Valid {
+		user.FirstName = firstName.String
+	}
+	if lastName.Valid {
+		user.LastName = lastName.String
+	}
+	if gender.Valid {
+		user.Gender = gender.String
+	}
+	if age.Valid {
+		user.Age = int(age.Int64)
+	}
 	if bio.Valid {
 		user.Bio = bio.String
 	}

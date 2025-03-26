@@ -60,12 +60,14 @@
 
 #image_container {
     width: fit-content;
+    margin: auto 10px;
 }
 
 #profile_info_container {
     margin: 0 auto 0 10px;
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 #profile_pic {

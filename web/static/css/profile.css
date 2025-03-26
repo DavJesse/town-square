@@ -81,7 +81,7 @@
     color: #0000EE;
 }
 
-#nickname, #email, #gender, #age, #bio_paragraph {
+#nickname, #email, #gender_text, #age, #bio_paragraph {
     font-size: 20px;
     color: #181818;
 }

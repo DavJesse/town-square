@@ -67,7 +67,7 @@ export function renderProfilePage() {
     
     // Add user gender for bio card
     let gender = document.createElement('p');
-    gender.id = 'gender';
+    gender.id = 'gender_text';
     
     // Add user age for bio card
     let age = document.createElement('p');

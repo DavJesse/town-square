@@ -78,24 +78,26 @@ export function renderProfilePage() {
     postsButtonContainer.id = 'posts_button_container';
     
     // Create buttons to toggle prefered posts
-    let likedPostsLink = document.createElement('a');
-    likedPostsLink.href = '/liked-posts';
-    likedPostsLink.textContent = 'posts I\'ve liked';
-    
-    let likedPostsButton = document.createElement('button');
-    likedPostsButton.classList.add('posts-button');
-    likedPostsButton.appendChild(likedPostsLink);
-    postsButtonContainer.appendChild(likedPostsLink);
-    
     let myPostsLink = document.createElement('a');
     myPostsLink.href = '/my-posts';
     myPostsLink.textContent = 'my posts';
     
     let myPostsButton = document.createElement('button');
     myPostsButton.classList.add('posts-button');
+    myPostsButton.id = 'my_posts_button';
     myPostsButton.appendChild(myPostsLink);
     postsButtonContainer.appendChild(myPostsLink);
     postsCard.appendChild(postsButtonContainer);    
+
+    let likedPostsLink = document.createElement('a');
+    likedPostsLink.href = '/liked-posts';
+    likedPostsLink.textContent = 'posts I\'ve liked';
+    
+    let likedPostsButton = document.createElement('button');
+    likedPostsButton.classList.add('posts-button');
+    likedPostsButton.id = 'liked_posts_button';
+    likedPostsButton.appendChild(likedPostsLink);
+    postsButtonContainer.appendChild(likedPostsLink);    
     
     // Add Posts Section            
     let postsContainer = document.createElement('div');

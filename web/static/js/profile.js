@@ -161,8 +161,8 @@ export function renderProfilePage() {
             profileInfoContainer.appendChild(age);
             profileInfoContainer.appendChild(bioParagraph);
             imageContainer.appendChild(profilePic);
-            bioCard.appendChild(profileInfoContainer);
             bioCard.appendChild(imageContainer);            
+            bioCard.appendChild(profileInfoContainer);
             
             // Add Posts
             if (posts?.length > 0) {

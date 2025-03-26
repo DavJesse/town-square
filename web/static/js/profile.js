@@ -208,10 +208,4 @@ export function renderProfilePage() {
     profilePage.appendChild(rightCluster)
     app.appendChild(profilePage);
     
-    // Add script tag and link to js
-    let script = document.createElement('script');
-    script.src = '/static/js/index.js';
-    script.type = 'module';
-    script.defer = true;
-    document.body.appendChild(script);
 }

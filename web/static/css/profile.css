@@ -47,7 +47,6 @@
     margin: 0 auto;
 }
 
-
 #bio_card {
     margin: 40px auto auto auto;
     width: 95%;
@@ -63,6 +62,13 @@
     margin: auto 10px;
 }
 
+#profile_pic {
+    width: 250px;  /* Adjust to preferred size */
+    height: 250px;
+    object-fit: cover; /* Prevents stretching */
+    border-radius: 50%; /* Optional: Makes it circular */
+}
+
 #profile_info_container {
     margin: 0 auto 0 10px;
     display: flex;
@@ -70,11 +76,14 @@
     width: 100%;
 }
 
-#profile_pic {
-    width: 250px;  /* Adjust to preferred size */
-    height: 250px;
-    object-fit: cover; /* Prevents stretching */
-    border-radius: 50%; /* Optional: Makes it circular */
+#bio_title {
+    font-size: 24px;
+    color: #0000EE;
+}
+
+#nickname, #email, #gender, #age, #bio_paragraph {
+    font-size: 20px;
+    color: #181818;
 }
 
 #posts_container {

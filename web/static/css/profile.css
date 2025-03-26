@@ -3,7 +3,7 @@
     justify-content: space-evenly; /* Ensures even spacing */
     align-items: flex-start; /* Aligns content to the top */
     width: 100vw;  /* Full viewport width */
-    margin: 0;     /* Ensure no auto margin is applied */
+    margin: 80px 0 0 0;     /* Ensure no auto margin is applied */
     padding-top: 20px; /* Adds some spacing from the top */
     min-height: 100vh; /* Ensure it covers the full viewport height */
 }

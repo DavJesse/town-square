@@ -130,8 +130,8 @@ export function renderProfilePage() {
         if (data.code === 200) {
             
             // Extract data
-            const user = data.data.User;
-            const posts = data.data.Posts;
+            const user = data.data.user;
+            const posts = data.data.posts;
             document.title = user.username;
             
             // Populate bioCard with user data

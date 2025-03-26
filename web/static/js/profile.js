@@ -81,6 +81,7 @@ export function renderProfilePage() {
     let myPostsLink = document.createElement('a');
     myPostsLink.href = '/my-posts';
     myPostsLink.textContent = 'my posts';
+    myPostsLink.id = 'my_posts_link';
     
     let myPostsButton = document.createElement('button');
     myPostsButton.classList.add('posts-button');
@@ -91,6 +92,7 @@ export function renderProfilePage() {
     let likedPostsLink = document.createElement('a');
     likedPostsLink.href = '/liked-posts';
     likedPostsLink.textContent = 'posts I\'ve liked';
+    likedPostsLink.id = 'liked_posts_link';
     
     let likedPostsButton = document.createElement('button');
     likedPostsButton.classList.add('posts-button');

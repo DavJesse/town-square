@@ -26,7 +26,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    width: 50%;
+    width: 65%;
     margin: 0 auto;
 }
 
@@ -58,4 +58,14 @@
         background-color: #FFFFFF;
         border-radius: 15px;
         min-height: 300px;
+}
+
+#liked_posts_button, #my_posts_button {
+    margin: auto 5px 0 5px;
+    background-color: #0000EE;
+}
+
+#liked_posts_link, #my_posts_link {
+    color: #FFFFFF;
+    font-size: 18px;
 }

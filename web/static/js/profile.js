@@ -1,66 +1,64 @@
 import { renderNavBar } from '/static/js/navbar.js';
 import { renderLoginPage } from '/static/js/login.js';
 
-export function renderProfilePage() {
-    renderNavBar();
-
+export function renderProfilePage() {    
     // Add container to hold left profile page content
     let profilePage = document.createElement('div');
     profilePage.classList.add('profile-page');
     profilePage.id = 'profile_page';
-
+    
     // Add container to hold left cluster of page
     let leftCluster = document.createElement('div');
     leftCluster.classList.add('left-cluster');
     leftCluster.id = 'left_cluster';
-
+    
     // Add card to hold online users
     let onlineUsersCard = document.createElement('div');
     onlineUsersCard.classList.add('online-users-card');
     onlineUsersCard.id = 'online_users_card';
-
+    
     // Add title for online users card
     let onlineUsersTitle = document.createElement('h3');
     onlineUsersTitle.id = 'online_users_title';
     onlineUsersTitle.textContent = 'who\'s online?';
     onlineUsersCard.appendChild(onlineUsersTitle);
-
+    
     // Add container for center cluster
     let centerCluster = document.createElement('div');
     centerCluster.classList.add('center-cluster');
     centerCluster.id = 'center_cluster';
-
-     // Add container for right cluster
-     let rightCluster = document.createElement('div');
-     rightCluster.classList.add('right-cluster');
-     rightCluster.id = 'right_cluster';
-
+    
+    // Add container for right cluster
+    let rightCluster = document.createElement('div');
+    rightCluster.classList.add('right-cluster');
+    rightCluster.id = 'right_cluster';
+    
     // Add bio card to hold user's basic information
     let bioCard = document.createElement('div');
     bioCard.classList.add('bio-card');
     bioCard.id = 'bio_card';
-
+    
     // Add user image for bio card
     let profilePic = document.createElement('img');
     profilePic.id = 'profile_pic';
     profilePic.alt = 'profile image';
-
+    
     // Add title for bio card
     let bioTitle = document.createElement('h3');
     bioTitle.id = 'bio_title';
-
+    
     // Add user nickname for bio card
     let nickname = document.createElement('p');
     nickname.id = 'nickname';
-
+    
     // Add user email for bio card
     let email = document.createElement('p');
     email.id = 'email';
-
+    
     // Add user gender for bio card
     let gender = document.createElement('p');
     gender.id = 'gender';
-
+    
     // Add user age for bio card
     let age = document.createElement('p');
     age.id = 'age';
@@ -73,26 +71,26 @@ export function renderProfilePage() {
     let postsCard = document.createElement('div');
     postsCard.classList.add('posts-card');
     postsCard.id = 'posts_card';
-
+    
     // Add posts card to hold user's recent posts
     let postsButtonContainer = document.createElement('div');
     postsButtonContainer.classList.add('posts-button-container');
     postsButtonContainer.id = 'posts_button_container';
-
+    
     // Create buttons to toggle prefered posts
     let likedPostsLink = document.createElement('a');
     likedPostsLink.href = '/liked-posts';
     likedPostsLink.textContent = 'posts I\'ve liked';
-
+    
     let likedPostsButton = document.createElement('button');
     likedPostsButton.classList.add('posts-button');
     likedPostsLink.appendChild(likedPostsButton);
     postsButtonContainer.appendChild(likedPostsLink);
-
+    
     let myPostsLink = document.createElement('a');
     myPostsLink.href = '/my-posts';
     myPostsLink.textContent = 'my posts';
-
+    
     let myPostsButton = document.createElement('button');
     myPostsButton.classList.add('posts-button');
     myPostsLink.appendChild(myPostsButton);
@@ -110,7 +108,7 @@ export function renderProfilePage() {
             'Accept': 'application/json'
         }
     })
-
+    
     .then(response => {
         if (!response.ok) { 
             // If the response is not OK, check if it's a 401 (Unauthorized)
@@ -139,7 +137,7 @@ export function renderProfilePage() {
             age.textContent = user.age;
             bioParagraph.textContent = user.bio;
             profilePic.src = user?.image?`/static/images/${user.image}` : '/static/user-circle-svgrepo-com.svg';
-
+            
             // Append user details to bioCard
             bioCard.appendChild(bioTitle);
             bioCard.appendChild(nickname);
@@ -154,19 +152,19 @@ export function renderProfilePage() {
                 posts.forEach(post => {
                     let postElement = document.createElement('div');
                     postElement.classList.add('card');
-
+                    
                     let postTitle = document.createElement('p');
                     postTitle.classList.add('card__title');
                     postTitle.id = 'post_title';
                     postTitle.textContent = post.title;
                     postElement.appendChild(postTitle);
-
+                    
                     let postContent = document.createElement('p');
                     postContent.classList.add('card__description');
                     postContent.id = 'post_content';
                     postContent.textContent = post.content;
                     postElement.appendChild(postContent);
-
+                    
                     if (post.media) {
                         let postMedia = document.createElement('img');
                         postMedia.id = 'post_media';
@@ -190,20 +188,21 @@ export function renderProfilePage() {
     });
     // Append elements to left cluster
     leftCluster.appendChild(onlineUsersCard);
-
+    
     // Append elements to center cluster
     centerCluster.appendChild(bioCard);
     centerCluster.appendChild(postsCard);
     centerCluster.appendChild(postsContainer);
     
-    // Append clusters to app
+    // Append page elements to app
     let app = document.getElementById("app")
     app.innerHTML = ""
+    renderNavBar();
     profilePage.appendChild(leftCluster);
     profilePage.appendChild(centerCluster);
     profilePage.appendChild(rightCluster)
     app.appendChild(profilePage);
-
+    
     // Add script tag and link to js
     let script = document.createElement('script');
     script.src = '/static/js/index.js';

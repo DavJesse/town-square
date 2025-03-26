@@ -38,6 +38,10 @@ func GetUserbySessionID(UUID string) (models.User, error) {
 
 	err := db.QueryRow(query, UUID).Scan(
 		&user.ID,
+		&user.FirstName,
+		&user.LastName,
+		&user.Age,
+		&user.Gender,
 		&user.Username,
 		&user.Email,
 		&bio,   // Scan into NullString

@@ -12,7 +12,7 @@ export function renderLogoutButton() {
     // Create "Create Post" text element
     let logoutText = document.createElement('span');
     logoutText.id = 'logout_text';
-    logoutText.textContent = 'logout';
+    logoutText.textContent = 'Logout';
 
     // Append elements
     logoutButton.appendChild(logoutIcon);
@@ -24,6 +24,6 @@ export function renderLogoutButton() {
 export function setLogoutButtonListeners(logoutButton) {
     // Add Event listener for clicking create posts button
     logoutButton.addEventListener('click', () => {
-        alert('Create post button clicked');
+        alert('Logout button clicked');
     });
 }

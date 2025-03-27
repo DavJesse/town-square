@@ -1,7 +1,6 @@
-#create_post_button {
+#create_post_button, #logout_button {
     position: fixed;
     right: 32px;
-    bottom: 32px;
     width: 64px;
     height: 64px;
     border-radius: 50%;
@@ -17,8 +16,16 @@
     transition: width 0.3s ease, border-radius 0.3s ease, background-color 0.3s ease;
 }
 
+#create_post_button {
+    bottom: 32px;
+}
+
+#logout_button {
+    bottom: 116px;
+}
+
 /* Hover state - Expands into a pill */
-#create_post_button:hover {
+#create_post_button:hover, #logout_button:hover {
     width: 160px;
     border-radius: 9999px;
     background-color: #FFFFFF;
@@ -27,7 +34,7 @@
 }
 
 /* Plus sign */
-#plus_sign {
+#plus_sign, #logout_icon {
     font-size: 24px;
     font-weight: bold;
     transition: opacity 0.2s ease;
@@ -35,7 +42,7 @@
 }
 
 /* Create Post text */
-#create_post_text {
+#create_post_text, #logout_text {
     font-size: 18px;
     font-weight: bold;
     white-space: nowrap;
@@ -45,10 +52,10 @@
 }
 
 /* Hover effects */
-#create_post_button:hover #plus_sign {
+#create_post_button:hover #plus_sign, #logout_button:hover #logout_icon{
     opacity: 0; /* Smoothly fades out */
 }
 
-#create_post_button:hover #create_post_text {
+#create_post_button:hover #create_post_text, #logout_button:hover #logout_text {
     opacity: 1; /* Smoothly fades in */
 }

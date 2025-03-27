@@ -168,8 +168,11 @@ export function renderProfilePage() {
             
             // Extract data
             const user = data.data.user;
-            const posts = data.data.posts;
-            document.title = user.username;
+            const userPosts = data.data.user_posts;
+            const likedPosts = data.data.liked_posts;
+
+            // Update document title to reflect user's profile
+            document.title = `Profile: ${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)}`;
             
             // Populate bioCard with user data
             bioTitle.textContent = `${user.first_name} ${user.last_name}`;
@@ -195,8 +198,8 @@ export function renderProfilePage() {
             bioCard.appendChild(profileInfoContainer);
             
             // Add Posts
-            if (posts?.length > 0) {
-                posts.forEach(post => {
+            if (userPosts?.length > 0) {
+                userPosts.forEach(post => {
                     let postElement = document.createElement('div');
                     postElement.classList.add('card');
                     

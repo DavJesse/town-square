@@ -12,14 +12,43 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    transform: all 0.3 ease;
+    overflow: hidden;
+    padding: 0 16px;
+    transition: width 0.3s ease, border-radius 0.3s ease, background-color 0.3s ease;
 }
 
+/* Hover state - Expands into a pill */
 #create_post_button:hover {
     width: 160px;
+    border-radius: 9999px;
+    background-color: #FFFFFF;
+    color: #0000EE;
+    justify-content: center;
 }
 
+/* Plus sign */
 #plus_sign {
     font-size: 24px;
     font-weight: bold;
+    transition: opacity 0.2s ease;
+    position: absolute;
+}
+
+/* Create Post text */
+#create_post_text {
+    font-size: 18px;
+    font-weight: bold;
+    white-space: nowrap;
+    opacity: 0; /* Start invisible */
+    transition: opacity 0.2s ease;
+    position: absolute;
+}
+
+/* Hover effects */
+#create_post_button:hover #plus_sign {
+    opacity: 0; /* Smoothly fades out */
+}
+
+#create_post_button:hover #create_post_text {
+    opacity: 1; /* Smoothly fades in */
 }

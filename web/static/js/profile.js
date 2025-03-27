@@ -1,5 +1,7 @@
 import { renderNavBar } from '/static/js/navbar.js';
 import { renderLoginPage } from '/static/js/login.js';
+import { renderCreatePostButton } from '/static/js/create_post.js';
+import { setCreatePostsButtonListeners } from '/static/js/create_post.js';
 
 export function renderProfilePage() {    
     // Add container to hold left profile page content
@@ -123,6 +125,15 @@ export function renderProfilePage() {
     let postsContainer = document.createElement('div');
     postsContainer.id = 'posts_container';
     postsCard.appendChild(postsContainer);
+
+    // Add container for user options
+    let userOptions = document.createElement('div');
+    userOptions.id = 'user_options';
+
+    // Render create post buttom and related dependancies
+    let createPostButton = renderCreatePostButton();
+    setCreatePostsButtonListeners(createPostButton);
+    userOptions.appendChild(createPostButton);
     
     fetch('/profile', {
         method: 'GET',
@@ -235,5 +246,6 @@ export function renderProfilePage() {
     profilePage.appendChild(centerCluster);
     profilePage.appendChild(rightCluster)
     app.appendChild(profilePage);
+    app.appendChild(userOptions);
     
 }

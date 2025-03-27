@@ -72,6 +72,14 @@ export function renderProfilePage() {
     // Add user age for bio card
     let age = document.createElement('p');
     age.id = 'age';
+
+    // Add container for bio paragraph
+    let bioContainer = document.createElement('div');
+    bioContainer.id = 'bio_container';
+
+    // Add title for bio container
+    let bioContainerTitle = document.createElement('h3');
+    bioContainerTitle.id = 'bio_container_title';
     
     // Add bio paragraph
     let bioParagraph = document.createElement('p');
@@ -147,19 +155,22 @@ export function renderProfilePage() {
             // Populate bioCard with user data
             bioTitle.textContent = `${user.first_name} ${user.last_name}`;
             nickname.textContent = `@${user.username}`;
-            email.textContent = user.email;
+            email.textContent = `📧 ${user.email}`;
             gender.textContent = user.gender;
-            age.textContent = user.age;
+            age.textContent = `${user.age} years old`;
+            bioContainerTitle.textContent = `About ${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)}`;
             bioParagraph.textContent = user.bio;
             profilePic.src = user?.image?`/static/images/${user.image}` : '/static/user-circle-svgrepo-com.svg';
             
             // Append user details to bioCard
+            bioContainer.appendChild(bioContainerTitle);
+            bioContainer.appendChild(bioParagraph);
             profileInfoContainer.appendChild(bioTitle);
             profileInfoContainer.appendChild(nickname);
             profileInfoContainer.appendChild(email);
             profileInfoContainer.appendChild(gender);
             profileInfoContainer.appendChild(age);
-            profileInfoContainer.appendChild(bioParagraph);
+            profileInfoContainer.appendChild(bioContainer);
             imageContainer.appendChild(profilePic);
             bioCard.appendChild(imageContainer);            
             bioCard.appendChild(profileInfoContainer);
@@ -191,10 +202,15 @@ export function renderProfilePage() {
                     postsContainer.appendChild(postElement);
                 });
             } else {
+                // Add container to hold no pasts alerts
+                let noPostsContainer = document.createElement('div');
+                noPostsContainer.id = 'no_posts_container';
+                postsContainer.appendChild(noPostsContainer);
+
                 let noPostsAlerts = document.createElement('p');
                 noPostsAlerts.id = 'no_posts';
                 noPostsAlerts.textContent = 'No posts available';
-                postsContainer.appendChild(noPostsAlerts);
+                noPostsContainer.appendChild(noPostsAlerts);
             }
         } else {
             console.error('Error fetching profile data:', data.message);

@@ -1,4 +1,4 @@
-export function createPostButton() {
+export function renderCreatePostButton() {
     // Create button element
     let createPostButton = document.createElement('button');
     createPostButton.id = 'create_post_button';

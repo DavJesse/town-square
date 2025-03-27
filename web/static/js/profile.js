@@ -2,6 +2,8 @@ import { renderNavBar } from '/static/js/navbar.js';
 import { renderLoginPage } from '/static/js/login.js';
 import { renderCreatePostButton } from '/static/js/create_post.js';
 import { setCreatePostsButtonListeners } from '/static/js/create_post.js';
+import { renderLogoutButton } from '/static/js/logout_button.js';
+import { setLogoutButtonListeners } from '/static/js/logout_button.js';
 
 export function renderProfilePage() {    
     // Add container to hold left profile page content
@@ -134,6 +136,12 @@ export function renderProfilePage() {
     let createPostButton = renderCreatePostButton();
     setCreatePostsButtonListeners(createPostButton);
     userOptions.appendChild(createPostButton);
+
+    // Render logout button and related dependancies
+    let logoutButton = renderLogoutButton();
+    setLogoutButtonListeners(logoutButton);
+    userOptions.appendChild(logoutButton);
+    
     
     fetch('/profile', {
         method: 'GET',

@@ -77,13 +77,18 @@
 }
 
 #bio_title {
-    font-size: 24px;
+    font-size: 18px;
+    font-weight: 500;
     color: #0000EE;
+    margin-top: 20px;
 }
 
 #nickname, #email, #gender_text, #age, #bio_paragraph {
-    font-size: 20px;
-    color: #181818;
+    font-size: 16px;
+    color: #656565;
+    font-weight: normal;
+    margin-left: 10px;
+    font-weight: normal !important;
 }
 
 #posts_container {

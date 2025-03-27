@@ -52,7 +52,8 @@
     width: 95%;
     background-color: #FFFFFF;
     border-radius: 15px;
-    min-height: 300px;
+    height: fit-content;
+    min-height: 220px;
     display: flex;
     flex-direction: row;
 }
@@ -63,8 +64,8 @@
 }
 
 #profile_pic {
-    width: 250px;  /* Adjust to preferred size */
-    height: 250px;
+    width: 200px;  /* Adjust to preferred size */
+    height: 200px;
     object-fit: cover; /* Prevents stretching */
     border-radius: 50%; /* Optional: Makes it circular */
 }
@@ -77,8 +78,8 @@
 }
 
 #bio_title {
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 22px;
+    font-weight: 700;
     color: #0000EE;
     margin-top: 20px;
 }
@@ -107,4 +108,5 @@
 #liked_posts_link, #my_posts_link {
     color: #FFFFFF;
     font-size: 18px;
+    font-weight: 600;
 }

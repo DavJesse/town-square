@@ -1,6 +1,6 @@
 /* Apply a background color to the entire page */
 body {
-    font-family: 'Roboto', sans-serif;
+    /* font-family: 'Roboto', sans-serif; */
     background-color: #5c5b5b;
     display: flex;
     justify-content: center;

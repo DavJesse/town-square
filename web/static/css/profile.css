@@ -1,5 +1,5 @@
 /* General page rules */
-#profile_page {
+#profile_page, #index_page {
     display: flex;
     justify-content: space-evenly; /* Ensures even spacing */
     align-items: flex-start; /* Aligns content to the top */

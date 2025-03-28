@@ -1,7 +1,7 @@
 package posts
 
 import (
-	"html/template"
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -11,33 +11,69 @@ import (
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
+	var userData models.User
+
 	if r.URL.String() != "/" {
 		errors.NotFoundHandler(w, r)
 		return
 	}
 
-	response := models.Response{
-		Code: 200,
-	}
-
 	session, loggedIn := database.IsLoggedIn(r)
 	// Retrieve user data if logged in
 	if !loggedIn {
-		response.Message = "Please login to proceed"
-		response.Redirect = "/login"
-	} else {
-		userData, err := database.GetUserbySessionID(session.SessionID)
-		if err != nil {
-			log.Printf("Error getting user: %v\n", err) // Add error logging
-			response.Redirect = "/login"
-		} else {
-			response.Data = userData
-		}
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
 	}
 
-	// Load the HTML template
-	// Parse template with function to replace '\n' with '<br>'
-	tmpl := template.Must(template.ParseFiles("./web/templates/index.html"))
+	userData, err := database.GetUserbySessionID(session.SessionID)
+	if err != nil {
+		log.Printf("Error getting user: %v\n", err)
+		http.Error(w, "Error retrieving user data", http.StatusInternalServerError)
+		return
+	}
 
-	tmpl.Execute(w, response)
+	// Retrieve all posts
+	posts, err := database.GetAllPosts()
+	if err != nil {
+		posts = []models.PostWithUsername{}
+		log.Printf("Error getting posts: %v\n", err)
+	}
+
+	// Retrieve all categories
+	categories, err := database.FetchCategories()
+	if err != nil {
+		categories = []models.Category{}
+		log.Printf("Error getting categories: %v\n", err)
+	}
+
+	// Retrieve liked posts
+	userLikedPosts, err := database.GetLikedPostsByUser(userData.ID)
+	if err != nil {
+		log.Printf("Failed to retrieve liked posts %v", err)
+		userLikedPosts = []models.PostWithCategories{}
+	}
+
+	// Combine post data
+	postsData := struct {
+		Posts          []models.PostWithUsername   `json:"posts"`
+		IsLogged       bool                        `json:"is_logged"`
+		User           models.User                 `json:"user"`
+		UserLikedPosts []models.PostWithCategories `json:"liked_posts"`
+		Categories     []models.Category           `json:"categories"`
+	}{
+		Posts:          posts,
+		IsLogged:       loggedIn,
+		User:           userData,
+		UserLikedPosts: userLikedPosts,
+		Categories:     categories,
+	}
+
+	// Compile post data in json response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(models.Response{
+		Code:    http.StatusOK,
+		Message: "Posts data retrieved",
+		Data:    postsData,
+	})
 }

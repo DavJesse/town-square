@@ -1,13 +1,43 @@
 package database
 
 import (
+	"fmt"
 	"log"
 
 	"forum/models"
 )
 
-// SendMessage sends a private message from one user to another.
-func SendMessage(senderID, receiverID int, message string) error {
+// SendPublicMessage sends a public message to every online user
+func SendPublicMessage(senderID int, message string) error {
+	// Get the list of online users
+	users, err := GetOnlineUsers()
+	if err != nil {
+		log.Println("Error fetching online users:", err)
+		return err
+	}
+
+	// Iterate over the online users and send the message to each of them
+	for _, user := range users {
+		// Skip the sender
+		if user.ID == senderID {
+			continue
+		}
+
+		// Insert the message into the database for each user
+		err := SendPrivateMessage(senderID, user.ID, message)
+		if err != nil {
+			log.Printf("Error sending message to user %d: %v\n", user.ID, err)
+			// Optionally, you can continue the loop even if there's an error for a particular user
+			continue
+		}
+	}
+
+	return nil
+}
+
+// SendMessage sends a private message from one user to another
+func SendPrivateMessage(senderID, receiverID int, message string) error {
+	fmt.Printf("SENDER: %d, RECEIVER: %d, MESSAGE: %v\n", senderID, receiverID, message)
 	query := `INSERT INTO messages (sender_id, receiver_id, message) VALUES (?, ?, ?)`
 	_, err := db.Exec(query, senderID, receiverID, message)
 	return err

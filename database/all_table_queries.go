@@ -100,4 +100,21 @@ const (
 	DISLIKES_TABLE_INDEX_user_id    = `CREATE INDEX IF NOT EXISTS idx_dislikes_user_id ON dislikes (user_id);`
 	DISLIKES_TABLE_INDEX_post_id    = `CREATE INDEX IF NOT EXISTS idx_dislikes_post_id ON dislikes (post_id);`
 	DISLIKES_TABLE_INDEX_comment_id = `CREATE INDEX IF NOT EXISTS idx_dislikes_comment_id ON dislikes (comment_id);`
+
+	MESSAGES_TABLE_CREATE = `CREATE TABLE IF NOT EXISTS messages (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		sender_id INTEGER NOT NULL,
+		receiver_id INTEGER NOT NULL,
+		message TEXT NOT NULL,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		FOREIGN KEY (sender_id) REFERENCES users(id),
+		FOREIGN KEY (receiver_id) REFERENCES users(id)
+	);`
+	
+	USER_STATUS_TABLE_CREATE = `CREATE TABLE IF NOT EXISTS user_status (
+		user_id INTEGER PRIMARY KEY,
+		is_online BOOLEAN DEFAULT FALSE,
+		last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		FOREIGN KEY (user_id) REFERENCES users(id)
+	);`
 )

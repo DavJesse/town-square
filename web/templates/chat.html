@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link rel="stylesheet" href="/static/css/chat.css">
+</head>
+<body>
+    <div id="online-users">
+        <h3>Online Users</h3>
+        <ul id="online-user-list">
+            <!-- Dynamically populate the list of online users -->
+        </ul>
+    </div>
+    
+    <div id="chat-container">
+        <div id="chat-box"></div>  <!-- Area where messages will be displayed -->
+        <div id="message-input-container">
+            <input type="text" id="message-input" placeholder="Type a message..." />
+            <button id="send-button" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'; // Use 'wss' for secure connections, 'ws' for non-secure
+        const host = window.location.host; // Gets the host (domain or localhost:port)
+        const socket = new WebSocket(`${protocol}://${host}/chat`); // WebSocket endpoint
+
+        // When the WebSocket connection is established
+        socket.onopen = () => {
+            console.log('WebSocket connected!');
+        };
+
+        // When a message is received from the server (including the list of online users)
+        socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (Array.isArray(data)) {
+                // Display the online users
+                displayOnlineUsers(data);
+            } else {
+                // Display a chat message
+                displayMessage(data);
+            }
+        };
+
+        // Function to send a message
+        function sendMessage() {
+            const receiverID = 2; // Example receiverID, replace with actual
+            const messageContent = document.getElementById('message-input').value;
+
+            const message = {
+                senderID: 1,  // Example senderID, replace with actual
+                receiverID: receiverID,
+                message: messageContent
+            };
+
+            socket.send(JSON.stringify(message));
+        }
+
+        // Function to display a message in the chat
+        function displayMessage(message) {
+            const chatBox = document.getElementById('chat-box');
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = `${message.senderID}: ${message.message}`;
+            chatBox.appendChild(messageDiv);
+        }
+
+        // Function to display the online users in the UI
+        function displayOnlineUsers(users) {
+            const onlineUserList = document.getElementById('online-user-list');
+            onlineUserList.innerHTML = ''; // Clear the current list
+
+            users.forEach(user => {
+                const li = document.createElement('li');
+                li.textContent = `${user.username}`;
+                onlineUserList.appendChild(li);
+
+                // Optionally, add click functionality to start a chat
+                li.addEventListener('click', () => {
+                    document.getElementById('message-input').focus();
+                });
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
-import { renderNavbar } from '/static/js/navbar.js'
-import { renderCreatePostButton } from 'static/js/create_post.js'
+import { renderNavBar } from '/static/js/navbar.js'
+import { renderCreatePostButton } from '/static/js/create_post.js'
 import { setCreatePostsButtonListeners } from '/static/js/create_post.js';
 
 export function renderIndexPage() {
@@ -8,7 +8,7 @@ export function renderIndexPage() {
     app.innerHTML = "";
 
     // Render navbar
-    renderNavbar();
+    renderNavBar();
 
     // Render create post button
     let userOptions = document.createElement('div');

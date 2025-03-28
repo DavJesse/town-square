@@ -5,11 +5,17 @@ import { setCreatePostsButtonListeners } from '/static/js/create_post.js';
 import { renderLogoutButton } from '/static/js/logout_button.js';
 import { setLogoutButtonListeners } from '/static/js/logout_button.js';
 
-export function renderProfilePage() {    
+export function renderProfilePage() {
+    // Append page elements to app
+    let app = document.getElementById("app")
+    app.innerHTML = ""
+    renderNavBar();
+    
     // Add container to hold left profile page content
     let profilePage = document.createElement('div');
     profilePage.classList.add('profile-page');
     profilePage.id = 'profile_page';
+    app.appendChild(profilePage);
     
     // Add container to hold left cluster of page
     let leftCluster = document.createElement('div');
@@ -25,7 +31,11 @@ export function renderProfilePage() {
     let onlineUsersTitle = document.createElement('h3');
     onlineUsersTitle.id = 'online_users_title';
     onlineUsersTitle.textContent = 'who\'s online?';
+
+    // Append ellements of left luster to left cluster and eventually to profile page
     onlineUsersCard.appendChild(onlineUsersTitle);
+    leftCluster.appendChild(onlineUsersCard);
+    profilePage.appendChild(leftCluster);
     
     // Add container for center cluster
     let centerCluster = document.createElement('div');
@@ -88,6 +98,20 @@ export function renderProfilePage() {
     // Add bio paragraph
     let bioParagraph = document.createElement('p');
     bioParagraph.id = 'bio_paragraph';
+
+    // Append user details
+    bioContainer.appendChild(bioContainerTitle);
+    bioContainer.appendChild(bioParagraph);
+    profileInfoContainer.appendChild(bioTitle);
+    profileInfoContainer.appendChild(nickname);
+    profileInfoContainer.appendChild(email);
+    profileInfoContainer.appendChild(gender);
+    profileInfoContainer.appendChild(age);
+    profileInfoContainer.appendChild(bioContainer);
+    imageContainer.appendChild(profilePic);
+    bioCard.appendChild(imageContainer);
+    bioCard.appendChild(profileInfoContainer);
+    centerCluster.appendChild(bioCard);
     
     // Add posts card to hold user's recent posts
     let postsCard = document.createElement('div');
@@ -108,15 +132,16 @@ export function renderProfilePage() {
     let likedPostsButton = document.createElement('button');
     likedPostsButton.textContent = 'Liked Posts'
     likedPostsButton.id = 'liked_posts_button';
-
+    
     postsButtonContainer.appendChild(myPostsButton);
     postsButtonContainer.appendChild(likedPostsButton);
-    postsCard.before(postsButtonContainer);    
     
     // Add Posts Section            
     let postsContainer = document.createElement('div');
     postsContainer.id = 'posts_container';
+    postsCard.appendChild(postsButtonContainer);    
     postsCard.appendChild(postsContainer);
+    centerCluster.appendChild(postsCard);
 
     // Add container for user options
     let userOptions = document.createElement('div');
@@ -131,6 +156,10 @@ export function renderProfilePage() {
     let logoutButton = renderLogoutButton();
     setLogoutButtonListeners(logoutButton);
     userOptions.appendChild(logoutButton);
+
+    profilePage.appendChild(centerCluster);
+    profilePage.appendChild(rightCluster)
+    app.appendChild(userOptions);
     
     
     fetch('/profile', {
@@ -164,6 +193,15 @@ export function renderProfilePage() {
             // Update document title to reflect user's profile
             document.title = `Profile: ${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)}`;
 
+            // Populate user bio
+            bioTitle.textContent = `${user.first_name} ${user.last_name}`;
+            nickname.textContent = `@${user.username}`;
+            email.textContent = `📧 ${user.email}`;
+            gender.textContent = user.gender;
+            age.textContent = `${user.age} years old`;
+            bioParagraph.textContent = user.bio;
+            profilePic.src = user?.image ? `/static/images/${user.image}` : '/static/user-circle-svgrepo-com.svg';
+            
             // Load 'My Posts' section by default
             populatePosts(userPosts);
 
@@ -176,25 +214,7 @@ export function renderProfilePage() {
     })
     .catch(error => {
         console.error('Error:', error);
-    });
-
-    // Append elements to left cluster
-    leftCluster.appendChild(onlineUsersCard);
-    
-    // Append elements to center cluster
-    centerCluster.appendChild(bioCard);
-    centerCluster.appendChild(postsCard);
-    
-    // Append page elements to app
-    let app = document.getElementById("app")
-    app.innerHTML = ""
-    renderNavBar();
-    profilePage.appendChild(leftCluster);
-    profilePage.appendChild(centerCluster);
-    profilePage.appendChild(rightCluster)
-    app.appendChild(profilePage);
-    app.appendChild(userOptions);
-    
+    });   
 }
 
 function populatePosts(posts) {
@@ -244,12 +264,6 @@ function setToggleEventListeners(userPosts, likedPosts) {
     // Extract page elements
     let myPostsButton = document.getElementById('my_posts_button');
     let likedPostsButton = document.getElementById('liked_posts_button');
-
-      // Ensure buttons exist before adding event listeners
-      if (!myPostsButton || !likedPostsButton) {
-        console.error("Toggle buttons not found in the DOM!");
-        return;
-    }
 
     // Set null values to empty array
     userPosts = userPosts ?? [];

@@ -14,7 +14,8 @@
         </ul>
     </div>
     
-    <div id="chat-container">
+    <div id="chat-container" style="display:none;">
+        <div id="username"></div>
         <div id="chat-box"></div>  <!-- Area where messages will be displayed -->
         <div id="message-input-container">
             <input type="text" id="message-input" placeholder="Type a message..." />
@@ -26,6 +27,9 @@
         const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'; // Use 'wss' for secure connections, 'ws' for non-secure
         const host = window.location.host; // Gets the host (domain or localhost:port)
         const socket = new WebSocket(`${protocol}://${host}/chat`); // WebSocket endpoint
+
+        // Variable to store the receiver's ID when clicked on a user
+        let receiverID = null;
 
         // When the WebSocket connection is established
         socket.onopen = () => {
@@ -40,22 +44,27 @@
                 displayOnlineUsers(data.online_users);
             } else {
                 // Display a chat message
-                displayMessage(data.online_users);
+                displayMessage(data);
             }
         };
 
         // Function to send a message
         function sendMessage() {
-            const receiverID = 2; // Example receiverID, replace with actual
             const messageContent = document.getElementById('message-input').value;
+            if (!receiverID || !messageContent.trim()) return;
+
+            console.log(`Sending message '${messageContent}', to user ${receiverID}, from ${window.data.userid}`)
 
             const message = {
-                senderID: window.data.userid,  // Example senderID, replace with actual
-                receiverID: receiverID,
+                senderID: window.data.userid,  // Use the sender's ID from window.data
+                receiverID: receiverID,        // Use the dynamically selected receiver ID
                 message: messageContent
             };
 
             socket.send(JSON.stringify(message));
+
+            // Clear input field after sending
+            document.getElementById('message-input').value = '';
         }
 
         // Function to display a message in the chat
@@ -64,6 +73,7 @@
             const messageDiv = document.createElement('div');
             messageDiv.textContent = `${message.senderID}: ${message.message}`;
             chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;  // Scroll to the bottom
         }
 
         // Function to display the online users in the UI
@@ -72,17 +82,28 @@
             onlineUserList.innerHTML = ''; // Clear the current list
 
             users.forEach(user => {
-                if(user.username != window.data.username) { // only display the other users on the list
+                if(user.username !== window.data.username) { // Only display the other users
                     const li = document.createElement('li');
                     li.textContent = `${user.username}`;
                     onlineUserList.appendChild(li);
 
-                    // Optionally, add click functionality to start a chat
+                    // Add click event to open a private chat
                     li.addEventListener('click', () => {
-                        document.getElementById('message-input').focus();
+                        receiverID = user.id;  // Set the receiver ID
+                        openPrivateChat(user.username);  // Show chat for selected user
                     });
                 }
             });
+        }
+
+        // Function to open a private chat with a user
+        function openPrivateChat(username) {
+            const chatContainer = document.getElementById("chat-container");
+            chatContainer.style.display = "block";
+            document.getElementById('chat-box').innerHTML = '';  // Clear previous messages
+            document.getElementById('message-input').focus();
+            document.getElementById('username').innerHTML = window.data.username;
+            document.getElementById('chat-box').textContent = `Chat with ${username}`;
         }
     </script>
 </body>

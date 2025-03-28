@@ -43,9 +43,27 @@
 #posts_button_container {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     width: 65%;
-    margin: 0 auto;
+    margin: 0 auto;    
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 0.5px;
+}
+
+#posts_button_container button {
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    background-color: #0000EE;
+    color: #FFFFFF;
+    border-radius: 5px 5px 0 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+#posts_button_container button.active {
+    background-color: #FFFFFF;
+    color: #0000EE;
 }
 
 #bio_card {

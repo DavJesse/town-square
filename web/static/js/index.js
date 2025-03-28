@@ -1,7 +1,8 @@
 import { renderNavBar } from '/static/js/navbar.js'
 import { renderCreatePostButton } from '/static/js/create_post.js'
 import { setCreatePostsButtonListeners } from '/static/js/create_post.js';
-import { navigateTo } from './routes';
+import { navigateTo } from '/static/js/routes.js';
+import { populatePosts, setToggleEventListeners } from 'static/js/profile.js';
 
 export function renderIndexPage() {
     // Extract app from dom
@@ -175,21 +176,15 @@ export function renderIndexPage() {
     });
 }
 
-// window.fetchAllPosts = function(){
-//     fetch('/posts')  // Assuming '/posts' returns a JSON array of posts
-//         .then(response => response.json())
-//         .then(data => {
-//             if (data.code === 200 && data.data) {
-//                 renderPage(data.data);
-//             } else if (data.redirect) {
-//                 window.location.href = data.redirect;
-//             } else {
-//                 console.error('Error fetching posts:', data);
-//                 document.getElementById('main-content').innerHTML = '<p>Error loading posts.</p>';
-//             }
-//         })
-//         .catch(error => {
-//             console.error('Error fetching posts:', error);
-//             document.getElementById('main-content').innerHTML = '<p>Error loading posts.</p>';
-//         });
-// }
+function populateCategories(categories) {
+    let categoriesContentContainer = document.getElementById('category_content_container');
+    categoriesContentContainer.innerHTML = '';
+
+    categories.forEach(category => {
+        let categoryLink = document.createElement('a');
+        categoryLink.href = `/categories/${category.id}`;
+        categoryLink.textContent = category.name;
+        categoriesContentContainer.appendChild(categoryLink);
+        categoriesContentContainer.appendChild(document.createElement('br'));
+    });
+}

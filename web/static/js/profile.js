@@ -217,7 +217,7 @@ export function renderProfilePage() {
     });   
 }
 
-function populatePosts(posts) {
+export function populatePosts(posts) {
     let postsContainer = document.getElementById('posts_container');
     postsContainer.innerHTML = ""; // clear content for fresh population
 
@@ -260,7 +260,7 @@ function populatePosts(posts) {
     }
 }
 
-function setToggleEventListeners(userPosts, likedPosts) {
+export function setToggleEventListeners(userPosts, likedPosts) {
     // Extract page elements
     let myPostsButton = document.getElementById('my_posts_button');
     let likedPostsButton = document.getElementById('liked_posts_button');

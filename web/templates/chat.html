@@ -34,13 +34,13 @@
 
         // When a message is received from the server (including the list of online users)
         socket.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (Array.isArray(data)) {
+            window.data = JSON.parse(event.data);
+            if (Array.isArray(data.online_users)) {
                 // Display the online users
-                displayOnlineUsers(data);
+                displayOnlineUsers(data.online_users);
             } else {
                 // Display a chat message
-                displayMessage(data);
+                displayMessage(data.online_users);
             }
         };
 
@@ -50,7 +50,7 @@
             const messageContent = document.getElementById('message-input').value;
 
             const message = {
-                senderID: 1,  // Example senderID, replace with actual
+                senderID: window.data.userid,  // Example senderID, replace with actual
                 receiverID: receiverID,
                 message: messageContent
             };
@@ -72,14 +72,16 @@
             onlineUserList.innerHTML = ''; // Clear the current list
 
             users.forEach(user => {
-                const li = document.createElement('li');
-                li.textContent = `${user.username}`;
-                onlineUserList.appendChild(li);
+                if(user.username != window.data.username) { // only display the other users on the list
+                    const li = document.createElement('li');
+                    li.textContent = `${user.username}`;
+                    onlineUserList.appendChild(li);
 
-                // Optionally, add click functionality to start a chat
-                li.addEventListener('click', () => {
-                    document.getElementById('message-input').focus();
-                });
+                    // Optionally, add click functionality to start a chat
+                    li.addEventListener('click', () => {
+                        document.getElementById('message-input').focus();
+                    });
+                }
             });
         }
     </script>

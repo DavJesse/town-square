@@ -22,7 +22,7 @@ func SendMessageHandler(w http.ResponseWriter, r *http.Request) {
 	message := r.FormValue("message")
 
 	// Insert message into DB
-	err = database.SendMessage(senderID, receiverID, message)
+	err = database.SendPrivateMessage(senderID, receiverID, message)
 	if err != nil {
 		http.Error(w, "Failed to send message", http.StatusInternalServerError)
 		return

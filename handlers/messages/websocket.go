@@ -58,7 +58,7 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	if errSetOnlineStatus != nil {
 		fmt.Printf("[ERROR] Failed to update user online status")
 	} else {
-		fmt.Printf("Username: %s, UserID: %d\n", userName, userID)
+		fmt.Printf("User %s, with userID %d connected\n", userName, userID)
 	}
 
 	// Send the list of online users to the newly connected user
@@ -67,9 +67,14 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Error retrieving online users:", err)
 	}
 
-	fmt.Println("ONLINE: ", onlineUsers)
+	connectionData := models.WebSocketOnConnectionData{
+		MyID: userID,
+		MyName: userName,
+		OnlineUsers: onlineUsers,
+	}
+
 	// Send the online users list to the connected client
-	err = conn.WriteJSON(onlineUsers)
+	err = conn.WriteJSON(connectionData)
 	if err != nil {
 		log.Println("Error sending online users to client:", err)
 		conn.Close()
@@ -84,9 +89,10 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println("Error reading message:", err)
 			break
 		}
+		fmt.Println("Message: ", message)
 
 		// Handle incoming message (store in DB and broadcast)
-		err = database.SendMessage(message.SenderID, message.ReceiverID, message.Message)
+		err = database.SendPublicMessage(userID, message.Message)
 		if err != nil {
 			log.Println("Error storing message:", err)
 			continue

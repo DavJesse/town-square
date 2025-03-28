@@ -102,6 +102,30 @@ func GetOnlineUsers() ([]models.User, error) {
 	return users, nil
 }
 
+// GetOnlineUsers retrieves all online users.
+func GetOnlineOrOfflineUsers() ([]models.User, error) {
+	query := `SELECT u.id, u.username, u.first_name, u.last_name, u.image 
+	          FROM users u 
+	          JOIN user_status us ON u.id = us.user_id 
+	          WHERE us.is_online = TRUE OR us.is_online = FALSE`
+
+	rows, err := db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []models.User
+	for rows.Next() {
+		var user models.User
+		if err := rows.Scan(&user.ID, &user.Username, &user.FirstName, &user.LastName, &user.Image); err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	return users, nil
+}
+
 // Update the user's status when they disconnect
 func UpdateUserOfflineStatus(userID int) {
 	err := SetUserOnlineStatus(int64(userID), false)

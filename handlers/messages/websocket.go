@@ -13,7 +13,7 @@ import (
 )
 
 type WebSocketServer struct {
-	clients map[*websocket.Conn]bool
+	clients map[*websocket.Conn]int
 	mu      sync.Mutex
 }
 
@@ -25,7 +25,7 @@ var (
 // Constructor for creating a new WebSocketServer instance
 func NewWebSocketServer() {
 	server = &WebSocketServer{
-		clients: make(map[*websocket.Conn]bool),
+		clients: make(map[*websocket.Conn]int),
 	}
 	upgrader = websocket.Upgrader{
 		CheckOrigin: func(r *http.Request) bool { return true },
@@ -51,7 +51,7 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Locking to safely add the new client to the clients map
 	server.mu.Lock()
-	server.clients[conn] = true
+	server.clients[conn] = userID
 	server.mu.Unlock()
 
 	errSetOnlineStatus := database.SetUserOnlineStatus(int64(userID), true)
@@ -62,7 +62,7 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Send the list of online users to the newly connected user
-	onlineUsers, err := database.GetOnlineUsers()
+	onlineUsers, err := database.GetOnlineOrOfflineUsers()
 	if err != nil {
 		log.Println("Error retrieving online users:", err)
 	}
@@ -92,7 +92,7 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Message: ", message)
 
 		// Handle incoming message (store in DB and broadcast)
-		err = database.SendPublicMessage(userID, message.Message)
+		err = database.SendPrivateMessage(userID, message.ReceiverID, message.Message)
 		if err != nil {
 			log.Println("Error storing message:", err)
 			continue
@@ -101,10 +101,13 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 		// Lock to safely broadcast message to all clients
 		server.mu.Lock()
 		for client := range server.clients {
-			if err := client.WriteJSON(message); err != nil {
-				log.Println("Error sending message to client:", err)
-				client.Close()
-				delete(server.clients, client)
+			userIdentifier := server.clients[client]
+			if userIdentifier == message.ReceiverID {
+				if err := client.WriteJSON(message); err != nil {
+					log.Println("Error sending message to client:", err)
+					client.Close()
+					delete(server.clients, client)
+				}
 			}
 		}
 		server.mu.Unlock()

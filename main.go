@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -11,6 +12,7 @@ import (
 	auth "forum/handlers/auth"
 	comments "forum/handlers/comments"
 	errors "forum/handlers/errors"
+	messages "forum/handlers/messages"
 	"forum/handlers/middleware"
 	"forum/handlers/misc"
 	posts "forum/handlers/posts"
@@ -45,6 +47,11 @@ func main() {
 
 	// authentication
 	http.HandleFunc("/", posts.Index)
+
+	// Create a new WebSocket server instance
+	messages.NewWebSocketServer()
+	http.Handle("/chat", middleware.AuthMiddleware(http.HandlerFunc(messages.WebSocketHandler)))
+	http.HandleFunc("/ws", WSProcess)
 
 	http.HandleFunc("/static/", misc.Static)
 	http.HandleFunc("/login", auth.LoginHandler)
@@ -83,4 +90,11 @@ func main() {
 		log.Println("Failed to start server: ", err)
 		return
 	}
+}
+
+
+func WSProcess(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.ParseFiles("./web/templates/chat.html"))
+
+	tmpl.Execute(w, nil)
 }

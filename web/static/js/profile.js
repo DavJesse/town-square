@@ -194,7 +194,7 @@ export function renderProfilePage() {
             document.title = `Profile: ${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)}`;
 
             // Populate user bio
-            bioTitle.textContent = `${user.first_name} ${user.last_name}`;
+            bioTitle.textContent = `${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)}`;
             nickname.textContent = `@${user.username}`;
             email.textContent = `📧 ${user.email}`;
             gender.textContent = user.gender;

@@ -1,11 +1,15 @@
 import { renderNavBar } from '/static/js/navbar.js'
 import { renderCreatePostButton } from '/static/js/create_post.js'
 import { setCreatePostsButtonListeners } from '/static/js/create_post.js';
+import { navigateTo } from './routes';
 
 export function renderIndexPage() {
     // Extract app from dom
     let app = document.getElementById('app');
     app.innerHTML = "";
+
+    // Set document title
+    document.title = 'real-time-forums';
 
     // Render navbar
     renderNavBar();
@@ -41,12 +45,16 @@ export function renderIndexPage() {
     let categoriesCard = document.createElement('div');
     let onlineUsersCard = document.createElement('div');
     let onlineUsersTitle = document.createElement('h3');
+    let categoriesCardTitle = document.createElement('h3');
     categoriesCard.id = 'category_container';
     onlineUsersCard.id = 'online_users_card';
     onlineUsersTitle.id = 'online_users_title';
+    categoriesCardTitle.id = 'categories_title';
     onlineUsersTitle.textContent = 'Who\'s online?';
+    categoriesCardTitle.textContent = 'Categories';
 
     onlineUsersCard.appendChild(onlineUsersTitle);
+    categoriesCard.appendChild(categoriesCardTitle);
     leftCluster.appendChild(categoriesCard);
     leftCluster.appendChild(onlineUsersCard);
    
@@ -118,6 +126,53 @@ export function renderIndexPage() {
     profileCard.appendChild(profileActionContainer);
     rightCluster.appendChild(profileCard);
     
+    // fetch data from response
+    fetch('/', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+
+    .then(response => {
+        if (!response.ok) {
+            // Check for unauthorized resposes
+            if (response.status === 401) {
+                navigateTo('/');
+                return;
+            }
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+
+    .then(data => {
+        if (data.code === 200) {
+
+            // Extract data for rendering
+            const categories = data.data.categories
+            const posts = data.data.posts
+            const likedPosts = data.data.liked_posts
+            const user = data.data.user
+
+            // Update page with user infomation
+            profileTitle.textContent = `${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)}`;
+            profilePic.src = `/static/images/${user.image}`;
+            profilePic.alt = `${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)} image`
+            bioTitle.textContent = `About ${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)}`;
+            bioText.textContent = `${user.bio.charAt(0).toUpperCase()}${user.bio.slice(1)}`;
+            viewProfileButton.href = `/profile`;
+            messangerButton.href = `/messages`;
+
+        } else {
+            console.error('Error fetching home page data:', data.message);
+        }
+    })
+
+    .catch(error => {
+        console.error('Error fetching home page:', error);
+    });
 }
 
 // window.fetchAllPosts = function(){

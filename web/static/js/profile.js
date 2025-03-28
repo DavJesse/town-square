@@ -99,29 +99,19 @@ export function renderProfilePage() {
     postsButtonContainer.classList.add('posts-button-container');
     postsButtonContainer.id = 'posts_button_container';
     
-    // Create buttons to toggle prefered posts
-    let myPostsLink = document.createElement('a');
-    myPostsLink.href = '/my-posts';
-    myPostsLink.textContent = 'my posts';
-    myPostsLink.id = 'my_posts_link';
-    
+    // Create buttons to toggle prefered posts    
     let myPostsButton = document.createElement('button');
-    myPostsButton.classList.add('posts-button');
+    myPostsButton.classList.add('active');
     myPostsButton.id = 'my_posts_button';
-    myPostsButton.appendChild(myPostsLink);
-    postsButtonContainer.appendChild(myPostsButton);
-    
-    let likedPostsLink = document.createElement('a');
-    likedPostsLink.href = '/liked-posts';
-    likedPostsLink.textContent = 'posts I\'ve liked';
-    likedPostsLink.id = 'liked_posts_link';
+    myPostsButton.textContent = 'My Posts';
     
     let likedPostsButton = document.createElement('button');
-    likedPostsButton.classList.add('posts-button');
+    likedPostsButton.textContent = 'Liked Posts'
     likedPostsButton.id = 'liked_posts_button';
-    likedPostsButton.appendChild(likedPostsLink);
-    postsButtonContainer.appendChild(likedPostsButton);    
-    postsCard.appendChild(postsButtonContainer);    
+
+    postsButtonContainer.appendChild(myPostsButton);
+    postsButtonContainer.appendChild(likedPostsButton);
+    postsCard.before(postsButtonContainer);    
     
     // Add Posts Section            
     let postsContainer = document.createElement('div');
@@ -173,67 +163,13 @@ export function renderProfilePage() {
 
             // Update document title to reflect user's profile
             document.title = `Profile: ${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)}`;
-            
-            // Populate bioCard with user data
-            bioTitle.textContent = `${user.first_name} ${user.last_name}`;
-            nickname.textContent = `@${user.username}`;
-            email.textContent = `📧 ${user.email}`;
-            gender.textContent = user.gender;
-            age.textContent = `${user.age} years old`;
-            bioContainerTitle.textContent = `About ${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)}`;
-            bioParagraph.textContent = user.bio;
-            profilePic.src = user?.image?`/static/images/${user.image}` : '/static/user-circle-svgrepo-com.svg';
-            
-            // Append user details to bioCard
-            bioContainer.appendChild(bioContainerTitle);
-            bioContainer.appendChild(bioParagraph);
-            profileInfoContainer.appendChild(bioTitle);
-            profileInfoContainer.appendChild(nickname);
-            profileInfoContainer.appendChild(email);
-            profileInfoContainer.appendChild(gender);
-            profileInfoContainer.appendChild(age);
-            profileInfoContainer.appendChild(bioContainer);
-            imageContainer.appendChild(profilePic);
-            bioCard.appendChild(imageContainer);            
-            bioCard.appendChild(profileInfoContainer);
-            
-            // Add Posts
-            if (userPosts?.length > 0) {
-                userPosts.forEach(post => {
-                    let postElement = document.createElement('div');
-                    postElement.classList.add('card');
-                    
-                    let postTitle = document.createElement('p');
-                    postTitle.classList.add('card__title');
-                    postTitle.id = 'post_title';
-                    postTitle.textContent = post.title;
-                    postElement.appendChild(postTitle);
-                    
-                    let postContent = document.createElement('p');
-                    postContent.classList.add('card__description');
-                    postContent.id = 'post_content';
-                    postContent.textContent = post.content;
-                    postElement.appendChild(postContent);
-                    
-                    if (post.media) {
-                        let postMedia = document.createElement('img');
-                        postMedia.id = 'post_media';
-                        postMedia.src = `/static/media/${post.media}`;
-                        postElement.appendChild(postMedia);
-                    }
-                    postsContainer.appendChild(postElement);
-                });
-            } else {
-                // Add container to hold no pasts alerts
-                let noPostsContainer = document.createElement('div');
-                noPostsContainer.id = 'no_posts_container';
-                postsContainer.appendChild(noPostsContainer);
 
-                let noPostsAlerts = document.createElement('p');
-                noPostsAlerts.id = 'no_posts';
-                noPostsAlerts.textContent = 'No posts available';
-                noPostsContainer.appendChild(noPostsAlerts);
-            }
+            // Load 'My Posts' section by default
+            populatePosts(userPosts);
+
+            // Listen for client activity, sets posts to client preference
+            setToggleEventListeners(userPosts, likedPosts);
+
         } else {
             console.error('Error fetching profile data:', data.message);
         }
@@ -259,4 +195,75 @@ export function renderProfilePage() {
     app.appendChild(profilePage);
     app.appendChild(userOptions);
     
+}
+
+function populatePosts(posts) {
+    let postsContainer = document.getElementById('posts_container');
+    postsContainer.innerHTML = ""; // clear content for fresh population
+
+    // Set null values to empty array
+    posts = posts ?? [];
+
+    if (posts && posts.length > 0) {
+        posts.forEach(post => {
+            let postElement = document.createElement('div');
+            postElement.classList.add('card');
+
+            let postTitle = document.createElement('p');
+            postTitle.classList.add('card__title');
+            postTitle.textContent = post.title;
+            postElement.appendChild(postTitle);
+
+            let postContent = document.createElement('p');
+            postContent.classList.add('card__description');
+            postContent.textContent = post.content;
+            postElement.appendChild(postContent);
+
+            if (post.media) {
+                let postMedia = document.createElement('img');
+                postMedia.src = `/static/media/${post.media}`;
+                postElement.appendChild(postMedia);
+            }
+
+            postsContainer.appendChild(postElement);
+        });
+    } else {
+        let noPostsContainer = document.createElement('div');
+        noPostsContainer.id = 'no_posts_container';
+
+        let noPostsAlerts = document.createElement('p');
+        noPostsAlerts.id = 'no_posts';
+        noPostsAlerts.textContent = 'No posts available';
+        noPostsContainer.appendChild(noPostsAlerts);
+
+        postsContainer.appendChild(noPostsContainer);
+    }
+}
+
+function setToggleEventListeners(userPosts, likedPosts) {
+    // Extract page elements
+    let myPostsButton = document.getElementById('my_posts_button');
+    let likedPostsButton = document.getElementById('liked_posts_button');
+
+      // Ensure buttons exist before adding event listeners
+      if (!myPostsButton || !likedPostsButton) {
+        console.error("Toggle buttons not found in the DOM!");
+        return;
+    }
+
+    // Set null values to empty array
+    userPosts = userPosts ?? [];
+    likedPosts = likedPosts ?? [];
+
+    myPostsButton.addEventListener('click', () => {
+        myPostsButton.classList.add('active');
+        likedPostsButton.classList.remove('active');
+        populatePosts(userPosts);
+    });
+
+    likedPostsButton.addEventListener('click', () => {
+        likedPostsButton.classList.add('active');
+        myPostsButton.classList.remove('active');
+        populatePosts(likedPosts);
+    });
 }

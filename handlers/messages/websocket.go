@@ -90,6 +90,7 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		fmt.Println("Message: ", message)
+		fmt.Println("Message ReceiverID: ", message.ReceiverID)
 
 		// Handle incoming message (store in DB and broadcast)
 		err = database.SendPrivateMessage(userID, message.ReceiverID, message.Message)
@@ -103,6 +104,7 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 		for client := range server.clients {
 			userIdentifier := server.clients[client]
 			if userIdentifier == message.ReceiverID {
+				fmt.Println("ReceuverFromPool: ", userIdentifier)
 				if err := client.WriteJSON(message); err != nil {
 					log.Println("Error sending message to client:", err)
 					client.Close()

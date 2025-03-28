@@ -56,12 +56,14 @@
             console.log(`Sending message '${messageContent}', to user ${receiverID}, from ${window.data.userid}`)
 
             const message = {
-                senderID: window.data.userid,  // Use the sender's ID from window.data
-                receiverID: receiverID,        // Use the dynamically selected receiver ID
+                sender_id: window.data.userid,  // Use the sender's ID from window.data
+                receiver_id: receiverID,        // Use the dynamically selected receiver ID
                 message: messageContent
             };
 
-            socket.send(JSON.stringify(message));
+            let msg = JSON.stringify(message);
+            console.log("Message: ", msg);
+            socket.send(msg);
 
             // Clear input field after sending
             document.getElementById('message-input').value = '';

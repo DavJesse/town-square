@@ -33,9 +33,23 @@ export function renderIndexPage() {
     centerCluster.id = 'center_cluster';
     rightCluster.id = 'right_cluster';
 
-    indexPageContainer.appendChild(leftCluster);
-    indexPageContainer.appendChild(centerCluster);
     indexPageContainer.appendChild(rightCluster);
+    indexPageContainer.appendChild(centerCluster);
+    indexPageContainer.appendChild(leftCluster);
+
+    // Create categories and online users containers
+    let categoriesCard = document.createElement('div');
+    let onlineUsersCard = document.createElement('div');
+    let onlineUsersTitle = document.createElement('h3');
+    categoriesCard.id = 'category_container';
+    onlineUsersCard.id = 'online_users_card';
+    onlineUsersTitle.id = 'online_users_title';
+    onlineUsersTitle.textContent = 'Who\'s online?';
+
+    onlineUsersCard.appendChild(onlineUsersTitle);
+    leftCluster.appendChild(categoriesCard);
+    leftCluster.appendChild(onlineUsersCard);
+    indexPageContainer.appendChild(leftCluster);
 
 }
 

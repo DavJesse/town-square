@@ -45,7 +45,7 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 	return posts, nil
 }
 
-func GetLikedPostsByUser(userID string) ([]models.PostWithCategories, error) {
+func GetLikedPostsByUser(userID int) ([]models.PostWithCategories, error) {
 	query := `
 		SELECT 
 			p.uuid, 

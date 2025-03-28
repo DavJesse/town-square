@@ -24,20 +24,29 @@ func ViewUserProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get user's posts
 	userPosts, err := database.PostsFilterByUser(userData.ID)
 	if err != nil {
 		log.Printf("Error getting posts: %v\n", err)
-		// Continue execution but return empty posts if an error occurs
 		userPosts = []models.Post{}
+	}
+
+	// Get user's liked posts
+	userLikedPosts, err := database.GetLikedPostsByUser(userData.ID)
+	if err != nil {
+		log.Printf("Failed to retrieve liked posts %v", err)
+		userLikedPosts = []models.PostWithCategories{}
 	}
 
 	// Combine user data and user posts
 	profileData := struct {
-		User  models.User   `json:"user"`
-		Posts []models.Post `json:"posts"`
+		User       models.User                 `json:"user"`
+		Posts      []models.Post               `json:"user_posts"`
+		LikedPosts []models.PostWithCategories `json:"liked_posts"`
 	}{
-		User:  userData,
-		Posts: userPosts,
+		User:       userData,
+		Posts:      userPosts,
+		LikedPosts: userLikedPosts,
 	}
 
 	w.Header().Set("Content-Type", "application/json")

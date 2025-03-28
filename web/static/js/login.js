@@ -90,7 +90,7 @@ export function renderLoginPage() {
     loginContainer.appendChild(accountIssues);
 
     // Add login container to #app div
-    const app = document.getElementById("app");
+    let app = document.getElementById("app");
     app.appendChild(loginContainer);
 
     

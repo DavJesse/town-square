@@ -4,7 +4,6 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"strconv"
 
 	errors "forum/handlers/errors"
 	utils "forum/utils"
@@ -35,9 +34,7 @@ func ShowLikedPosts(w http.ResponseWriter, r *http.Request) {
 	// Retrieve user information
 	user, _ := database.GetUserbyID(userID)
 
-	userIDStr := strconv.Itoa(userID)
-
-	likedPosts, err := database.GetLikedPostsByUser(userIDStr)
+	likedPosts, err := database.GetLikedPostsByUser(userID)
 	if err != nil {
 		http.Error(w, "Failed to retrieve liked posts", http.StatusInternalServerError)
 		return

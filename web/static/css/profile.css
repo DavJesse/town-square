@@ -19,7 +19,7 @@
 }
 
 /* Left cluster rules */
-#online_users_card {
+#online_users_card, #profile_card, #category_container {
     margin: 40px auto auto auto;
     width: 90%;
     background-color: #FFFFFF;

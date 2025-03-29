@@ -1,3 +1,10 @@
+#profile_pic {
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
 .container {
     display: flex;
     flex-wrap: wrap;

@@ -227,7 +227,6 @@ export function populatePosts(posts) {
     if (posts && posts.length > 0) {
         posts.forEach(post => {
             let postElement = document.createElement('div');
-            postElement.classList.add('card');
             postElement.id = 'post_card';
 
             let postHead = document.createElement('div');

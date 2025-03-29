@@ -3,14 +3,14 @@
     justify-content: space-evenly;
     align-items: flex-start;
     width: 100vw;
-    margin-top: 1150px; /* Makes space for navbar */
+    margin-top: 1500px; /* Makes space for navbar */
     min-height: calc(100vh - 80px); /* Avoids overflow issue */
     overflow-y: auto;
 }
 
 #post_creator_pic {
-    height: 100px;
-    width: 100px;
+    height: 80px;
+    width: 80px;
     border-radius: 50%;
     object-fit: cover;
 }
@@ -64,6 +64,24 @@
 #post_head {
     display: flex;
     flex-direction: row;
+    gap: 25px;
+}
+
+#post_creator_name {
+    font-size: 24px;
+    color: #0000EE;
+    font-weight: 700;
+}
+
+#post_creator_username {
+    font-size: 18px;
+    color: #666666;
+}
+
+#post_title {
+    font-size: 22px;
+    color: #0000EE;
+    font-weight: 700;
 }
 
 .sidebar {

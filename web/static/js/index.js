@@ -15,6 +15,11 @@ export function renderIndexPage() {
     // Render navbar
     renderNavBar();
 
+    // Create index page container
+    let indexPageContainer = document.createElement('div');
+    indexPageContainer.id = 'index_page'
+    app.appendChild(indexPageContainer);
+
     // Render create post button
     let userOptions = document.createElement('div');
     userOptions.id = 'user_options';
@@ -24,11 +29,6 @@ export function renderIndexPage() {
     setCreatePostsButtonListeners(createPostButton);
     userOptions.appendChild(createPostButton);
     app.appendChild(userOptions);
-
-    // Create index page container
-    let indexPageContainer = document.createElement('div');
-    indexPageContainer.id = 'index_page'
-    app.appendChild(indexPageContainer);
 
     // Create clusters of index page
     let leftCluster = document.createElement('div');

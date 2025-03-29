@@ -32,7 +32,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 auto;
+    margin: 0 auto 15px auto;
 }
 
 #category_button {
@@ -41,13 +41,14 @@
     border-radius: 5px;
     margin: auto;
     display: flex;
+    align-items: center;
     height: 35px;
     padding: 0;
 }
 
 #category_button:hover {
     background-color: #0000EE;
-    
+
     #category_text {
         color: #FFFFFF;
     }

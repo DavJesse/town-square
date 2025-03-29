@@ -1,3 +1,16 @@
+#post_creator_pic {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+#post_media {
+    width: 200px;
+    height: auto;
+    object-fit: cover;
+}
+
 #profile_pic {
     height: 200px;
     width: 200px;

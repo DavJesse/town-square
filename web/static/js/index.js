@@ -191,11 +191,12 @@ function populateCategories(categories) {
     categories = categories ?? [];
 
     categories.forEach(category => {
-        let categoryLink = document.createElement('button');
+        let categoryButton = document.createElement('button');
         let icon = document.createElement('span');
+        categoryButton.id = 'category_button';
         icon.id = 'category_icon'
         icon.classList.add('material-symbols-outlined');
-        categoryLink.href = `/categories/${category.id}`;
+        categoryButton.href = `/categories/${category.id}`;
 
         if (category === 'technology') {
             icon.classList.add('laptop_mac')
@@ -214,9 +215,9 @@ function populateCategories(categories) {
         } else {
             icon.classList.add('all_inclusive')
         }
-        categoryLink.appendChild(icon);
-        categoryLink.textContent = category.name;
-        categoriesContentContainer.appendChild(categoryLink);
+        categoryButton.appendChild(icon);
+        categoryButton.textContent = category.name;
+        categoriesContentContainer.appendChild(categoryButton);
         categoriesContentContainer.appendChild(document.createElement('br'));
     });
 }

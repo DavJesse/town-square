@@ -61,6 +61,11 @@
     font-weight: 500;
 }
 
+#post_head {
+    display: flex;
+    flex-direction: row;
+}
+
 .sidebar {
     width: 25%;
     background-color: #ffffff;

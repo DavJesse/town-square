@@ -28,10 +28,6 @@
     width: 30%;
 }
 
-#center_cluster {
-    width: 40%;
-}
-
 /* Left cluster rules */
 #online_users_card, #profile_card, #category_container {
     margin: 40px auto auto auto;
@@ -65,7 +61,7 @@
 
 /* Center cluster */
 #center_cluster {
-    width: 50%;
+    width: 40%;
     gap: 20px;
 }
 

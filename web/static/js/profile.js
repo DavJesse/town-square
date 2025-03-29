@@ -235,6 +235,7 @@ export function populatePosts(posts) {
 
             let postCreatorPic = document.createElement('img');
             postCreatorPic.id = 'post_creator_pic';
+            postCreatorPic.src = post.creator_image? `/static/images/${post.creator_image}` : '/static/user-circle-svgrepo-com.svg';
             postHead.appendChild(postCreatorPic);
 
             let postCreatorInfoContainer = document.createElement('div');
@@ -243,11 +244,12 @@ export function populatePosts(posts) {
 
             let postCreatorName = document.createElement('h3');
             postCreatorName.id = 'post_creator_name';
-            postCreatorName.textContent = post.creator
+            postCreatorName.textContent = post.creator_first_name? `${post.creator_first_name.charAt(0).toUpper()}${post.creator_first_name.slice(1)} ${post.creator_last_name.charAt(0).toUpper()}${post.creator_last_name.slice(1)}` : post.creator_username;
             postCreatorInfoContainer.appendChild(postCreatorName);
 
             let postCreatorUsername = document.createElement('h4');
             postCreatorUsername.id = 'post_creator_username';
+            postCreatorUsername.textContent = `@${post.creator_username}`;
             postCreatorInfoContainer.appendChild(postCreatorUsername);
 
             let postContentContainer = document.createElement('div');
@@ -302,7 +304,7 @@ export function populatePosts(posts) {
             commentIcon.classList.add('material-symbols-outlined');
             likeCount.textContent = post.likes_count;
             dislikeCount.textContent = post.dislikes_count;
-            // commentCount.textContent = post.comments_count;
+            commentCount.textContent = post.comments.length;
             likeIcon.textContent = 'thumb_up';
             dislikeIcon.textContent = 'thumb_down';
             commentIcon.textContent = 'comment';

@@ -284,9 +284,9 @@ export function populatePosts(posts) {
             postElement.appendChild(postEngagement);
 
             // Create engagement section
-            let likeContainer = document.createElement('button');
-            let dislikeContainer = document.createElement('button');
-            let commentContainer = document.createElement('button');
+            let likeContainer = document.createElement('div');
+            let dislikeContainer = document.createElement('div');
+            let commentContainer = document.createElement('div');
             let likeCount = document.createElement('p');
             let dislikeCount = document.createElement('p');
             let commentCount = document.createElement('p');

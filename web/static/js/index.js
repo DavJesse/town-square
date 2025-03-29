@@ -192,32 +192,11 @@ function populateCategories(categories) {
 
     categories.forEach(category => {
         let categoryButton = document.createElement('button');
-        let icon = document.createElement('span');
+        let categoryText = document.createElement('p');
         categoryButton.id = 'category_button';
-        icon.id = 'category_icon'
-        icon.classList.add('material-symbols-outlined');
         categoryButton.href = `/categories/${category.id}`;
-
-        if (category === 'technology') {
-            icon.classList.add('laptop_mac')
-        } else if (category === 'agriculture') {
-            icon.classList.add('agriculture')
-        } else if (category === 'arts') {
-            icon.classList.add('palette')
-        } else if (category === 'education') {
-            icon.classList.add('school')
-        } else if (category === 'lifestyle') {
-            icon.classList.add('flight_takeoff')
-        } else if (category === 'culture') {
-            icon.classList.add('theater_comedy')
-        } else if (category === 'science') {
-            icon.classList.add('science')
-        } else {
-            icon.classList.add('all_inclusive')
-        }
-        categoryButton.appendChild(icon);
-        categoryButton.textContent = category.name;
+        categoryText.textContent = category.name;
+        categoryButton.appendChild(categoryText);
         categoriesContentContainer.appendChild(categoryButton);
-        categoriesContentContainer.appendChild(document.createElement('br'));
     });
 }

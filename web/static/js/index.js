@@ -2,7 +2,7 @@ import { renderNavBar } from '/static/js/navbar.js'
 import { renderCreatePostButton } from '/static/js/create_post.js'
 import { setCreatePostsButtonListeners } from '/static/js/create_post.js';
 import { navigateTo } from '/static/js/routes.js';
-import { populatePosts, setToggleEventListeners } from 'static/js/profile.js';
+import { populatePosts, setToggleEventListeners } from '/static/js/profile.js';
 
 export function renderIndexPage() {
     // Extract app from dom
@@ -47,15 +47,18 @@ export function renderIndexPage() {
     let onlineUsersCard = document.createElement('div');
     let onlineUsersTitle = document.createElement('h3');
     let categoriesCardTitle = document.createElement('h3');
+    let categoryContentContainer = document.createElement('div');
     categoriesCard.id = 'category_container';
     onlineUsersCard.id = 'online_users_card';
     onlineUsersTitle.id = 'online_users_title';
     categoriesCardTitle.id = 'categories_title';
+    categoryContentContainer.id = 'category_content_container';
     onlineUsersTitle.textContent = 'Who\'s online?';
     categoriesCardTitle.textContent = 'Categories';
 
     onlineUsersCard.appendChild(onlineUsersTitle);
     categoriesCard.appendChild(categoriesCardTitle);
+    categoriesCard.appendChild(categoryContentContainer);
     leftCluster.appendChild(categoriesCard);
     leftCluster.appendChild(onlineUsersCard);
    
@@ -166,6 +169,11 @@ export function renderIndexPage() {
             viewProfileButton.href = `/profile`;
             messangerButton.href = `/messages`;
 
+            // Render categories and populate posts
+            populateCategories(categories);
+            populatePosts(posts);
+            setToggleEventListeners(posts, likedPosts);
+
         } else {
             console.error('Error fetching home page data:', data.message);
         }
@@ -178,7 +186,9 @@ export function renderIndexPage() {
 
 function populateCategories(categories) {
     let categoriesContentContainer = document.getElementById('category_content_container');
-    categoriesContentContainer.innerHTML = '';
+    // categoriesContentContainer.innerHTML = '';
+
+    categories = categories ?? [];
 
     categories.forEach(category => {
         let categoryLink = document.createElement('a');

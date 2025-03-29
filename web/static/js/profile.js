@@ -229,21 +229,92 @@ export function populatePosts(posts) {
             let postElement = document.createElement('div');
             postElement.classList.add('card');
 
-            let postTitle = document.createElement('p');
-            postTitle.classList.add('card__title');
+            let postHead = document.createElement('div');
+            postHead.id ='post_head';
+            postElement.appendChild(postHead);
+
+            let postCreatorPic = document.createElement('img');
+            postCreatorPic.id = 'post_creator_pic';
+            postHead.appendChild(postCreatorPic);
+
+            let postCreatorInfoContainer = document.createElement('div');
+            postCreatorInfoContainer.id = 'post_creator_info_container';
+            postHead.appendChild(postCreatorInfoContainer);
+
+            let postCreatorName = document.createElement('h3');
+            postCreatorName.id = 'post_creator_name';
+            postCreatorName.textContent = post.creator
+            postCreatorInfoContainer.appendChild(postCreatorName);
+
+            let postCreatorUsername = document.createElement('h4');
+            postCreatorUsername.id = 'post_creator_username';
+            postCreatorInfoContainer.appendChild(postCreatorUsername);
+
+            let postContentContainer = document.createElement('div');
+            postContentContainer.id = 'post_content_container';
+            postElement.appendChild(postContentContainer);
+
+            let postTitle = document.createElement('h4');
+            postTitle.id = 'post_title';
             postTitle.textContent = post.title;
-            postElement.appendChild(postTitle);
+            postContentContainer.appendChild(postTitle);
 
             let postContent = document.createElement('p');
-            postContent.classList.add('card__description');
+            postContent.id = 'post_content';
             postContent.textContent = post.content;
-            postElement.appendChild(postContent);
+            postContentContainer.appendChild(postContent);
 
             if (post.media) {
                 let postMedia = document.createElement('img');
+                postMedia.id = 'post_media';
                 postMedia.src = `/static/media/${post.media}`;
                 postElement.appendChild(postMedia);
             }
+
+            let postCreationDate = document.createElement('p');
+            let options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            postCreationDate.id = 'post_creation_date';
+            postCreationDate.textContent = `Posted on ${new Date(post.created_at).toLocaleString('en-GB', options)}`;
+            postElement.appendChild(postCreationDate);
+
+            let postEngagement = document.createElement('div');
+            postEngagement.id = 'post_engagement';
+            postElement.appendChild(postEngagement);
+
+            // Create engagement section
+            let likeContainer = document.createElement('button');
+            let dislikeContainer = document.createElement('button');
+            let commentContainer = document.createElement('button');
+            let likeCount = document.createElement('p');
+            let dislikeCount = document.createElement('p');
+            let commentCount = document.createElement('p');
+            let likeIcon = document.createElement('span');
+            let dislikeIcon = document.createElement('span');
+            let commentIcon = document.createElement('span');
+            likeContainer.id = 'like_container';
+            dislikeContainer.id = 'dislike_container';
+            commentContainer.id = 'comment_container';
+            likeCount.id = 'engagement_count';
+            dislikeCount.id = 'engagement_count';
+            commentCount.id = 'engagement_count';
+            likeIcon.classList.add('material-symbols-outlined');
+            dislikeContainer.classList.add('material-symbols-outlined');
+            commentIcon.classList.add('material-symbols-outlined');
+            likeCount.textContent = post.likes_count;
+            dislikeCount.textContent = post.dislikes_count;
+            // commentCount.textContent = post.comments_count;
+            likeIcon.textContent = 'thumb_up';
+            dislikeIcon.textContent = 'thumb_down';
+            commentIcon.textContent = 'comment';
+            postEngagement.appendChild(likeContainer);
+            postEngagement.appendChild(dislikeContainer);
+            postEngagement.appendChild(commentContainer);
+            likeContainer.appendChild(likeCount)
+            likeContainer.appendChild(likeIcon);
+            dislikeContainer.appendChild(dislikeCount);
+            dislikeContainer.appendChild(dislikeIcon);
+            commentContainer.appendChild(commentCount);
+            commentContainer.appendChild(commentIcon);
 
             postsContainer.appendChild(postElement);
         });

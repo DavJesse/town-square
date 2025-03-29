@@ -102,6 +102,7 @@ type PostWithUsername struct {
 	CreatorFirstName string               `json:"creator_first_name,omitempty"`
 	CreatorLastName  string               `json:"creator_last_name,omitempty"`
 	CreatorUsername  string               `json:"creator_username"`
+	CreatorImage     string               `json:"creator_image,omitempty"`
 	Title            string               `json:"title"`
 	Content          string               `json:"content"`
 	Media            string               `json:"media,omitempty"`

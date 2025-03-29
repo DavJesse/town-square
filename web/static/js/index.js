@@ -194,6 +194,7 @@ function populateCategories(categories) {
         let categoryButton = document.createElement('button');
         let categoryText = document.createElement('p');
         categoryButton.id = 'category_button';
+        categoryText.id = 'category_text';
         categoryButton.href = `/categories/${category.id}`;
         categoryText.textContent = category.name;
         categoryButton.appendChild(categoryText);

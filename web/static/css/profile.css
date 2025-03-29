@@ -27,7 +27,7 @@
     min-height: 300px;
 }
 
-#online_users_title {
+#online_users_title, #categories_title {
     margin: 10px auto auto 30px;
     color: #0000EE;
     font-size: 22px;

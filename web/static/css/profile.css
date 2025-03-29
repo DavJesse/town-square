@@ -14,18 +14,47 @@
     flex-direction: column;
 }
 
-#left_cluster, #right_cluster {
-    width: 25%;
+#left_cluster {
+    top: 80px;
+    left: 0;
+    position: fixed;
+    width: 30%;
+}
+
+#right_cluster {
+    top: 80px;
+    right: 0;
+    position: fixed;
+    width: 30%;
+}
+
+#center_cluster {
+    width: 40%;
 }
 
 /* Left cluster rules */
 #online_users_card, #profile_card, #category_container {
     margin: 40px auto auto auto;
-    width: 90%;
+    width: 80%;
     background-color: #FFFFFF;
     border-radius: 15px;
     min-height: 300px;
 }
+
+/* #online_users_card {
+    position: fixed;
+    top: 300px;
+}
+
+#category_card {
+    position: fixed;
+    top: 100px;
+}
+
+#profile_card {
+    position: fixed;
+    top: 100px;
+} */
 
 #online_users_title, #categories_title {
     margin: 10px auto auto 30px;

@@ -22,6 +22,7 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 	    u.username,
 	    u.first_name,
 	    u.last_name,
+		u.image,
 	    COALESCE((SELECT COUNT(*) FROM likes l WHERE l.post_id = p.uuid), 0) AS likes_count,
 	    COALESCE((SELECT COUNT(*) FROM dislikes d WHERE d.post_id = p.uuid), 0) AS dislikes_count,
 	    COALESCE(json_group_array(json_object('id', c.uuid, 'content', c.content, 'created_at', c.created_at, 'username', cu.username))
@@ -30,7 +31,7 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 	JOIN users u ON u.id = p.user_id
 	LEFT JOIN comments c ON c.post_id = p.uuid
 	LEFT JOIN users cu ON cu.id = c.user_id
-	GROUP BY p.uuid, u.username, u.first_name, u.last_name
+	GROUP BY p.uuid, u.username, u.first_name, u.last_name, u.image
 	ORDER BY p.created_at DESC;
 `
 
@@ -54,6 +55,7 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 			&post.CreatorUsername,
 			&post.CreatorFirstName,
 			&post.CreatorLastName,
+			&post.CreatorImage,
 			&post.LikesCount,
 			&post.DislikesCount,
 			&commentsJSON,

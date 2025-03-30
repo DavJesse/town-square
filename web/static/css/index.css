@@ -125,7 +125,11 @@
 }
 
 #engagement_count {
-    font-size: 18px;
+    font-size: 20px;
+    margin: auto;
+}
+
+#engagement_icon {
     margin: auto;
 }
 

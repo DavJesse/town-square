@@ -68,8 +68,8 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	connectionData := models.WebSocketOnConnectionData{
-		MyID: userID,
-		MyName: userName,
+		MyID:        userID,
+		MyName:      userName,
 		OnlineUsers: onlineUsers,
 	}
 

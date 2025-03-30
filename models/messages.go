@@ -20,6 +20,6 @@ type UserStatus struct {
 
 type WebSocketOnConnectionData struct {
 	MyID        int    `json:"userid"`
-	MyName      string    `json:"username"`
+	MyName      string `json:"username"`
 	OnlineUsers []User `json:"online_users"`
 }

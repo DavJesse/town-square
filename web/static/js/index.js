@@ -107,7 +107,7 @@ export function renderIndexPage() {
     let logoutButton = document.createElement('button');
     profileTitle.id = 'profile_title';
     profilePic.id = 'index_profile_pic';
-    bioContainer.id = 'bio_container';
+    bioContainer.id = 'index_bio_container';
     bioTitle.id = 'profile_bio_title';
     bioText.id = 'profile_bio_text';
     profileActionContainer.id = 'profile_action_container';

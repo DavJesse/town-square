@@ -144,6 +144,27 @@
 #profile_title {
     margin: auto;
 }
+
+#index_bio_container {
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    background-color: #f3f3f1;
+    margin: 0 auto;
+    height: fit-content;
+    min-height: 100px;
+    width: 100%;
+}
+
+#profile_bio_title {
+    font-size: 16px;
+    margin: 5px auto auto 20px;
+}
+
+#profile_bio_text {
+    font-size: 14px;
+    margin: 0 auto 0 10px;
+}
+
 .sidebar {
     width: 25%;
     background-color: #ffffff;

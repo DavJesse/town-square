@@ -287,6 +287,9 @@ export function populatePosts(posts) {
             let likeContainer = document.createElement('div');
             let dislikeContainer = document.createElement('div');
             let commentContainer = document.createElement('div');
+            let likeLink = document.createElement('a');
+            let dislikeLink = document.createElement('a');
+            let commentLink = document.createElement('a');
             let likeCount = document.createElement('p');
             let dislikeCount = document.createElement('p');
             let commentCount = document.createElement('p');
@@ -296,6 +299,9 @@ export function populatePosts(posts) {
             likeContainer.id = 'like_container';
             dislikeContainer.id = 'dislike_container';
             commentContainer.id = 'comment_container';
+            likeLink.href = '/posts/like';
+            dislikeLink.href = '/posts/dislike';
+            commentLink.href = '/comment';
             likeCount.id = 'engagement_count';
             dislikeCount.id = 'engagement_count';
             commentCount.id = 'engagement_count';
@@ -311,12 +317,15 @@ export function populatePosts(posts) {
             postEngagement.appendChild(likeContainer);
             postEngagement.appendChild(dislikeContainer);
             postEngagement.appendChild(commentContainer);
+            likeLink.appendChild(likeIcon);
             likeContainer.appendChild(likeCount)
-            likeContainer.appendChild(likeIcon);
+            likeContainer.appendChild(likeLink);
+            dislikeLink.appendChild(dislikeIcon);
             dislikeContainer.appendChild(dislikeCount);
-            dislikeContainer.appendChild(dislikeIcon);
+            dislikeContainer.appendChild(dislikeLink);
+            commentLink.appendChild(commentIcon);
             commentContainer.appendChild(commentCount);
-            commentContainer.appendChild(commentIcon);
+            commentContainer.appendChild(commentLink);
 
             postsContainer.appendChild(postElement);
         });

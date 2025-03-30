@@ -64,7 +64,7 @@ export function renderProfilePage() {
     
     // Add user image for bio card
     let profilePic = document.createElement('img');
-    profilePic.id = 'profile_pic';
+    profilePic.id = 'index_profile_pic';
     profilePic.alt = 'profile image';
     
     // Add title for bio card

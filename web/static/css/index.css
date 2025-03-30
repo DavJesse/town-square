@@ -21,11 +21,12 @@
     object-fit: cover;
 }
 
-#profile_pic {
+#index_profile_pic {
     height: 200px;
     width: 200px;
     border-radius: 50%;
     object-fit: cover;
+    margin: 0 auto;
 }
 
 #category_content_container {

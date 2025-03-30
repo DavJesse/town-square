@@ -133,6 +133,16 @@
     margin: auto;
 }
 
+#profile_card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;    
+    padding: 20px;
+}
+
+#profile_title {
+    margin: auto;
+}
 .sidebar {
     width: 25%;
     background-color: #ffffff;

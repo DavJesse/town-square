@@ -308,9 +308,9 @@ export function populatePosts(posts) {
             likeIcon.classList.add('material-symbols-outlined');
             dislikeContainer.classList.add('material-symbols-outlined');
             commentIcon.classList.add('material-symbols-outlined');
-            likeIcon.id = 'like_icon';
-            dislikeIcon.id = 'dislike_icon';
-            commentIcon.id = 'comment_icon';
+            likeIcon.id = 'engagement_icon';
+            dislikeIcon.id = 'engagement_icon';
+            commentIcon.id = 'engagement_icon';
             likeCount.textContent = post.likes_count;
             dislikeCount.textContent = post.dislikes_count;
             commentCount.textContent = post.comments.length;

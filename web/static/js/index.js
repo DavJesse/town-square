@@ -106,7 +106,7 @@ export function renderIndexPage() {
     let messangerButton = document.createElement('button');
     let logoutButton = document.createElement('button');
     profileTitle.id = 'profile_title';
-    profilePic.id = 'profile_pic';
+    profilePic.id = 'index_profile_pic';
     bioContainer.id = 'bio_container';
     bioTitle.id = 'profile_bio_title';
     bioText.id = 'profile_bio_text';

@@ -124,6 +124,11 @@
     margin: auto;
 }
 
+#engagement_count {
+    font-size: 18px;
+    margin: auto;
+}
+
 .sidebar {
     width: 25%;
     background-color: #ffffff;

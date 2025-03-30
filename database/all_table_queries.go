@@ -110,7 +110,7 @@ const (
 		FOREIGN KEY (sender_id) REFERENCES users(id),
 		FOREIGN KEY (receiver_id) REFERENCES users(id)
 	);`
-	
+
 	USER_STATUS_TABLE_CREATE = `CREATE TABLE IF NOT EXISTS user_status (
 		user_id INTEGER PRIMARY KEY,
 		is_online BOOLEAN DEFAULT FALSE,

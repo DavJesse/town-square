@@ -2,6 +2,7 @@ import { renderRegistrationPage } from "/static/js/register.js";
 import { renderLoginPage } from "/static/js/login.js";
 import { renderErrorPage } from "/static/js/error.js";
 import { renderProfilePage } from "/static/js/profile.js";
+import { renderIndexPage  } from "/static/js/index.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     handleRouteChange(); // Run when the page loads
@@ -33,11 +34,7 @@ function handleRouteChange() {
 
     switch (path) {
         case "/":
-            app.innerHTML = `<h1>Home Page</h1>
-            <p>Welcome to the forum!</p>
-            <div>
-            <a href="/profile">Profile Page</a>
-            </div>`;
+            renderIndexPage();
             break;
         case "/login":
             renderLoginPage();

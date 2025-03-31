@@ -29,6 +29,31 @@ func init() {
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
+
+	// database.StoreMessage(&models.Message{
+	// 	Content:    "Hello there, I am raja",
+	// 	SenderID:   1,
+	// 	ReceiverID: 2,
+	// 	Timestamp:  time.Now().UTC(),
+	// })
+	// database.StoreMessage(&models.Message{
+	// 	Content:    "Hi, Mi Markie",
+	// 	SenderID:   2,
+	// 	ReceiverID: 1,
+	// 	Timestamp:  time.Now().UTC(),
+	// })
+	// database.StoreMessage(&models.Message{
+	// 	Content:    "Sup Markie, whats poppin?",
+	// 	SenderID:   1,
+	// 	ReceiverID: 2,
+	// 	Timestamp:  time.Now().UTC(),
+	// })
+	// database.StoreMessage(&models.Message{
+	// 	Content:    "Markie mi a beat them bad",
+	// 	SenderID:   2,
+	// 	ReceiverID: 1,
+	// 	Timestamp:  time.Now().UTC(),
+	// })
 }
 
 func main() {
@@ -49,9 +74,30 @@ func main() {
 	http.HandleFunc("/", posts.Index)
 
 	// Create a new WebSocket server instance
-	messages.NewWebSocketServer()
-	http.Handle("/chat", middleware.AuthMiddleware(http.HandlerFunc(messages.WebSocketHandler)))
-	http.HandleFunc("/ws", WSProcess)
+	// messages.NewWebSocketServer()
+	// http.Handle("/chat", middleware.AuthMiddleware(http.HandlerFunc(messages.WebSocketHandler)))
+	// http.HandleFunc("/ws", WSProcess)
+
+	// ============================================================================================================================
+
+	// Create a single MessageHub instance
+	messages.NewMessageHub()
+
+	// Message routes
+	http.HandleFunc("/api/messages/conversations", messages.GetConversationsHandler)
+
+	http.HandleFunc("/api/messages/{userId}", messages.GetMessagesHandler)
+
+	// WebSocket route
+	http.Handle("/ws", middleware.AuthMiddleware(http.HandlerFunc(messages.ServeWS)))
+	// User list route (returns registered users)
+	http.HandleFunc("/api/users", database.GetUsers)
+
+	http.HandleFunc("/api/users/", database.GetUserById)
+
+	http.HandleFunc("/chat", WSProcess)
+
+	// ======================================================================================================
 
 	http.HandleFunc("/static/", misc.Static)
 	http.HandleFunc("/login", auth.LoginHandler)
@@ -91,7 +137,6 @@ func main() {
 		return
 	}
 }
-
 
 func WSProcess(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("./web/templates/chat.html"))

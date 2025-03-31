@@ -3,110 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
-    <link rel="stylesheet" href="/static/css/chat.css">
+    <meta name="csrf-token" content="" id="csrf-token">
+    <title>Messages</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="/static/css/chat.css" rel="stylesheet" />
 </head>
 <body>
-    <div id="online-users">
-        <h3>Online Users</h3>
-        <ul id="online-user-list">
-            <!-- Dynamically populate the list of online users -->
-        </ul>
-    </div>
-    
-    <div id="chat-container" style="display:none;">
-        <div id="username"></div>
-        <div id="chat-box"></div>  <!-- Area where messages will be displayed -->
-        <div id="message-input-container">
-            <input type="text" id="message-input" placeholder="Type a message..." />
-            <button id="send-button" onclick="sendMessage()">Send</button>
+    <div class="container">
+        <header class="header">
+            <h1>Messages</h1>
+            <button class="theme-toggle" id="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+
+        <div class="messages-container">
+            <div class="contacts-sidebar">
+                <div class="contacts-header">
+                    <h2>Conversations</h2>
+                    <button class="new-conversation-btn" id="new-conversation-btn">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div class="contacts-list" id="contacts-list">
+                    <div class="loading">Loading conversations...</div>
+                </div>
+            </div>
+            <div class="chat-area">
+                <div class="chat-header" id="chat-header">
+                    <div class="chat-placeholder">Select a conversation to start messaging</div>
+                </div>
+                <div class="messages-list" id="messages-list"></div>
+                <div class="message-input-container" id="message-input-container" style="display: none;">
+                    <form class="message-input-form" id="message-form">
+                        <textarea 
+                            class="message-input" 
+                            id="message-input"
+                            placeholder="Type a message..."
+                            rows="1"
+                        ></textarea>
+                        <button type="submit" class="send-button">Send</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
+    <div id="notification-container"></div>
+
+    <script src="/static/chat/messages_store.js"></script>
+    <script src="/static/chat/messages.js"></script>
+    <script src="/static/chat/notification.js"></script>
+    <script src="/static/chat/websocket.js"></script>
+    <script src="/static/chat/state.js"></script>
     <script>
-        const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'; // Use 'wss' for secure connections, 'ws' for non-secure
-        const host = window.location.host; // Gets the host (domain or localhost:port)
-        const socket = new WebSocket(`${protocol}://${host}/chat`); // WebSocket endpoint
-
-        // Variable to store the receiver's ID when clicked on a user
-        let receiverID = null;
-
-        // When the WebSocket connection is established
-        socket.onopen = () => {
-            console.log('WebSocket connected!');
-        };
-
-        // When a message is received from the server (including the list of online users)
-        socket.onmessage = (event) => {
-            window.data = JSON.parse(event.data);
-            if (Array.isArray(data.online_users)) {
-                // Display the online users
-                displayOnlineUsers(data.online_users);
-            } else {
-                // Display a chat message
-                displayMessage(data);
-            }
-        };
-
-        // Function to send a message
-        function sendMessage() {
-            const messageContent = document.getElementById('message-input').value;
-            if (!receiverID || !messageContent.trim()) return;
-
-            console.log(`Sending message '${messageContent}', to user ${receiverID}, from ${window.data.userid}`)
-
-            const message = {
-                sender_id: window.data.userid,  // Use the sender's ID from window.data
-                receiver_id: receiverID,        // Use the dynamically selected receiver ID
-                message: messageContent
-            };
-
-            let msg = JSON.stringify(message);
-            console.log("Message: ", msg);
-            socket.send(msg);
-
-            // Clear input field after sending
-            document.getElementById('message-input').value = '';
-        }
-
-        // Function to display a message in the chat
-        function displayMessage(message) {
-            const chatBox = document.getElementById('chat-box');
-            const messageDiv = document.createElement('div');
-            messageDiv.textContent = `${message.senderID}: ${message.message}`;
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;  // Scroll to the bottom
-        }
-
-        // Function to display the online users in the UI
-        function displayOnlineUsers(users) {
-            const onlineUserList = document.getElementById('online-user-list');
-            onlineUserList.innerHTML = ''; // Clear the current list
-
-            users.forEach(user => {
-                if(user.username !== window.data.username) { // Only display the other users
-                    const li = document.createElement('li');
-                    li.textContent = `${user.username}`;
-                    onlineUserList.appendChild(li);
-
-                    // Add click event to open a private chat
-                    li.addEventListener('click', () => {
-                        receiverID = user.id;  // Set the receiver ID
-                        openPrivateChat(user.username);  // Show chat for selected user
-                    });
-                }
-            });
-        }
-
-        // Function to open a private chat with a user
-        function openPrivateChat(username) {
-            const chatContainer = document.getElementById("chat-container");
-            chatContainer.style.display = "block";
-            document.getElementById('chat-box').innerHTML = '';  // Clear previous messages
-            document.getElementById('message-input').focus();
-            document.getElementById('username').innerHTML = window.data.username;
-            document.getElementById('chat-box').textContent = `Chat with ${username}`;
-        }
+        document.addEventListener('DOMContentLoaded', async () => {
+            window.State = new State();
+            const messageStore = new MessageStore();
+            const notificationManager = new NotificationManager();
+            const wsManager = new WebSocketManager(messageStore);
+            wsManager.connect();
+            
+            // Initialize the messages view
+            const messagesView = new MessagesView(messageStore, wsManager, notificationManager);
+            await messagesView.init();
+        });
     </script>
 </body>
 </html>

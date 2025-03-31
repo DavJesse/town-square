@@ -105,16 +105,32 @@ const (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		sender_id INTEGER NOT NULL,
 		receiver_id INTEGER NOT NULL,
-		message TEXT NOT NULL,
+		content TEXT NOT NULL,
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (sender_id) REFERENCES users(id),
-		FOREIGN KEY (receiver_id) REFERENCES users(id)
-	);`
-
+		read_at TIMESTAMP,
+		is_deleted BOOLEAN DEFAULT false,
+		reply_to INTEGER DEFAULT NULL,
+		media_url TEXT DEFAULT NULL,
+		FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+		FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
+	);
+	CREATE INDEX IF NOT EXISTS idx_messages_users ON messages(sender_id, receiver_id);
+	CREATE INDEX IF NOT EXISTS idx_messages_timestamp ON messages(created_at);
+	CREATE INDEX IF NOT EXISTS idx_messages_read_at ON messages(read_at);
+	CREATE INDEX IF NOT EXISTS idx_messages_reply_to ON messages(reply_to);
+	`
+	
 	USER_STATUS_TABLE_CREATE = `CREATE TABLE IF NOT EXISTS user_status (
 		user_id INTEGER PRIMARY KEY,
-		is_online BOOLEAN DEFAULT FALSE,
+		is_online BOOLEAN DEFAULT false,
 		last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (user_id) REFERENCES users(id)
-	);`
+		last_activity TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		status_message TEXT DEFAULT NULL,
+		device_info TEXT DEFAULT NULL,
+		notification_preferences TEXT DEFAULT 'all',
+		typing_status BOOLEAN DEFAULT false,
+		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+	);
+	CREATE INDEX IF NOT EXISTS idx_user_status_last_activity ON user_status(last_activity);
+    `
 )

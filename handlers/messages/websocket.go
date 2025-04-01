@@ -143,7 +143,7 @@ func ServeWS(w http.ResponseWriter, r *http.Request) {
 		initialMsg := map[string]interface{}{
 			"type":   "init",
 			"userID": userID,
-			"user": userData,
+			"user":   userData,
 		}
 		initialMsgJSON, err := json.Marshal(initialMsg)
 		if err != nil {

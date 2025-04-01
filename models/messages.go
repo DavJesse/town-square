@@ -24,6 +24,7 @@ func (m *Message) Serialize() []byte {
 	}
 	return data
 }
+
 type Conversation struct {
 	OtherUserID     int64     `json:"other_user_id"`
 	Username        string    `json:"username"`

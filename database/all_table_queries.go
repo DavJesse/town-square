@@ -119,7 +119,7 @@ const (
 	CREATE INDEX IF NOT EXISTS idx_messages_read_at ON messages(read_at);
 	CREATE INDEX IF NOT EXISTS idx_messages_reply_to ON messages(reply_to);
 	`
-	
+
 	USER_STATUS_TABLE_CREATE = `CREATE TABLE IF NOT EXISTS user_status (
 		user_id INTEGER PRIMARY KEY,
 		is_online BOOLEAN DEFAULT false,

@@ -107,11 +107,11 @@ export function renderProfilePage() {
     profileInfoContainer.appendChild(email);
     profileInfoContainer.appendChild(gender);
     profileInfoContainer.appendChild(age);
-    profileInfoContainer.appendChild(bioContainer);
     imageContainer.appendChild(profilePic);
     bioCard.appendChild(imageContainer);
-    bioCard.appendChild(profileInfoContainer);
-    centerCluster.appendChild(bioCard);
+    bioCard.appendChild(bioContainer);
+    imageContainer.appendChild(profileInfoContainer);
+    rightCluster.appendChild(bioCard);
     
     // Add posts card to hold user's recent posts
     let postsCard = document.createElement('div');

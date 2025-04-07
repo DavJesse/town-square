@@ -106,7 +106,9 @@
 
 #image_container {
     width: fit-content;
-    margin: auto 10px;
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
 }
 
 #profile_pic {
@@ -143,17 +145,16 @@
     font-family: 'Roboto', sans-serif;
     font-weight: 400; /* Make sure it is NOT bold */
     color: #656565;
-    margin-left: 10px;
+    margin: 10px;
 }
 
 #bio_container {
     border: 1px solid #aaa;
     border-radius: 10px;
     background-color: #f3f3f1;
-    margin: auto 10px 10px 0;
+    margin: 10px;
     height: fit-content;
     min-height: 100px;
-    padding: 5px auto auto 10px;
 }
 
 #bio_container_title {

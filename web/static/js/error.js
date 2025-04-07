@@ -1,6 +1,10 @@
 export function renderErrorPage() {
     document.title = 'Error!';
 
+    // Retriev app from DOM
+    let app = document.getElementById('app');
+    app.innerHTML = "";
+
     // Create errorContainer
     let errorContainer = document.createElement('section');
     errorContainer.classList.add('error-code');
@@ -37,8 +41,8 @@ export function renderErrorPage() {
 
     errorContainer.appendChild(homeLink);
 
-    // Add errorContainer to body
-    document.body.appendChild(errorContainer);
+    // Add errorContainer to app
+    app.appendChild(errorContainer);
 }
 
 async function fetchErrorMessage() {

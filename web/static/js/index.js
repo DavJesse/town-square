@@ -102,6 +102,9 @@ export function renderIndexPage() {
     let bioTitle = document.createElement('h3');
     let bioText = document.createElement('p');
     let profileActionContainer = document.createElement('div');
+    let profileLink = document.createElement('a');
+    let messangerLink = document.createElement('a');
+    let logoutLink = document.createElement('a');
     let viewProfileButton = document.createElement('button');
     let messangerButton = document.createElement('button');
     let logoutButton = document.createElement('button');
@@ -114,6 +117,9 @@ export function renderIndexPage() {
     viewProfileButton.id = 'view_profile_button';
     messangerButton.id ='messanger_button';
     logoutButton.id = 'profile_logout_button';
+    profileLink.href = '/profile';
+    messangerLink.href = '/chat';
+    logoutLink.href = '/logout';
     viewProfileButton.textContent = 'View Profile';
     messangerButton.textContent = 'Messager';
     logoutButton.textContent = 'Logout';
@@ -121,9 +127,12 @@ export function renderIndexPage() {
     // Append profile components to container
     bioContainer.appendChild(bioTitle);
     bioContainer.appendChild(bioText);
-    profileActionContainer.appendChild(viewProfileButton);
-    profileActionContainer.appendChild(messangerButton);
-    profileActionContainer.appendChild(logoutButton);
+    profileLink.appendChild(viewProfileButton);
+    messangerLink.appendChild(messangerButton);
+    logoutLink.appendChild(logoutButton);
+    profileActionContainer.appendChild(profileLink);
+    profileActionContainer.appendChild(messangerLink);
+    profileActionContainer.appendChild(logoutLink);
     profileCard.appendChild(profileTitle);
     profileCard.appendChild(profilePic);
     profileCard.appendChild(bioContainer);

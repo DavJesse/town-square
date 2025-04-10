@@ -100,7 +100,7 @@
     height: fit-content;
     min-height: 220px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -126,10 +126,10 @@
 }
 
 #bio_title {
-    font-size: 22px;
+    font-size: 26px;
     font-weight: 700;
     color: #0000EE;
-    margin-top: 20px;
+    margin-top: 0px;
 }
 
 #nickname, #email, #gender_text, #age {

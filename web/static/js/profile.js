@@ -1,9 +1,7 @@
 import { renderNavBar } from '/static/js/navbar.js';
 import { renderLoginPage } from '/static/js/login.js';
-import { renderCreatePostButton } from '/static/js/create_post.js';
-import { setCreatePostsButtonListeners } from '/static/js/create_post.js';
-import { renderLogoutButton } from '/static/js/logout_button.js';
-import { setLogoutButtonListeners } from '/static/js/logout_button_button.js';
+import { renderCreatePostButton, setCreatePostsButtonListeners } from '/static/js/create_post_button.js';
+import { renderLogoutButton, setLogoutButtonListeners } from '/static/js/logout_button.js';
 
 export function renderProfilePage() {
     // Append page elements to app

@@ -1,3 +1,13 @@
+/* Define color variables */
+:root {
+    --primary-color: #0000EE;
+    --secondary-color: #FFFFFF;
+    --tertiary-color: #656565;
+    --quaternary-color: #666666;
+    --highlight-color: #f3f3f1;
+    --border-color: #aaa;
+}
+
 /* General page rules */
 #profile_page {
     display: flex;
@@ -32,30 +42,15 @@
 #online_users_card, #profile_card, #category_container {
     margin: 40px auto auto auto;
     width: 80%;
-    background-color: #FFFFFF;
+    background-color: var(--secondary-color);
     border-radius: 15px;
     min-height: 300px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* #online_users_card {
-    position: fixed;
-    top: 300px;
-}
-
-#category_card {
-    position: fixed;
-    top: 100px;
-}
-
-#profile_card {
-    position: fixed;
-    top: 100px;
-} */
-
 #online_users_title, #categories_title {
     margin: 10px auto auto 30px;
-    color: #666666;
+    color: var(--quaternary-color);
     font-size: 22px;
     font-weight: 700;
 }
@@ -80,22 +75,22 @@
     padding: 10px 5px;
     border: none;
     cursor: pointer;
-    background-color: #0000EE;
-    color: #FFFFFF;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
     border-radius: 5px 5px 0 0;
     font-size: 18px;
     font-weight: 600;
 }
 
 #posts_button_container button.active {
-    background-color: #FFFFFF;
-    color: #0000EE;
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
 }
 
 #bio_card {
     margin: 40px auto auto auto;
     width: 95%;
-    background-color: #FFFFFF;
+    background-color: var(--secondary-color);
     border-radius: 15px;
     height: fit-content;
     min-height: 220px;
@@ -128,7 +123,7 @@
 #bio_title {
     font-size: 26px;
     font-weight: 700;
-    color: #0000EE;
+    color: var(--primary-color);
     margin-top: 0px;
 }
 
@@ -136,7 +131,7 @@
     font-size: 16px;
     font-family: 'Roboto', sans-serif;
     font-weight: 400; /* Make sure it is NOT bold */
-    color: #656565;
+    color: var(--tertiary-color);
     margin-left: 10px;
 }
 
@@ -144,14 +139,14 @@
     font-size: 14px;
     font-family: 'Roboto', sans-serif;
     font-weight: 400; /* Make sure it is NOT bold */
-    color: #656565;
+    color: var(--tertiary-color);
     margin: 10px;
 }
 
 #bio_container {
-    border: 1px solid #aaa;
+    border: 1px solid var(--border-color);
     border-radius: 10px;
-    background-color: #f3f3f1;
+    background-color: var(--highlight-color);
     margin: 10px;
     height: fit-content;
     min-height: 100px;
@@ -168,7 +163,7 @@
     flex-direction: column;
     margin: 0 auto auto auto;
     width: 100%;
-    background-color: #FFFFFF;
+    background-color: var(--secondary-color);
     border-radius: 15px;
     min-height: 300px;
     padding: 20px 5px 5px 5px;
@@ -186,11 +181,11 @@
 
 #liked_posts_button, #my_posts_button {
     margin: auto 5px 0 5px;
-    background-color: #0000EE;
+    background-color: var(--primary-color);
 }
 
 #liked_posts_link, #my_posts_link {
-    color: #FFFFFF;
+    color: var(--secondary-color);
     font-size: 18px;
     font-weight: 600;
 }

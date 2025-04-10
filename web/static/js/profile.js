@@ -3,7 +3,7 @@ import { renderLoginPage } from '/static/js/login.js';
 import { renderCreatePostButton } from '/static/js/create_post.js';
 import { setCreatePostsButtonListeners } from '/static/js/create_post.js';
 import { renderLogoutButton } from '/static/js/logout_button.js';
-import { setLogoutButtonListeners } from '/static/js/logout_button.js';
+import { setLogoutButtonListeners } from '/static/js/logout_button_button.js';
 
 export function renderProfilePage() {
     // Append page elements to app

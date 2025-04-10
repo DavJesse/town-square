@@ -1,6 +1,6 @@
 import { renderNavBar } from '/static/js/navbar.js'
 import { renderCreatePostButton } from '/static/js/create_post.js'
-import { setCreatePostsButtonListeners } from '/static/js/create_post.js';
+import { setCreatePostsButtonListeners } from '/static/js/create_post_button.js';
 import { navigateTo } from '/static/js/routes.js';
 import { populatePosts, setToggleEventListeners } from '/static/js/profile.js';
 

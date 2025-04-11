@@ -1,3 +1,5 @@
+import { renderCreatePostForm } from '/static/js/create_post_form.js';
+
 export function renderCreatePostButton() {
     // Create button element
     let createPostButton = document.createElement('button');
@@ -27,6 +29,6 @@ export function renderCreatePostButton() {
 export function setCreatePostsButtonListeners(createPostButton) {
     // Add Event listener for clicking create posts button
     createPostButton.addEventListener('click', () => {
-        alert('Create post button clicked');
+        renderCreatePostForm();
     });
 }

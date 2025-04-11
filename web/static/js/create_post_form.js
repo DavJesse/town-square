@@ -12,6 +12,17 @@ export function renderCreatePostForm() {
     formContainer.id = 'create_post_form_container';
     smokeScreen.appendChild(formContainer);
 
+    // Add close button
+    let closeButton = document.createElement('span');
+    closeButton.textContent = '✖';
+    closeButton.id = 'close_button';
+    closeButton.onclick = function () {
+    smokeScreen.remove();
+    document.body.style.overflow = 'auto'; // Re-enable scroll
+    };
+    formContainer.appendChild(closeButton);
+
+
     // Create forum logo
     let logo = document.createElement('h1');
     logo.textContent = 'Create New Post';

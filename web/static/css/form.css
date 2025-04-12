@@ -67,7 +67,7 @@ h1 {
 } */
 
 /* Style the labels */
-form label {
+/* form label {
     display: block;
     text-align: left;
     font-size: 14px;
@@ -76,7 +76,7 @@ form label {
     margin-top: 10px;
     margin-left: 15px;
     letter-spacing: 1px;
-}
+} */
 
 #gender_label {
     font-size: 18px;
@@ -141,14 +141,14 @@ input[type="file"] {
     font-size: 14px;      /* Readable text size */
 }
 
-input {
+/* input {
     width: 100%;
     padding: 10px;
     margin: 5px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
-}
+} */
 
 /* Style buttons */
 button {

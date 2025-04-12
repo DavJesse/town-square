@@ -2,6 +2,7 @@ package posts
 
 import (
 	"encoding/json"
+	"fmt"
 	"html"
 	"log"
 	"net/http"
@@ -16,6 +17,8 @@ import (
 // PostCreate handles post creation requests and returns JSON
 func PostCreate(w http.ResponseWriter, r *http.Request) {
 	var loggedIn bool
+	code := http.StatusOK
+
 	session, lIn := database.IsLoggedIn(r)
 	if lIn {
 		loggedIn = true
@@ -27,7 +30,7 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 	// Fetch categories from the database
 	categories, err := database.FetchCategories()
 	if err != nil {
-		errors.InternalServerErrorHandler(w, r)
+		code = http.StatusInternalServerError
 		return
 	}
 
@@ -36,11 +39,14 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 		Categories []models.Category `json:"categories"`
 		IsLogged   bool              `json:"is_logged"`
 		ProfPic    string            `json:"prof_pic"`
-		Message    string            `json:"message,omitempty"`
+		Message    string            `json:"message"`
+		Code       int               `json:"code,omitempty"`
 	}{
 		Categories: categories,
 		IsLogged:   loggedIn,
 		ProfPic:    userData.Image,
+		Message:    "",
+		Code:       code,
 	}
 
 	// Handle allowed methods
@@ -102,8 +108,11 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 			// Save the image
 			filename, err = utils.SaveImage(fileType, file, utils.MEDIA)
 			if err != nil {
+				response.Message = "ERROR: Failed to save image"
+				response.Code = http.StatusInternalServerError
+				w.Header().Set("Content-Type", "application/json")
+				json.NewEncoder(w).Encode(response)
 				log.Println("ERROR: Failed to save image")
-				errors.InternalServerErrorHandler(w, r)
 				return
 			}
 		}
@@ -113,8 +122,11 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 		for _, idStr := range categoryIDs {
 			id, err := strconv.Atoi(idStr)
 			if err != nil {
-				log.Println("INFO: Invalid category ID")
-				errors.BadRequestHandler(w, r)
+				response.Message = "INFO: Invalid category ID"
+				response.Code = http.StatusBadRequest
+				w.Header().Set("Content-Type", "application/json")
+				json.NewEncoder(w).Encode(response)
+				log.Println("INFO: Invalid Category ID")
 				return
 			}
 			categoryIDsInt = append(categoryIDsInt, id)
@@ -122,8 +134,12 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 
 		// Validate categories
 		if err := database.ValidateCategories(categoryIDsInt); err != nil {
+			response.Message = "INFO: Invalid Category"
+			response.Code = http.StatusBadRequest
+
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(response)
 			log.Printf("INFO: Invalid category %v", err)
-			errors.BadRequestHandler(w, r)
 			return
 		}
 
@@ -137,18 +153,26 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 		// Create post
 		_, err = database.CreatePostWithCategories(userID, title, content, filename, categoryIDsInt)
 		if err != nil {
+			response.Message = fmt.Sprintf("ERROR: Failed to create post: %v", err)
+			response.Code = http.StatusInternalServerError
+
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(response)
 			log.Printf("ERROR: Failed to create post: %v", err)
-			errors.InternalServerErrorHandler(w, r)
 			return
 		}
 
 		// Send success response
 		response.Message = "Post created successfully"
+		response.Code = http.StatusOK
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
 
 	default:
-		errors.MethodNotAllowedHandler(w, r)
+		response.Message = "METHOD ERROR: method not allowed"
+		response.Code = http.StatusMethodNotAllowed
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
 		log.Println("METHOD ERROR: method not allowed")
 	}
 }

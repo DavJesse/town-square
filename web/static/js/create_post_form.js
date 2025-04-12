@@ -150,13 +150,13 @@ function fetchCategories() {
             combinedCluster.id = 'combined_cluster';
             categoriesContainer.appendChild(combinedCluster);
 
-            let leftCluster = document.createElement('div');
-            leftCluster.id = 'left_cluster';
-            combinedCluster.appendChild(leftCluster);
+            let leftCategoriesCluster = document.createElement('div');
+            leftCategoriesCluster.id = 'left_categories_cluster';
+            combinedCluster.appendChild(leftCategoriesCluster);
 
-            let rightCluster = document.createElement('div');
-            rightCluster.id = 'right_cluster';
-            combinedCluster.appendChild(rightCluster);
+            let rightCategoriesCluster = document.createElement('div');
+            rightCategoriesCluster.id = 'right_categories_cluster';
+            combinedCluster.appendChild(rightCategoriesCluster);
 
             categories.forEach((category, index) => {
                 // Create category container
@@ -179,9 +179,9 @@ function fetchCategories() {
 
                 // Append container category to appropriate cluster
                 if (index % 2 === 0) {
-                    leftCluster.appendChild(categoryContainer);
+                    leftCategoriesCluster.appendChild(categoryContainer);
                 } else {
-                    rightCluster.appendChild(categoryContainer);
+                    rightCategoriesCluster.appendChild(categoryContainer);
                 }
             })            
         } else  {

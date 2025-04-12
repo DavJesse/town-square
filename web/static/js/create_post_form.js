@@ -160,8 +160,8 @@ function fetchCategories() {
 
             categories.forEach((category, index) => {
                 // Create category container
-                let categoryContainer = document.createElement('div');
-                categoryContainer.id = 'category_container';
+                let categoryPill = document.createElement('div');
+                categoryPill.id = 'category_pill';
 
                 // Create category checkbox
                 let categoryCheckbox = document.createElement('input');
@@ -169,19 +169,19 @@ function fetchCategories() {
                 categoryCheckbox.id = `category_checkbox`;
                 categoryCheckbox.name = 'categories';
                 categoryCheckbox.value = category.id;
-                categoryContainer.appendChild(categoryCheckbox);
+                categoryPill.appendChild(categoryCheckbox);
 
                 // Create category label
                 let categoryLabel = document.createElement('label');
                 categoryLabel.htmlFor = `category_checkbox`;
                 categoryLabel.textContent = category.name;
-                categoryContainer.appendChild(categoryLabel);
+                categoryPill.appendChild(categoryLabel);
 
                 // Append container category to appropriate cluster
                 if (index % 2 === 0) {
-                    leftCategoriesCluster.appendChild(categoryContainer);
+                    leftCategoriesCluster.appendChild(categoryPill);
                 } else {
-                    rightCategoriesCluster.appendChild(categoryContainer);
+                    rightCategoriesCluster.appendChild(categoryPill);
                 }
             })            
         } else  {

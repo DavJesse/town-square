@@ -1,3 +1,6 @@
+import { navigateTo } from '/static/js/routes.js';
+import { renderErrorPage } from 'static/js/error.js';
+
 export function renderCreatePostForm() {
     document.title = 'Create Post';
     let app = document.getElementById('app');
@@ -103,15 +106,7 @@ export function renderCreatePostForm() {
     categoriesTitle.id = 'categories_title';
     categoriesContainer.appendChild(categoriesTitle);
 
-    // Create left cluster of categories
-    let leftCluster = document.createElement('div');
-    leftCluster.id = 'left_cluster';
-    categoriesContainer.appendChild(leftCluster);
-
-    // Create right cluster of categories
-    let rightCluster = document.createElement('div');
-    rightCluster.id = 'right_cluster';
-    categoriesContainer.appendChild(rightCluster);
+    fetchCategories(); // fetch and render categories
 
     // Create submit button
     let submitButton = document.createElement('button');
@@ -124,4 +119,76 @@ export function renderCreatePostForm() {
     scriptTag.src = '/static/js/onboarding.js';
     scriptTag.defer = true;
     app.appendChild(scriptTag);
+}
+
+function fetchCategories() {
+    fetch('/posts/create', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+
+    .then(response => {
+        if (response.json()) {
+            if (response.status === 401) {
+                navigateTo('/login');
+                return;
+            }
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+
+    .then(data => {
+        if (data.code === 200) {
+            const categories = data.categories;
+
+            let categoriesContainer = document.getElementById('categories_container');
+            let combinedCluster = document.createElement('div');
+            combinedCluster.id = 'combined_cluster';
+            categoriesContainer.appendChild(combinedCluster);
+
+            let leftCluster = document.createElement('div');
+            leftCluster.id = 'left_cluster';
+            combinedCluster.appendChild(leftCluster);
+
+            let rightCluster = document.createElement('div');
+            rightCluster.id = 'right_cluster';
+            combinedCluster.appendChild(rightCluster);
+
+            categories.forEach((category, index) => {
+                // Create category container
+                let categoryContainer = document.createElement('div');
+                categoryContainer.id = 'category_container';
+
+                // Create category checkbox
+                let categoryCheckbox = document.createElement('input');
+                categoryCheckbox.type = 'checkbox';
+                categoryCheckbox.id = `category_checkbox`;
+                categoryCheckbox.name = 'categories';
+                categoryCheckbox.value = category.id;
+                categoryContainer.appendChild(categoryCheckbox);
+
+                // Create category label
+                let categoryLabel = document.createElement('label');
+                categoryLabel.htmlFor = `category_checkbox`;
+                categoryLabel.textContent = category.name;
+                categoryContainer.appendChild(categoryLabel);
+
+                // Append container category to appropriate cluster
+                if (index % 2 === 0) {
+                    leftCluster.appendChild(categoryContainer);
+                } else {
+                    rightCluster.appendChild(categoryContainer);
+                }
+            })            
+        }
+    })
+
+    .catch(error => {        
+        console.error('Error fetching categories:', error);
+        renderErrorPage("Internal Server Error", 500);
+    });
 }

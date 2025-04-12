@@ -1,4 +1,4 @@
-export function renderErrorPage() {
+export function renderErrorPage(message, code) {
     document.title = 'Error!';
 
     // Retriev app from DOM
@@ -26,7 +26,7 @@ export function renderErrorPage() {
     errorMessage.classList.add('issue');
     errorContainer.appendChild(errorMessage);
 
-    fetchErrorMessage()
+    setErrorMessage(message, code);
 
     // Create home link container
     let homeLink = document.createElement('div');
@@ -45,21 +45,21 @@ export function renderErrorPage() {
     app.appendChild(errorContainer);
 }
 
-async function fetchErrorMessage() {
-    try {
-        // Fetch the correct error message from `/error`
-        let response = await fetch("/error", {
-            headers: { "Accept": "application/json" } // Tell Go to return JSON
-        });
+// async function fetchErrorMessage() {
+//     try {
+//         // Fetch the correct error message from `/error`
+//         let response = await fetch("/error", {
+//             headers: { "Accept": "application/json" } // Tell Go to return JSON
+//         });
 
-        let data = await response.json();
+//         let data = await response.json();
         
-        // Update the error message
-        setErrorMessage(data.issue, data.code, data.path);
-    } catch (error) {
-        console.error(`Error fetching message: ${error}`);
-    }
-}
+//         // Update the error message
+//         setErrorMessage(data.issue, data.code, data.path);
+//     } catch (error) {
+//         console.error(`Error fetching message: ${error}`);
+//     }
+// }
 
 
 function setErrorMessage(message, code) {

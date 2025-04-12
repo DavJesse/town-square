@@ -151,7 +151,7 @@ export function renderIndexPage() {
         if (!response.ok) {
             // Check for unauthorized resposes
             if (response.status === 401) {
-                navigateTo('/');
+                navigateTo('/login');
                 return;
             }
             throw new Error(`HTTP error! status: ${response.status}`);

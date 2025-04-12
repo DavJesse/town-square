@@ -1,5 +1,5 @@
 import { navigateTo } from '/static/js/routes.js';
-import { renderErrorPage } from 'static/js/error.js';
+import { renderErrorPage } from '/static/js/error.js';
 
 export function renderCreatePostForm() {
     document.title = 'Create Post';
@@ -131,7 +131,7 @@ function fetchCategories() {
     })
 
     .then(response => {
-        if (response.json()) {
+        if (!response.ok) {
             if (response.status === 401) {
                 navigateTo('/login');
                 return;
@@ -184,6 +184,8 @@ function fetchCategories() {
                     rightCluster.appendChild(categoryContainer);
                 }
             })            
+        } else  {
+            renderErrorPage(data.message, data.code);
         }
     })
 

@@ -1,11 +1,20 @@
-#create_post_button, #logout_button {
+:root {
+    --primary-color: #0000EE;
+    --primary-text-color: #FFFFFF;
+    --hover-bg-color: #FFFFFF;
+    --hover-text-color: #0000EE;
+    --danger-color: red;
+}
+
+#create_post_button,
+#logout_button {
     position: fixed;
     right: 32px;
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    background-color: #0000EE;
-    color: #FFFFFF;
+    background-color: var(--primary-color);
+    color: var(--primary-text-color);
     border: none;
     display: flex;
     justify-content: center;
@@ -25,16 +34,18 @@
 }
 
 /* Hover state - Expands into a pill */
-#create_post_button:hover, #logout_button:hover {
+#create_post_button:hover,
+#logout_button:hover {
     width: 160px;
     border-radius: 9999px;
-    background-color: #FFFFFF;
-    color: #0000EE;
+    background-color: var(--hover-bg-color);
+    color: var(--hover-text-color);
     justify-content: center;
 }
 
 /* Plus sign */
-#plus_sign, #logout_icon {
+#plus_sign,
+#logout_icon {
     font-size: 24px;
     font-weight: bold;
     transition: opacity 0.2s ease;
@@ -42,22 +53,25 @@
 }
 
 /* Create Post text */
-#create_post_text, #logout_text {
+#create_post_text,
+#logout_text {
     font-size: 18px;
     font-weight: bold;
     white-space: nowrap;
-    opacity: 0; /* Start invisible */
+    opacity: 0;
     transition: opacity 0.2s ease;
     position: absolute;
 }
 
 /* Hover effects */
-#create_post_button:hover #plus_sign, #logout_button:hover #logout_icon{
-    opacity: 0; /* Smoothly fades out */
+#create_post_button:hover #plus_sign,
+#logout_button:hover #logout_icon {
+    opacity: 0;
 }
 
-#create_post_button:hover #create_post_text, #logout_button:hover #logout_text {
-    opacity: 1; /* Smoothly fades in */
+#create_post_button:hover #create_post_text,
+#logout_button:hover #logout_text {
+    opacity: 1;
 }
 
 #close_button {
@@ -65,6 +79,6 @@
     top: 20px;
     right: 20px;
     font-size: 30px;
-    color: red;
+    color: var(--danger-color);
     cursor: pointer;
 }

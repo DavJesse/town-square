@@ -108,6 +108,33 @@ export function renderCreatePostForm() {
 
     fetchCategories(); // fetch and render categories
 
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // stop normal form submission
+    
+        const formData = new FormData(form);
+    
+        try {
+            const res = await fetch('/posts/create', {
+                method: 'POST',
+                body: formData,
+                credentials: 'include' // if using sessions/cookies
+            });
+    
+            const data = await res.json();
+    
+            if (res.ok && data.message === "Post created successfully") {
+                // ✅ Redirect to index using your client-side router
+                navigateTo('/');
+            } else {
+                // Show error from server
+                errorMessage.textContent = data.message || 'Something went wrong.';
+            }
+        } catch (error) {
+            console.error("Post submission error:", error);
+            errorMessage.textContent = "An error occurred while submitting your post.";
+        }
+    });
+    
     // Create submit button
     let submitButton = document.createElement('button');
     submitButton.type = 'submit';
@@ -143,6 +170,12 @@ function fetchCategories() {
 
     .then(data => {
         if (data.code === 200) {
+            if (data.message === 'Post created successfully') {
+                alert(data.message);
+                navigateTo('/');
+                return
+            }
+
             const categories = data.categories;
 
             let categoriesContainer = document.getElementById('categories_container');
@@ -193,4 +226,8 @@ function fetchCategories() {
         console.error('Error fetching categories:', error);
         renderErrorPage("Internal Server Error", 500);
     });
+}
+
+function setPostSubmissionListener() {
+    
 }

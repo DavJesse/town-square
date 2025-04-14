@@ -57,6 +57,7 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 		if err := json.NewEncoder(w).Encode(response); err != nil {
 			log.Println("Error encoding JSON:", err)
 			errors.InternalServerErrorHandler(w, r)
+			return
 		}
 
 	case http.MethodPost:

@@ -227,7 +227,3 @@ function fetchCategories() {
         renderErrorPage("Internal Server Error", 500);
     });
 }
-
-function setPostSubmissionListener() {
-    
-}

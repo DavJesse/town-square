@@ -106,6 +106,9 @@
     padding: 20px;
     border-radius: 10px;
     background-color: #ffffff; /* Ensure background is solid */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 #post_card:hover {

@@ -97,12 +97,15 @@
     border-radius: 8px;
     margin: 10px;
     padding: 0;
+    height: calc(100vh - 80px); /* Fixed height, accounting for navbar and some padding */
+    position: relative; /* Establish positioning context */
 }
 
 #post_card {
     margin: 10px;
     padding: 20px;
     border-radius: 10px;
+    background-color: #ffffff; /* Ensure background is solid */
 }
 
 #post_card:hover {

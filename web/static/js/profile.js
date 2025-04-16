@@ -242,7 +242,7 @@ export function populatePosts(posts) {
 
             let postCreatorName = document.createElement('h3');
             postCreatorName.id = 'post_creator_name';
-            postCreatorName.textContent = post.creator_first_name? `${post.creator_first_name.charAt(0).toUpper()}${post.creator_first_name.slice(1)} ${post.creator_last_name.charAt(0).toUpper()}${post.creator_last_name.slice(1)}` : post.creator_username;
+            postCreatorName.textContent = post.creator_first_name? `${post.creator_first_name.charAt(0).toUpperCase()}${post.creator_first_name.slice(1)} ${post.creator_last_name.charAt(0).toUpperCase()}${post.creator_last_name.slice(1)}` : post.creator_username;
             postCreatorInfoContainer.appendChild(postCreatorName);
 
             let postCreatorUsername = document.createElement('h4');

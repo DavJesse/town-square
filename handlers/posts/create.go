@@ -40,6 +40,10 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 
 func handleGetPostCreate(w http.ResponseWriter, r *http.Request) {
 	session, loggedIn := database.IsLoggedIn(r)
+	if !loggedIn {
+		writeJSON(w, http.StatusUnauthorized, PostResponse{Message: "Unauthorized", Code: http.StatusUnauthorized})
+		return
+	}
 
 	userData, _ := database.GetUserbySessionID(session.SessionID)
 
@@ -53,6 +57,7 @@ func handleGetPostCreate(w http.ResponseWriter, r *http.Request) {
 		Categories: categories,
 		IsLogged:   loggedIn,
 		ProfPic:    userData.Image,
+		Code:       http.StatusOK,
 	})
 }
 
@@ -76,13 +81,13 @@ func handlePostPostCreate(w http.ResponseWriter, r *http.Request) {
 		defer file.Close()
 
 		if handler.Size > 20*1024*1024 {
-			writeJSON(w, http.StatusBadRequest, PostResponse{Message: "image exceeds 20MB"})
+			writeJSON(w, http.StatusBadRequest, PostResponse{Message: "image exceeds 20MB", Code: http.StatusBadRequest})
 			return
 		}
 
 		buf := make([]byte, 512)
 		if _, err := file.Read(buf); err != nil {
-			writeJSON(w, http.StatusInternalServerError, PostResponse{Message: "ERROR: reading file"})
+			writeJSON(w, http.StatusInternalServerError, PostResponse{Message: "ERROR: reading file", Code: http.StatusInternalServerError})
 			return
 		}
 		file.Seek(0, io.SeekStart)
@@ -93,14 +98,14 @@ func handlePostPostCreate(w http.ResponseWriter, r *http.Request) {
 			"image/jpeg": true,
 			"image/gif":  true,
 		}[fileType] {
-			writeJSON(w, http.StatusBadRequest, PostResponse{Message: "Invalid file type. Only GIF, PNG, and JPG images are allowed."})
+			writeJSON(w, http.StatusBadRequest, PostResponse{Message: "Invalid file type. Only GIF, PNG, and JPG images are allowed.", Code: http.StatusBadRequest})
 			return
 		}
 
 		filename, err = utils.SaveImage(fileType, file, utils.MEDIA)
 		if err != nil {
 			log.Println("ERROR: Failed to save image")
-			writeJSON(w, http.StatusInternalServerError, PostResponse{Message: "ERROR: Failed to save image"})
+			writeJSON(w, http.StatusInternalServerError, PostResponse{Message: "ERROR: Failed to save image", Code: http.StatusInternalServerError})
 			return
 		}
 	}
@@ -110,7 +115,7 @@ func handlePostPostCreate(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
 			log.Println("INFO: Invalid Category ID")
-			writeJSON(w, http.StatusBadRequest, PostResponse{Message: "INFO: Invalid category ID"})
+			writeJSON(w, http.StatusBadRequest, PostResponse{Message: "INFO: Invalid category ID", Code: http.StatusBadRequest})
 			return
 		}
 		categoryIDsInt = append(categoryIDsInt, id)
@@ -118,7 +123,7 @@ func handlePostPostCreate(w http.ResponseWriter, r *http.Request) {
 
 	if err := database.ValidateCategories(categoryIDsInt); err != nil {
 		log.Printf("INFO: Invalid category %v", err)
-		writeJSON(w, http.StatusBadRequest, PostResponse{Message: "INFO: Invalid Category"})
+		writeJSON(w, http.StatusBadRequest, PostResponse{Message: "INFO: Invalid Category", Code: http.StatusBadRequest})
 		return
 	}
 
@@ -130,7 +135,7 @@ func handlePostPostCreate(w http.ResponseWriter, r *http.Request) {
 
 	if _, err := database.CreatePostWithCategories(userID, title, content, filename, categoryIDsInt); err != nil {
 		log.Printf("ERROR: Failed to create post: %v", err)
-		writeJSON(w, http.StatusInternalServerError, PostResponse{Message: fmt.Sprintf("ERROR: Failed to create post: %v", err)})
+		writeJSON(w, http.StatusInternalServerError, PostResponse{Message: fmt.Sprintf("ERROR: Failed to create post: %v", err), Code: http.StatusInternalServerError})
 		return
 	}
 

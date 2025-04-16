@@ -3,9 +3,14 @@
     justify-content: space-evenly;
     align-items: flex-start;
     width: 100vw;
-    margin-top: 80px; /* Makes space for navbar */
-    min-height: calc(100vh - 80px); /* Avoids overflow issue */
+    height: calc(100vh - 80px);  /* Fixed height based on viewport */
+    margin-top: 80px;
     overflow-y: auto;
+    position: fixed;  /* Fix the position */
+    left: 0;  /* Ensure alignment from left edge */
+    top: 0;  /* Position from top, margin-top will still create space for navbar */
+    box-sizing: border-box;  /* Include padding and border in element's total width and height */
+    padding: 0 20px;  /* Add some horizontal padding */
 }
 
 #post_creator_pic {

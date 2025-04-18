@@ -15,14 +15,6 @@ import (
 	"forum/utils"
 )
 
-type PostResponse struct {
-	Categories []models.Category `json:"categories"`
-	IsLogged   bool              `json:"is_logged"`
-	ProfPic    string            `json:"prof_pic"`
-	Message    string            `json:"message"`
-	Code       int               `json:"code,omitempty"`
-}
-
 func PostCreate(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
@@ -30,7 +22,7 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		handlePostPostCreate(w, r)
 	default:
-		writeJSON(w, http.StatusMethodNotAllowed, PostResponse{
+		WriteJSON(w, http.StatusMethodNotAllowed, models.PostResponse{
 			Message: "METHOD ERROR: method not allowed",
 			Code:    http.StatusMethodNotAllowed,
 		})
@@ -41,7 +33,7 @@ func PostCreate(w http.ResponseWriter, r *http.Request) {
 func handleGetPostCreate(w http.ResponseWriter, r *http.Request) {
 	session, loggedIn := database.IsLoggedIn(r)
 	if !loggedIn {
-		writeJSON(w, http.StatusUnauthorized, PostResponse{Message: "Unauthorized", Code: http.StatusUnauthorized})
+		WriteJSON(w, http.StatusUnauthorized, models.PostResponse{Message: "Unauthorized", Code: http.StatusUnauthorized})
 		return
 	}
 
@@ -53,7 +45,7 @@ func handleGetPostCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	writeJSON(w, http.StatusOK, PostResponse{
+	WriteJSON(w, http.StatusOK, models.PostResponse{
 		Categories: categories,
 		IsLogged:   loggedIn,
 		ProfPic:    userData.Image,
@@ -81,13 +73,13 @@ func handlePostPostCreate(w http.ResponseWriter, r *http.Request) {
 		defer file.Close()
 
 		if handler.Size > 20*1024*1024 {
-			writeJSON(w, http.StatusBadRequest, PostResponse{Message: "image exceeds 20MB", Code: http.StatusBadRequest})
+			WriteJSON(w, http.StatusBadRequest, models.PostResponse{Message: "image exceeds 20MB", Code: http.StatusBadRequest})
 			return
 		}
 
 		buf := make([]byte, 512)
 		if _, err := file.Read(buf); err != nil {
-			writeJSON(w, http.StatusInternalServerError, PostResponse{Message: "ERROR: reading file", Code: http.StatusInternalServerError})
+			WriteJSON(w, http.StatusInternalServerError, models.PostResponse{Message: "ERROR: reading file", Code: http.StatusInternalServerError})
 			return
 		}
 		file.Seek(0, io.SeekStart)
@@ -98,14 +90,14 @@ func handlePostPostCreate(w http.ResponseWriter, r *http.Request) {
 			"image/jpeg": true,
 			"image/gif":  true,
 		}[fileType] {
-			writeJSON(w, http.StatusBadRequest, PostResponse{Message: "Invalid file type. Only GIF, PNG, and JPG images are allowed.", Code: http.StatusBadRequest})
+			WriteJSON(w, http.StatusBadRequest, models.PostResponse{Message: "Invalid file type. Only GIF, PNG, and JPG images are allowed.", Code: http.StatusBadRequest})
 			return
 		}
 
 		filename, err = utils.SaveImage(fileType, file, utils.MEDIA)
 		if err != nil {
 			log.Println("ERROR: Failed to save image")
-			writeJSON(w, http.StatusInternalServerError, PostResponse{Message: "ERROR: Failed to save image", Code: http.StatusInternalServerError})
+			WriteJSON(w, http.StatusInternalServerError, models.PostResponse{Message: "ERROR: Failed to save image", Code: http.StatusInternalServerError})
 			return
 		}
 	}
@@ -115,7 +107,7 @@ func handlePostPostCreate(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
 			log.Println("INFO: Invalid Category ID")
-			writeJSON(w, http.StatusBadRequest, PostResponse{Message: "INFO: Invalid category ID", Code: http.StatusBadRequest})
+			WriteJSON(w, http.StatusBadRequest, models.PostResponse{Message: "INFO: Invalid category ID", Code: http.StatusBadRequest})
 			return
 		}
 		categoryIDsInt = append(categoryIDsInt, id)
@@ -123,7 +115,7 @@ func handlePostPostCreate(w http.ResponseWriter, r *http.Request) {
 
 	if err := database.ValidateCategories(categoryIDsInt); err != nil {
 		log.Printf("INFO: Invalid category %v", err)
-		writeJSON(w, http.StatusBadRequest, PostResponse{Message: "INFO: Invalid Category", Code: http.StatusBadRequest})
+		WriteJSON(w, http.StatusBadRequest, models.PostResponse{Message: "INFO: Invalid Category", Code: http.StatusBadRequest})
 		return
 	}
 
@@ -135,14 +127,14 @@ func handlePostPostCreate(w http.ResponseWriter, r *http.Request) {
 
 	if _, err := database.CreatePostWithCategories(userID, title, content, filename, categoryIDsInt); err != nil {
 		log.Printf("ERROR: Failed to create post: %v", err)
-		writeJSON(w, http.StatusInternalServerError, PostResponse{Message: fmt.Sprintf("ERROR: Failed to create post: %v", err), Code: http.StatusInternalServerError})
+		WriteJSON(w, http.StatusInternalServerError, models.PostResponse{Message: fmt.Sprintf("ERROR: Failed to create post: %v", err), Code: http.StatusInternalServerError})
 		return
 	}
 
-	writeJSON(w, http.StatusOK, PostResponse{Message: "Post created successfully"})
+	WriteJSON(w, http.StatusOK, models.PostResponse{Message: "Post created successfully"})
 }
 
-func writeJSON(w http.ResponseWriter, status int, data PostResponse) {
+func WriteJSON(w http.ResponseWriter, status int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	json.NewEncoder(w).Encode(data)

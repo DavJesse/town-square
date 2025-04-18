@@ -11,3 +11,11 @@ type LoginResponse struct {
 	EmailUsername string `json:"email_username"`
 	Password      string `json:"password"`
 }
+
+type PostResponse struct {
+	Categories []Category `json:"categories"`
+	IsLogged   bool       `json:"is_logged"`
+	ProfPic    string     `json:"prof_pic"`
+	Message    string     `json:"message"`
+	Code       int        `json:"code,omitempty"`
+}

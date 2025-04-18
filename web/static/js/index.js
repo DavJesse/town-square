@@ -2,6 +2,7 @@ import { renderNavBar } from '/static/js/navbar.js'
 import { renderCreatePostButton, setCreatePostsButtonListeners } from '/static/js/create_post_button.js';
 import { navigateTo } from '/static/js/routes.js';
 import { populatePosts, setToggleEventListeners } from '/static/js/profile.js';
+import { renderErrorPage } from '/static/js/error.js';
 
 export function renderIndexPage() {
     // Extract app from dom
@@ -153,12 +154,15 @@ export function renderIndexPage() {
             if (response.status === 401) {
                 navigateTo('/login');
                 return;
+            } else {
+                renderErrorPage(response.statusText, response.status);
+                // throw new Error(`HTTP error! status: ${response.status}`);
+                return
             }
-            throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
     })
-
+    
     .then(data => {
         if (data.code === 200) {
 
@@ -182,7 +186,11 @@ export function renderIndexPage() {
             populatePosts(posts);
             setToggleEventListeners(posts, likedPosts);
 
+        } else if (data.code === 401) {
+            navigateTo('/login');
+            return;
         } else {
+            renderErrorPage(data.message, data.code);
             console.error('Error fetching home page data:', data.message);
         }
     })

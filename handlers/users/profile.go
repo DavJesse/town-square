@@ -42,7 +42,7 @@ func GetProfileData(w http.ResponseWriter, r *http.Request) {
 	userPosts, err := database.PostsFilterByUser(userData.ID)
 	if err != nil {
 		log.Printf("Error getting posts: %v\n", err)
-		userPosts = []models.Post{}
+		userPosts = []models.PostWithUsername{}
 	}
 
 	// Get user's liked posts
@@ -55,7 +55,7 @@ func GetProfileData(w http.ResponseWriter, r *http.Request) {
 	// Combine user data and user posts
 	profileData := struct {
 		User       models.User                 `json:"user"`
-		Posts      []models.Post               `json:"user_posts"`
+		Posts      []models.PostWithUsername   `json:"user_posts"`
 		LikedPosts []models.PostWithCategories `json:"liked_posts"`
 	}{
 		User:       userData,

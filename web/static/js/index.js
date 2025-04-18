@@ -140,7 +140,7 @@ export function renderIndexPage() {
     rightCluster.appendChild(profileCard);
     
     // fetch data from response
-    fetch('/', {
+    fetch('/api/index-data', {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -153,11 +153,13 @@ export function renderIndexPage() {
             // Check for unauthorized resposes
             if (response.status === 401) {
                 navigateTo('/login');
-                return;
+                return Promise.reject('Unauthorized');
             } else {
-                renderErrorPage(response.statusText, response.status);
                 // throw new Error(`HTTP error! status: ${response.status}`);
-                return
+                return response.json().then(errorData => {
+                    renderErrorPage(errorData.Issue || response.statusText, response.status);
+                    return Promise.reject(errorData.Issue || 'Error occurred');
+                });
             }
         }
         return response.json();
@@ -188,7 +190,6 @@ export function renderIndexPage() {
 
         } else if (data.code === 401) {
             navigateTo('/login');
-            return;
         } else {
             renderErrorPage(data.message, data.code);
             console.error('Error fetching home page data:', data.message);
@@ -196,7 +197,9 @@ export function renderIndexPage() {
     })
 
     .catch(error => {
-        console.error('Error fetching home page:', error);
+        if (error !== 'Unauthorized') {
+            console.error('Error fetching home page:', error);
+        }
     });
 }
 

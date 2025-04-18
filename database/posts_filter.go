@@ -60,12 +60,12 @@ func PostsFilterByUser(userID int) ([]models.PostWithUsername, error) {
 	JOIN users u ON u.id = p.user_id
 	LEFT JOIN comments c ON c.post_id = p.uuid
 	LEFT JOIN users cu ON cu.id = c.user_id
-	WHERE p.user_id = ?  -- 🔽 filter by specific user ID
+	WHERE p.user_id = ?  -- filter by specific user ID
 	GROUP BY p.uuid, u.username, u.first_name, u.last_name, u.image
 	ORDER BY p.created_at DESC;
 	`
 
-	rows, err := db.Query(query)
+	rows, err := db.Query(query, userID)
 	if err != nil {
 		return nil, err
 	}

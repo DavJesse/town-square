@@ -18,7 +18,7 @@ import (
 
 func RegisterRoutes() {
 	// Index & static
-	http.HandleFunc("/", posts.Index)
+	http.HandleFunc("/", posts.IndexRouteHandler)
 	http.HandleFunc("/api/index-data", posts.GetIndexData)
 	http.HandleFunc("/static/", misc.Static)
 
@@ -44,7 +44,7 @@ func RegisterRoutes() {
 	http.Handle("/comments/dislike", middleware.AuthMiddleware(http.HandlerFunc(comments.DislikeCommentHandler)))
 
 	// Users
-	http.HandleFunc("GET /profile", users.ViewUserProfile)
+	http.HandleFunc("GET /profile", users.ProfileRouteHandle)
 	http.HandleFunc("Get /api/profile-data", users.GetProfileData)
 	http.HandleFunc("/api/users", database.GetUsers)
 	http.HandleFunc("/api/users/", database.GetUserById)

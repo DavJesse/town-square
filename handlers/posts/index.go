@@ -8,7 +8,7 @@ import (
 	"forum/models"
 )
 
-func IndexRouteHandle(w http.ResponseWriter, r *http.Request) {
+func IndexRouteHandler(w http.ResponseWriter, r *http.Request) {
 	// Always serve the HTML template for the root path
 	if r.URL.Path == "/" {
 		http.ServeFile(w, r, "./web/templates/index.html")

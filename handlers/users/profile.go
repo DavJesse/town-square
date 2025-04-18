@@ -1,26 +1,40 @@
 package auth
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 
 	"forum/database"
+	"forum/handlers/posts"
 	"forum/models"
 )
 
+func ProfileRouteHandle(w http.ResponseWriter, r *http.Request) {
+	// Always serve the HTML template for the root path
+	if r.URL.Path == "/profile" {
+		http.ServeFile(w, r, "./web/templates/index.html")
+		return
+	}
+}
+
 // ViewUserProfile handler
-func ViewUserProfile(w http.ResponseWriter, r *http.Request) {
+func GetProfileData(w http.ResponseWriter, r *http.Request) {
 	session, logged := database.IsLoggedIn(r)
 	if !logged {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		posts.WriteJSON(w, http.StatusUnauthorized, models.PostResponse{
+			Code:    http.StatusUnauthorized,
+			Message: "Unauthorized",
+		})
 		return
 	}
 
 	userData, err := database.GetUserbySessionID(session.SessionID)
 	if err != nil {
 		log.Printf("Error getting user: %v\n", err)
-		http.Error(w, "Error retrieving user data", http.StatusInternalServerError)
+		posts.WriteJSON(w, http.StatusInternalServerError, models.PostResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "Internal Server Error",
+		})
 		return
 	}
 
@@ -49,9 +63,7 @@ func ViewUserProfile(w http.ResponseWriter, r *http.Request) {
 		LikedPosts: userLikedPosts,
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(models.Response{
+	posts.WriteJSON(w, http.StatusOK, models.Response{
 		Code:    http.StatusOK,
 		Message: "Profile data retrieved",
 		Data:    profileData,

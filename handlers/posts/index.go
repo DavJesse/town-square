@@ -8,17 +8,18 @@ import (
 	"forum/models"
 )
 
-func Index(w http.ResponseWriter, r *http.Request) {
-	var userData models.User
-
-	if r.URL.String() != "/" {
-		WriteJSON(w, http.StatusNotFound, models.PostResponse{
-			Code:    http.StatusNotFound,
-			Message: "Not Found",
-		})
+func IndexRouteHandle(w http.ResponseWriter, r *http.Request) {
+	// Always serve the HTML template for the root path
+	if r.URL.Path == "/" {
+		http.ServeFile(w, r, "./web/templates/index.html")
 		return
 	}
+}
 
+func GetIndexData(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	var userData models.User
 	session, loggedIn := database.IsLoggedIn(r)
 	// Retrieve user data if logged in
 	if !loggedIn {

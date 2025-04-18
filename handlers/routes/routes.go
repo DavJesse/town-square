@@ -45,7 +45,7 @@ func RegisterRoutes() {
 
 	// Users
 	http.HandleFunc("GET /profile", users.ProfileRouteHandle)
-	http.HandleFunc("Get /api/profile-data", users.GetProfileData)
+	http.HandleFunc("/api/profile-data", users.GetProfileData)
 	http.HandleFunc("/api/users", database.GetUsers)
 	http.HandleFunc("/api/users/", database.GetUserById)
 

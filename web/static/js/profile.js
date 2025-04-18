@@ -160,7 +160,7 @@ export function renderProfilePage() {
     app.appendChild(userOptions);
     
     
-    fetch('/profile', {
+    fetch('/api/profile-data', {
         method: 'GET',
         credentials: 'include',
         headers: {

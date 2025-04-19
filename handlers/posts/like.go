@@ -1,6 +1,7 @@
 package posts
 
 import (
+	"log"
 	"net/http"
 
 	"forum/database"
@@ -8,6 +9,15 @@ import (
 )
 
 func LikePost(w http.ResponseWriter, r *http.Request) {
+	// Check if user is logged in
+	_, isLogged := database.IsLoggedIn(r)
+	if !isLogged {
+		WriteJSON(w, http.StatusUnauthorized, models.LikeResponse{
+			Success: false,
+			Message: "Please login first",
+		})
+		return
+	}
 
 	r.ParseForm()
 	postID := r.FormValue("post-id")
@@ -22,6 +32,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 
 	err = database.LikePost(userID, postID)
 	if err != nil {
+		log.Println("DATABASE ERROR: Failed to Log Like in Database")
 		WriteJSON(w, http.StatusInternalServerError, models.LikeResponse{
 			Success: false,
 			Message: "Failed to like post",
@@ -32,6 +43,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 	// Get updated likes count
 	likesCount, err := database.GetPostLikesCount(postID)
 	if err != nil {
+		log.Println("DATABASE ERROR: Failed to Retrieve Likes Count")
 		WriteJSON(w, http.StatusInternalServerError, models.LikeResponse{
 			Success: false,
 			Message: "Failed to get updated likes count",

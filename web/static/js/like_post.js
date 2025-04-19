@@ -29,7 +29,7 @@ export function handleLikePost(postId, likeButton) {
     .then(data => {
         if (data.success) {
             // Update the likes count in the button
-            const countSpan = likeButton.querySelector('.likes-count');
+            const countSpan = likeButton.querySelector('#engagement_count');
             countSpan.textContent = data.likesCount;
             
             // Optional: Add visual feedback

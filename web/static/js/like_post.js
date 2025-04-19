@@ -1,3 +1,6 @@
+import { navigateTo } from "/static/js/routes.js";
+import { renderErrorPage } from "/static/js/error.js";
+
 export function handleLikePost(postId, likeButton) {
     fetch('/posts/like', {
         method: 'POST',
@@ -20,9 +23,11 @@ export function handleLikePost(postId, likeButton) {
             // Optional: Add visual feedback
             likeButton.classList.add('liked');
             setTimeout(() => likeButton.classList.remove('liked'), 200);
-        } else if (data.message === "Please login first") {
-            window.location.href = '/login';
+        } else if (data.code === 307) {
+            navigateTo('/login');
+            return
         } else {
+            renderErrorPage(data.message, data.code);
             console.error('Like failed:', data.message);
         }
     })

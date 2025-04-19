@@ -295,13 +295,16 @@ export function populatePosts(posts) {
             let likeIcon = document.createElement('span');
             let dislikeIcon = document.createElement('span');
             let commentIcon = document.createElement('span');
-            likeLink.onclick = `handleLikePost(${post.uuid}, this)`;
             likeContainer.id = 'like_container';
             dislikeContainer.id = 'dislike_container';
             commentContainer.id = 'comment_container';
-            likeLink.href = '/posts/like';
+            likeLink.href = '#';
             dislikeLink.href = '/posts/dislike';
             commentLink.href = '/comment';
+            likeLink.addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent navigation
+                handleLikePost(post.uuid, likeContainer);
+            });
             likeCount.id = 'engagement_count';
             dislikeCount.id = 'engagement_count';
             commentCount.id = 'engagement_count';

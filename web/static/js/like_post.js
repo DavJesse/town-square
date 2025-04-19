@@ -12,7 +12,19 @@ export function handleLikePost(postId, likeButton) {
         credentials: 'include'
     })
 
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            if (response.status === 401) {
+                navigateTo('/login');
+                return;
+            } else {
+                renderErrorPage(response.statusText, response.status);
+                return;
+            }
+        }
+        
+        return response.json()
+    })
 
     .then(data => {
         if (data.success) {
@@ -23,11 +35,10 @@ export function handleLikePost(postId, likeButton) {
             // Optional: Add visual feedback
             likeButton.classList.add('liked');
             setTimeout(() => likeButton.classList.remove('liked'), 200);
-        } else if (data.code === 307) {
+        } else if (data.message === "User is not logged in. Please log in to try again") {
             navigateTo('/login');
             return
         } else {
-            renderErrorPage(data.message, data.code);
             console.error('Like failed:', data.message);
         }
     })

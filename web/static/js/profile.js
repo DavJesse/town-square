@@ -1,6 +1,6 @@
 import { renderNavBar } from '/static/js/navbar.js';
 import { renderLoginPage } from '/static/js/login.js';
-import { handleLikePost } from '/static/js/like_post';
+import { handleLikePost } from '/static/js/like_post.js';
 import { renderCreatePostButton, setCreatePostsButtonListeners } from '/static/js/create_post_button.js';
 import { renderLogoutButton, setLogoutButtonListeners } from '/static/js/logout_button.js';
 

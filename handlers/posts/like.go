@@ -8,15 +8,6 @@ import (
 )
 
 func LikePost(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	if r.Method != http.MethodPost {
-		WriteJSON(w, http.StatusMethodNotAllowed, models.LikeResponse{
-			Success: false,
-			Message: "Method not allowed",
-		})
-		return
-	}
 
 	r.ParseForm()
 	postID := r.FormValue("post-id")

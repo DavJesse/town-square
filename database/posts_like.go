@@ -51,3 +51,14 @@ func LikePost(userID int, postID string) error {
 
 	return nil
 }
+
+func GetPostLikesCount(postID string) (int, error) {
+	var likesCount int
+
+	// Retrieve the count of likes for the post
+	err := db.QueryRow(`SELECT COUNT(*) FROM likes WHERE post_id = ?`, postID).Scan(&likesCount)
+	if err != nil {
+		return 0, err
+	}
+	return likesCount, nil
+}

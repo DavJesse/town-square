@@ -1,17 +1,21 @@
 package posts
 
 import (
-	"log"
+	"encoding/json"
 	"net/http"
 
 	"forum/database"
-	errors "forum/handlers/errors"
+	"forum/models"
 )
 
 func LikePost(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
 	if r.Method != http.MethodPost {
-		errors.MethodNotAllowedHandler(w, r)
-		log.Println("METHOD ERROR: method not allowed")
+		json.NewEncoder(w).Encode(models.LikeResponse{
+			Success: false,
+			Message: "Method not allowed",
+		})
 		return
 	}
 
@@ -19,16 +23,35 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 	postID := r.FormValue("post-id")
 	userID, _, err := database.GetUserData(r)
 	if err != nil {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		json.NewEncoder(w).Encode(models.LikeResponse{
+			Success: false,
+			Message: "Please login first",
+		})
 		return
 	}
 
 	err = database.LikePost(userID, postID)
 	if err != nil {
-		http.Error(w, "Failed to like post", http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.LikeResponse{
+			Success: false,
+			Message: "Failed to like post",
+		})
 		return
 	}
 
-	// Redirect to the previous page
-	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+	// Get updated likes count
+	likesCount, err := database.GetPostLikesCount(postID)
+	if err != nil {
+		json.NewEncoder(w).Encode(models.LikeResponse{
+			Success: false,
+			Message: "Failed to get updated likes count",
+		})
+		return
+	}
+
+	json.NewEncoder(w).Encode(models.LikeResponse{
+		Success:    true,
+		LikesCount: likesCount,
+		Message:    "Post liked successfully",
+	})
 }

@@ -1,5 +1,6 @@
 import { renderNavBar } from '/static/js/navbar.js';
 import { renderLoginPage } from '/static/js/login.js';
+import { handleLikePost } from '/static/js/like_post';
 import { renderCreatePostButton, setCreatePostsButtonListeners } from '/static/js/create_post_button.js';
 import { renderLogoutButton, setLogoutButtonListeners } from '/static/js/logout_button.js';
 
@@ -294,6 +295,7 @@ export function populatePosts(posts) {
             let likeIcon = document.createElement('span');
             let dislikeIcon = document.createElement('span');
             let commentIcon = document.createElement('span');
+            likeLink.onclick = `handleLikePost(${post.uuid}, this)`;
             likeContainer.id = 'like_container';
             dislikeContainer.id = 'dislike_container';
             commentContainer.id = 'comment_container';

@@ -1,7 +1,6 @@
 package posts
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"forum/database"
@@ -12,7 +11,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	if r.Method != http.MethodPost {
-		json.NewEncoder(w).Encode(models.LikeResponse{
+		WriteJSON(w, http.StatusMethodNotAllowed, models.LikeResponse{
 			Success: false,
 			Message: "Method not allowed",
 		})
@@ -23,7 +22,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 	postID := r.FormValue("post-id")
 	userID, _, err := database.GetUserData(r)
 	if err != nil {
-		json.NewEncoder(w).Encode(models.LikeResponse{
+		WriteJSON(w, http.StatusUnauthorized, models.LikeResponse{
 			Success: false,
 			Message: "Please login first",
 		})
@@ -32,7 +31,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 
 	err = database.LikePost(userID, postID)
 	if err != nil {
-		json.NewEncoder(w).Encode(models.LikeResponse{
+		WriteJSON(w, http.StatusInternalServerError, models.LikeResponse{
 			Success: false,
 			Message: "Failed to like post",
 		})
@@ -42,14 +41,14 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 	// Get updated likes count
 	likesCount, err := database.GetPostLikesCount(postID)
 	if err != nil {
-		json.NewEncoder(w).Encode(models.LikeResponse{
+		WriteJSON(w, http.StatusInternalServerError, models.LikeResponse{
 			Success: false,
 			Message: "Failed to get updated likes count",
 		})
 		return
 	}
 
-	json.NewEncoder(w).Encode(models.LikeResponse{
+	WriteJSON(w, http.StatusOK, models.LikeResponse{
 		Success:    true,
 		LikesCount: likesCount,
 		Message:    "Post liked successfully",

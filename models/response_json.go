@@ -19,3 +19,9 @@ type PostResponse struct {
 	Message    string     `json:"message"`
 	Code       int        `json:"code,omitempty"`
 }
+
+type LikeResponse struct {
+	Success    bool   `json:"success"`
+	LikesCount int    `json:"likesCount"`
+	Message    string `json:"message"`
+}

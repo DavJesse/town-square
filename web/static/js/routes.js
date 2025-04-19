@@ -49,6 +49,9 @@ function handleRouteChange() {
             console.log("PROFILE")
             renderProfilePage();
             break;
+        case "/posts/like":
+            renderIndexPage();
+            break;
         default:
             window.history.pushState({}, "", "/404") // Re-route page URL without reloading
             renderErrorPage();

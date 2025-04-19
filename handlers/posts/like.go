@@ -22,6 +22,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	postID := r.FormValue("post-id")
 	userID, _, err := database.GetUserData(r)
+	log.Printf("User Id: %v -- Post Id: %v", userID, postID)
 	if err != nil {
 		WriteJSON(w, http.StatusUnauthorized, models.LikeResponse{
 			Success: false,

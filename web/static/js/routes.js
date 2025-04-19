@@ -43,15 +43,12 @@ function handleRouteChange() {
         case "/register":
             renderRegistrationPage();
             break;
-        case "/posts":
-            app.innerHTML = "<h1>Posts</h1><p>Here are some posts.</p>";
-            break;
         case "/profile":
-            console.log("PROFILE")
             renderProfilePage();
             break;
         case "/posts/like":
-            handleLikePost();
+            // Remove this case as we're handling likes via event delegation
+            navigateTo('/'); // Redirect back to home if someone navigates here directly
             break;
         default:
             window.history.pushState({}, "", "/404") // Re-route page URL without reloading

@@ -2,7 +2,6 @@ package auth
 
 import (
 	"encoding/json"
-	"fmt"
 	"html"
 	"log"
 	"net/http"
@@ -44,8 +43,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// Populate user credentials
 	emailUsername := html.EscapeString(loginResponse.EmailUsername)
 	user.Password = html.EscapeString(loginResponse.Password) // Populate password field
-
-	fmt.Printf("Email: %s, Pass: %s\n", emailUsername, user.Password)
 
 	// Check for empty user input
 	if emailUsername == "" || user.Password == "" {

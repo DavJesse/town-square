@@ -1,6 +1,7 @@
 import { renderNavBar } from '/static/js/navbar.js';
 import { renderLoginPage } from '/static/js/login.js';
 import { handleLikePost } from '/static/js/like_post.js';
+import { handleDislikePost } from '/static/js/dislike_post.js';
 import { renderCreatePostButton, setCreatePostsButtonListeners } from '/static/js/create_post_button.js';
 import { renderLogoutButton, setLogoutButtonListeners } from '/static/js/logout_button.js';
 
@@ -303,7 +304,9 @@ export function populatePosts(posts) {
             likeLink.id = 'like_link';
             likeLink.href = '#';
             likeLink.dataset.postId = post.uuid;  // Add post ID as data attribute
-            dislikeLink.href = '#';  // Change this to prevent page refresh
+            dislikeLink.id = 'dislike_link';
+            dislikeLink.href = '#';
+            dislikeLink.dataset.postId = post.uuid;  // Change this to prevent page refresh
             commentLink.href = '#';   // Change this to prevent page refresh
             likeCount.id = 'engagement_count';
             dislikeCount.id = 'engagement_count';
@@ -331,7 +334,7 @@ export function populatePosts(posts) {
 
             dislikeLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                // Add your dislike handling here
+                handleDislikePost(post.uuid, dislikeContainer);
             });
 
             commentLink.addEventListener('click', (e) => {

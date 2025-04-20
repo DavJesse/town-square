@@ -41,7 +41,7 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get updated likes count
+	// Get updated dislikes count
 	likesCount, err := database.GetPostDislikesCount(postID)
 	if err != nil {
 		log.Println("DATABASE ERROR: Failed to Retrieve Dislikes Count")

@@ -25,3 +25,9 @@ type LikeResponse struct {
 	LikesCount int    `json:"likesCount"`
 	Message    string `json:"message"`
 }
+
+type DislikeResponse struct {
+	Success       bool   `json:"success"`
+	DislikesCount int    `json:"dislikesCount"`
+	Message       string `json:"message"`
+}

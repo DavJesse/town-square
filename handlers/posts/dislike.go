@@ -53,8 +53,8 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	WriteJSON(w, http.StatusOK, models.DislikeResponse{
-		Success:    true,
-		LikesCount: likesCount,
-		Message:    "Post liked successfully",
+		Success:       true,
+		DislikesCount: likesCount,
+		Message:       "Post liked successfully",
 	})
 }

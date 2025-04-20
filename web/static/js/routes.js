@@ -3,7 +3,6 @@ import { renderLoginPage } from "/static/js/login.js";
 import { renderErrorPage } from "/static/js/error.js";
 import { renderProfilePage } from "/static/js/profile.js";
 import { renderIndexPage  } from "/static/js/index.js";
-import { handleLikePost } from "/static/js/like_post.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     handleRouteChange(); // Run when the page loads

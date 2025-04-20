@@ -5,11 +5,11 @@ import { renderErrorPage } from "/static/js/error.js";
 document.addEventListener('DOMContentLoaded', () => {
     // Use event delegation to handle like button clicks
     document.addEventListener('click', (e) => {
-        const likeBtn = e.target.closest('#dislike_link');
-        if (likeBtn) {
+        const dislikeBtn = e.target.closest('#dislike_link');
+        if (dislikeBtn) {
             e.preventDefault();
-            const postId = likeBtn.dataset.postId;
-            handleDislikePost(postId, likeBtn);
+            const postId = dislikeBtn.dataset.postId;
+            handleDislikePost(postId, dislikeBtn);
         }
     });
 });

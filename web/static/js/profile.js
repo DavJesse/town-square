@@ -295,43 +295,63 @@ export function populatePosts(posts) {
             let likeIcon = document.createElement('span');
             let dislikeIcon = document.createElement('span');
             let commentIcon = document.createElement('span');
+
+            // Set IDs and classes
             likeContainer.id = 'like_container';
             dislikeContainer.id = 'dislike_container';
             commentContainer.id = 'comment_container';
+            likeLink.id = 'like_link';
             likeLink.href = '#';
-            dislikeLink.href = '/posts/dislike';
-            commentLink.href = '/comment';
-            likeLink.addEventListener('click', (e) => {
-                e.preventDefault(); // Prevent navigation
-                handleLikePost(post.uuid, likeContainer);
-            });
+            likeLink.dataset.postId = post.uuid;  // Add post ID as data attribute
+            dislikeLink.href = '#';  // Change this to prevent page refresh
+            commentLink.href = '#';   // Change this to prevent page refresh
             likeCount.id = 'engagement_count';
             dislikeCount.id = 'engagement_count';
             commentCount.id = 'engagement_count';
             likeIcon.classList.add('material-symbols-outlined');
-            dislikeContainer.classList.add('material-symbols-outlined');
+            dislikeIcon.classList.add('material-symbols-outlined');
             commentIcon.classList.add('material-symbols-outlined');
             likeIcon.id = 'engagement_icon';
             dislikeIcon.id = 'engagement_icon';
             commentIcon.id = 'engagement_icon';
+
+            // Set content
             likeCount.textContent = post.likes_count;
             dislikeCount.textContent = post.dislikes_count;
             commentCount.textContent = post.comments.length;
             likeIcon.textContent = 'thumb_up';
             dislikeIcon.textContent = 'thumb_down';
             commentIcon.textContent = 'comment';
+
+            // Add event listeners
+            likeLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleLikePost(post.uuid, likeContainer);
+            });
+
+            dislikeLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Add your dislike handling here
+            });
+
+            commentLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Add your comment handling here
+            });
+
+            // Assemble the structure
             postEngagement.appendChild(likeContainer);
             postEngagement.appendChild(dislikeContainer);
             postEngagement.appendChild(commentContainer);
-            likeLink.appendChild(likeIcon);
-            likeContainer.appendChild(likeCount)
+            likeContainer.appendChild(likeCount);
             likeContainer.appendChild(likeLink);
-            dislikeLink.appendChild(dislikeIcon);
+            likeLink.appendChild(likeIcon);
             dislikeContainer.appendChild(dislikeCount);
             dislikeContainer.appendChild(dislikeLink);
-            commentLink.appendChild(commentIcon);
+            dislikeLink.appendChild(dislikeIcon);
             commentContainer.appendChild(commentCount);
             commentContainer.appendChild(commentLink);
+            commentLink.appendChild(commentIcon);
 
             postsContainer.appendChild(postElement);
         });

@@ -46,10 +46,6 @@ function handleRouteChange() {
         case "/profile":
             renderProfilePage();
             break;
-        case "/posts/like":
-            // Remove this case as we're handling likes via event delegation
-            navigateTo('/'); // Redirect back to home if someone navigates here directly
-            break;
         default:
             window.history.pushState({}, "", "/404") // Re-route page URL without reloading
             renderErrorPage();

@@ -99,8 +99,8 @@
 }
 
 #bio_card {
-    margin: 40px auto auto auto;
-    width: 95%;
+    margin: 40px auto auto 33px;
+    width: 70%;
     background-color: var(--secondary-color);
     border-radius: 15px;
     height: fit-content;

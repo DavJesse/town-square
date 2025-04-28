@@ -22,6 +22,19 @@ export function renderProfilePage() {
     let leftCluster = document.createElement('div');
     leftCluster.classList.add('left-cluster');
     leftCluster.id = 'left_cluster';
+
+    // Create categories and online users containers
+    let categoriesCard = document.createElement('div');
+    let categoriesCardTitle = document.createElement('h3');
+    let categoryContentContainer = document.createElement('div');
+    categoriesCard.id = 'category_container';
+    categoriesCardTitle.id = 'categories_title';
+    categoryContentContainer.id = 'category_content_container';
+    categoriesCardTitle.textContent = 'Categories';
+
+    categoriesCard.appendChild(categoriesCardTitle);
+    categoriesCard.appendChild(categoryContentContainer);
+    leftCluster.appendChild(categoriesCard);
     
     // Add card to hold online users
     let onlineUsersCard = document.createElement('div');

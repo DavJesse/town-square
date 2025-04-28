@@ -52,15 +52,24 @@ func GetProfileData(w http.ResponseWriter, r *http.Request) {
 		userLikedPosts = []models.PostWithCategories{}
 	}
 
+	// Retrieve all categories
+	categories, err := database.FetchCategories()
+	if err != nil {
+		categories = []models.Category{}
+		log.Printf("Error getting categories: %v\n", err)
+	}
+
 	// Combine user data and user posts
 	profileData := struct {
 		User       models.User                 `json:"user"`
 		Posts      []models.PostWithUsername   `json:"user_posts"`
 		LikedPosts []models.PostWithCategories `json:"liked_posts"`
+		Categories []models.Category           `json:"categories"`
 	}{
 		User:       userData,
 		Posts:      userPosts,
 		LikedPosts: userLikedPosts,
+		Categories: categories,
 	}
 
 	posts.WriteJSON(w, http.StatusOK, models.Response{

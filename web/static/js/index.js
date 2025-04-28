@@ -203,7 +203,7 @@ export function renderIndexPage() {
     });
 }
 
-function populateCategories(categories) {
+export function populateCategories(categories) {
     let categoriesContentContainer = document.getElementById('category_content_container');
     // categoriesContentContainer.innerHTML = '';
 

@@ -2,6 +2,7 @@ import { renderNavBar } from '/static/js/navbar.js';
 import { renderLoginPage } from '/static/js/login.js';
 import { handleLikePost } from '/static/js/like_post.js';
 import { handleDislikePost } from '/static/js/dislike_post.js';
+import { populateCategories } from '/static/js/index.js';
 import { renderCreatePostButton, setCreatePostsButtonListeners } from '/static/js/create_post_button.js';
 import { renderLogoutButton, setLogoutButtonListeners } from '/static/js/logout_button.js';
 
@@ -189,6 +190,7 @@ export function renderProfilePage() {
             const user = data.data.user;
             const userPosts = data.data.user_posts;
             const likedPosts = data.data.liked_posts;
+            const categories = data.data.categories;
 
             // Update document title to reflect user's profile
             document.title = `Profile: ${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)}`;
@@ -203,6 +205,7 @@ export function renderProfilePage() {
             profilePic.src = user?.image ? `/static/images/${user.image}` : '/static/user-circle-svgrepo-com.svg';
             
             // Load 'My Posts' section by default
+            populateCategories(categories);
             populatePosts(userPosts);
 
             // Listen for client activity, sets posts to client preference

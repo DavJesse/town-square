@@ -1,5 +1,8 @@
 import { renderNavBar } from '/static/js/navbar.js';
 import { renderLoginPage } from '/static/js/login.js';
+import { handleLikePost } from '/static/js/like_post.js';
+import { handleDislikePost } from '/static/js/dislike_post.js';
+import { populateCategories } from '/static/js/index.js';
 import { renderCreatePostButton, setCreatePostsButtonListeners } from '/static/js/create_post_button.js';
 import { renderLogoutButton, setLogoutButtonListeners } from '/static/js/logout_button.js';
 
@@ -160,7 +163,7 @@ export function renderProfilePage() {
     app.appendChild(userOptions);
     
     
-    fetch('/profile', {
+    fetch('/api/profile-data', {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -187,6 +190,7 @@ export function renderProfilePage() {
             const user = data.data.user;
             const userPosts = data.data.user_posts;
             const likedPosts = data.data.liked_posts;
+            const categories = data.data.categories;
 
             // Update document title to reflect user's profile
             document.title = `Profile: ${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)}`;
@@ -201,6 +205,7 @@ export function renderProfilePage() {
             profilePic.src = user?.image ? `/static/images/${user.image}` : '/static/user-circle-svgrepo-com.svg';
             
             // Load 'My Posts' section by default
+            populateCategories(categories);
             populatePosts(userPosts);
 
             // Listen for client activity, sets posts to client preference
@@ -242,7 +247,7 @@ export function populatePosts(posts) {
 
             let postCreatorName = document.createElement('h3');
             postCreatorName.id = 'post_creator_name';
-            postCreatorName.textContent = post.creator_first_name? `${post.creator_first_name.charAt(0).toUpper()}${post.creator_first_name.slice(1)} ${post.creator_last_name.charAt(0).toUpper()}${post.creator_last_name.slice(1)}` : post.creator_username;
+            postCreatorName.textContent = post.creator_first_name? `${post.creator_first_name.charAt(0).toUpperCase()}${post.creator_first_name.slice(1)} ${post.creator_last_name.charAt(0).toUpperCase()}${post.creator_last_name.slice(1)}` : post.creator_username;
             postCreatorInfoContainer.appendChild(postCreatorName);
 
             let postCreatorUsername = document.createElement('h4');
@@ -294,39 +299,65 @@ export function populatePosts(posts) {
             let likeIcon = document.createElement('span');
             let dislikeIcon = document.createElement('span');
             let commentIcon = document.createElement('span');
+
+            // Set IDs and classes
             likeContainer.id = 'like_container';
             dislikeContainer.id = 'dislike_container';
             commentContainer.id = 'comment_container';
-            likeLink.href = '/posts/like';
-            dislikeLink.href = '/posts/dislike';
-            commentLink.href = '/comment';
+            likeLink.id = 'like_link';
+            likeLink.href = '#';
+            likeLink.dataset.postId = post.uuid;  // Add post ID as data attribute
+            dislikeLink.id = 'dislike_link';
+            dislikeLink.href = '#';
+            dislikeLink.dataset.postId = post.uuid;  // Change this to prevent page refresh
+            commentLink.href = '#';   // Change this to prevent page refresh
             likeCount.id = 'engagement_count';
             dislikeCount.id = 'engagement_count';
             commentCount.id = 'engagement_count';
             likeIcon.classList.add('material-symbols-outlined');
-            dislikeContainer.classList.add('material-symbols-outlined');
+            dislikeIcon.classList.add('material-symbols-outlined');
             commentIcon.classList.add('material-symbols-outlined');
             likeIcon.id = 'engagement_icon';
             dislikeIcon.id = 'engagement_icon';
             commentIcon.id = 'engagement_icon';
+
+            // Set content
             likeCount.textContent = post.likes_count;
             dislikeCount.textContent = post.dislikes_count;
             commentCount.textContent = post.comments.length;
             likeIcon.textContent = 'thumb_up';
             dislikeIcon.textContent = 'thumb_down';
             commentIcon.textContent = 'comment';
+
+            // Add event listeners
+            likeLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleLikePost(post.uuid, likeContainer);
+            });
+
+            dislikeLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleDislikePost(post.uuid, dislikeContainer);
+            });
+
+            commentLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Add your comment handling here
+            });
+
+            // Assemble the structure
             postEngagement.appendChild(likeContainer);
             postEngagement.appendChild(dislikeContainer);
             postEngagement.appendChild(commentContainer);
-            likeLink.appendChild(likeIcon);
-            likeContainer.appendChild(likeCount)
+            likeContainer.appendChild(likeCount);
             likeContainer.appendChild(likeLink);
-            dislikeLink.appendChild(dislikeIcon);
+            likeLink.appendChild(likeIcon);
             dislikeContainer.appendChild(dislikeCount);
             dislikeContainer.appendChild(dislikeLink);
-            commentLink.appendChild(commentIcon);
+            dislikeLink.appendChild(dislikeIcon);
             commentContainer.appendChild(commentCount);
             commentContainer.appendChild(commentLink);
+            commentLink.appendChild(commentIcon);
 
             postsContainer.appendChild(postElement);
         });

@@ -1,34 +1,42 @@
 package posts
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 
 	"forum/database"
-	"forum/handlers/errors"
 	"forum/models"
 )
 
-func Index(w http.ResponseWriter, r *http.Request) {
-	var userData models.User
-
-	if r.URL.String() != "/" {
-		errors.NotFoundHandler(w, r)
+func IndexRouteHandler(w http.ResponseWriter, r *http.Request) {
+	// Always serve the HTML template for the root path
+	if r.URL.Path == "/" {
+		http.ServeFile(w, r, "./web/templates/index.html")
 		return
 	}
+}
 
+func GetIndexData(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	var userData models.User
 	session, loggedIn := database.IsLoggedIn(r)
 	// Retrieve user data if logged in
 	if !loggedIn {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		WriteJSON(w, http.StatusUnauthorized, models.PostResponse{
+			Code:    http.StatusUnauthorized,
+			Message: "Unauthorized",
+		})
 		return
 	}
 
 	userData, err := database.GetUserbySessionID(session.SessionID)
 	if err != nil {
 		log.Printf("Error getting user: %v\n", err)
-		http.Error(w, "Error retrieving user data", http.StatusInternalServerError)
+		WriteJSON(w, http.StatusInternalServerError, models.PostResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "Internal Server Error",
+		})
 		return
 	}
 
@@ -69,9 +77,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Compile post data in json response
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(models.Response{
+	WriteJSON(w, http.StatusOK, models.Response{
 		Code:    http.StatusOK,
 		Message: "Posts data retrieved",
 		Data:    postsData,

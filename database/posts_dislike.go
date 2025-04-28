@@ -51,3 +51,14 @@ func DislikePost(userID int, postID string) error {
 
 	return nil
 }
+
+func GetPostDislikesCount(postID string) (int, error) {
+	var dislikesCount int
+
+	// Retrieve the count of dislikes for the post
+	err := db.QueryRow(`SELECT COUNT(*) FROM dislikes WHERE post_id = ?`, postID).Scan(&dislikesCount)
+	if err != nil {
+		return 0, err
+	}
+	return dislikesCount, nil
+}

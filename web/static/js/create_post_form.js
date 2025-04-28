@@ -1,3 +1,6 @@
+import { navigateTo } from '/static/js/routes.js';
+import { renderErrorPage } from '/static/js/error.js';
+
 export function renderCreatePostForm() {
     document.title = 'Create Post';
     let app = document.getElementById('app');
@@ -11,6 +14,17 @@ export function renderCreatePostForm() {
     let formContainer = document.createElement('div');
     formContainer.id = 'create_post_form_container';
     smokeScreen.appendChild(formContainer);
+
+    // Add close button
+    let closeButton = document.createElement('span');
+    closeButton.textContent = '✖';
+    closeButton.id = 'close_button';
+    closeButton.onclick = function () {
+    smokeScreen.remove();
+    document.body.style.overflow = 'auto'; // Re-enable scroll
+    };
+    formContainer.appendChild(closeButton);
+
 
     // Create forum logo
     let logo = document.createElement('h1');
@@ -92,16 +106,35 @@ export function renderCreatePostForm() {
     categoriesTitle.id = 'categories_title';
     categoriesContainer.appendChild(categoriesTitle);
 
-    // Create left cluster of categories
-    let leftCluster = document.createElement('div');
-    leftCluster.id = 'left_cluster';
-    categoriesContainer.appendChild(leftCluster);
+    fetchCategories(); // fetch and render categories
 
-    // Create right cluster of categories
-    let rightCluster = document.createElement('div');
-    rightCluster.id = 'right_cluster';
-    categoriesContainer.appendChild(rightCluster);
-
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // stop normal form submission
+    
+        const formData = new FormData(form);
+    
+        try {
+            const res = await fetch('/posts/create', {
+                method: 'POST',
+                body: formData,
+                credentials: 'include' // if using sessions/cookies
+            });
+    
+            const data = await res.json();
+    
+            if (res.ok && data.message === "Post created successfully") {
+                // ✅ Redirect to index using your client-side router
+                navigateTo('/');
+            } else {
+                // Show error from server
+                errorMessage.textContent = data.message || 'Something went wrong.';
+            }
+        } catch (error) {
+            console.error("Post submission error:", error);
+            errorMessage.textContent = "An error occurred while submitting your post.";
+        }
+    });
+    
     // Create submit button
     let submitButton = document.createElement('button');
     submitButton.type = 'submit';
@@ -113,4 +146,84 @@ export function renderCreatePostForm() {
     scriptTag.src = '/static/js/onboarding.js';
     scriptTag.defer = true;
     app.appendChild(scriptTag);
+}
+
+function fetchCategories() {
+    fetch('/posts/create', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+
+    .then(response => {
+        if (!response.ok) {
+            if (response.status === 401) {
+                navigateTo('/login');
+                return;
+            }
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+
+    .then(data => {
+        if (data.code === 200) {
+            if (data.message === 'Post created successfully') {
+                alert(data.message);
+                navigateTo('/');
+                return
+            }
+
+            const categories = data.categories;
+
+            let categoriesContainer = document.getElementById('categories_container');
+            let combinedCluster = document.createElement('div');
+            combinedCluster.id = 'combined_cluster';
+            categoriesContainer.appendChild(combinedCluster);
+
+            let leftCategoriesCluster = document.createElement('div');
+            leftCategoriesCluster.id = 'left_categories_cluster';
+            combinedCluster.appendChild(leftCategoriesCluster);
+
+            let rightCategoriesCluster = document.createElement('div');
+            rightCategoriesCluster.id = 'right_categories_cluster';
+            combinedCluster.appendChild(rightCategoriesCluster);
+
+            categories.forEach((category, index) => {
+                // Create category container
+                let categoryPill = document.createElement('div');
+                categoryPill.id = 'category_pill';
+
+                // Create category checkbox
+                let categoryCheckbox = document.createElement('input');
+                categoryCheckbox.type = 'checkbox';
+                categoryCheckbox.id = `category_checkbox`;
+                categoryCheckbox.name = 'categories';
+                categoryCheckbox.value = category.id;
+                categoryPill.appendChild(categoryCheckbox);
+
+                // Create category label
+                let categoryLabel = document.createElement('label');
+                categoryLabel.htmlFor = `category_checkbox`;
+                categoryLabel.textContent = category.name;
+                categoryPill.appendChild(categoryLabel);
+
+                // Append container category to appropriate cluster
+                if (index % 2 === 0) {
+                    leftCategoriesCluster.appendChild(categoryPill);
+                } else {
+                    rightCategoriesCluster.appendChild(categoryPill);
+                }
+            })            
+        } else  {
+            renderErrorPage(data.message, data.code);
+        }
+    })
+
+    .catch(error => {        
+        console.error('Error fetching categories:', error);
+        renderErrorPage("Internal Server Error", 500);
+    });
 }

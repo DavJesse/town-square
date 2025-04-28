@@ -140,8 +140,65 @@ func GetLikedPostsByUser(userID int) ([]models.PostWithCategories, error) {
 			post.Categories = []string{}
 		}
 
+		// Fetch comments for this post
+		comments, err := GetCommentsForPost(post.UUID)
+		if err != nil {
+			log.Printf("Failed to fetch comments for post %s: %v", post.UUID, err)
+			comments = []models.CommentWithCreator{}
+		}
+		post.Comments = comments
+
 		likedPosts = append(likedPosts, post)
 	}
 
 	return likedPosts, nil
+}
+
+func GetCommentsForPost(postUUID string) ([]models.CommentWithCreator, error) {
+	query := `
+		SELECT 
+			c.uuid, 
+			c.content,
+			c.post_id, 
+			c.user_id, 
+			c.created_at
+		FROM comments c
+		INNER JOIN users u ON c.user_id = u.id
+		WHERE c.post_id = ?
+		ORDER BY c.created_at ASC
+	`
+
+	rows, err := db.Query(query, postUUID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch comments: %v", err)
+	}
+	defer rows.Close()
+
+	var comments []models.CommentWithCreator
+
+	for rows.Next() {
+		var comment models.CommentWithCreator
+		err := rows.Scan(
+			&comment.UUID,
+			&comment.Content,
+			&comment.PostID,
+			&comment.Creator,
+			&comment.CreatedAt,
+			&comment.LikesCount,
+			&comment.DislikesCount,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning comment: %v", err)
+		}
+
+		// Convert time to EAT
+		eatTime, err := utils.ConvertToEAT(comment.CreatedAt.String())
+		if err == nil {
+			comment.CreatedAt = eatTime
+		}
+
+		comments = append(comments, comment)
+	}
+
+	return comments, nil
 }

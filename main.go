@@ -2,21 +2,13 @@ package main
 
 import (
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"os"
 
 	"forum/database"
 
-	auth "forum/handlers/auth"
-	comments "forum/handlers/comments"
-	errors "forum/handlers/errors"
-	messages "forum/handlers/messages"
-	"forum/handlers/middleware"
-	"forum/handlers/misc"
-	posts "forum/handlers/posts"
-	users "forum/handlers/users"
+	"forum/handlers/routes"
 	utils "forum/utils"
 )
 
@@ -70,64 +62,8 @@ func main() {
 		return
 	}
 
-	// authentication
-	http.HandleFunc("/", posts.Index)
-
-	// Create a new WebSocket server instance
-	// messages.NewWebSocketServer()
-	// http.Handle("/chat", middleware.AuthMiddleware(http.HandlerFunc(messages.WebSocketHandler)))
-	// http.HandleFunc("/ws", WSProcess)
-
-	// ============================================================================================================================
-
-	// Create a single MessageHub instance
-	messages.NewMessageHub()
-
-	// Message routes
-	http.HandleFunc("/api/messages/conversations", messages.GetConversationsHandler)
-
-	http.HandleFunc("/api/messages/{userId}", messages.GetMessagesHandler)
-
-	// WebSocket route
-	http.Handle("/ws", middleware.AuthMiddleware(http.HandlerFunc(messages.ServeWS)))
-	// User list route (returns registered users)
-	http.HandleFunc("/api/users", database.GetUsers)
-
-	http.HandleFunc("/api/users/", database.GetUserById)
-
-	http.HandleFunc("/chat", WSProcess)
-
-	// ======================================================================================================
-
-	http.HandleFunc("/static/", misc.Static)
-	http.HandleFunc("/login", auth.LoginHandler)
-	// http.HandleFunc("/forgot-password", auth.ForgotPassword) // Unmute when retrieval logic is implemented
-	http.HandleFunc("/register", auth.RegistrationHandler)
-	http.HandleFunc("/logout", auth.Logout)
-
-	// users
-	http.HandleFunc("GET /profile", users.ViewUserProfile)
-	// http.HandleFunc("GET /user/update", middleware.AuthMiddleware(http.HandlerFunc(handlers.UpdateUserProfile))) // Protected
-
-	// posts
-	http.HandleFunc("/posts", posts.Posts)
-	http.HandleFunc("/posts/display", posts.PostDisplay)
-	http.HandleFunc("/categories", posts.GetCategories)
-	http.HandleFunc("/categories/", posts.SingleCategoryPosts)
-	http.HandleFunc("/search", posts.Search)
-	http.HandleFunc("/liked-posts", posts.ShowLikedPosts)
-
-	http.Handle("/posts/create", middleware.AuthMiddleware(http.HandlerFunc(posts.PostCreate)))
-	http.Handle("/posts/like", middleware.AuthMiddleware(http.HandlerFunc(posts.LikePost)))
-	http.Handle("/posts/dislike", middleware.AuthMiddleware(http.HandlerFunc(posts.DislikePost)))
-
-	// comments
-	http.Handle("/comments/like", middleware.AuthMiddleware(http.HandlerFunc(comments.LikeCommentHandler)))
-	http.Handle("/comments/dislike", middleware.AuthMiddleware(http.HandlerFunc(comments.DislikeCommentHandler)))
-	http.Handle("/comment", middleware.AuthMiddleware(http.HandlerFunc(comments.Comment)))
-
-	// errors
-	http.HandleFunc("/error", errors.ErrorHandler)
+	// Configure all routes
+	routes.RegisterRoutes()
 
 	// start the server, handle emerging errors
 	fmt.Printf("Server runing on http://localhost%s\n", port)
@@ -136,10 +72,4 @@ func main() {
 		log.Println("Failed to start server: ", err)
 		return
 	}
-}
-
-func WSProcess(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("./web/templates/chat.html"))
-
-	tmpl.Execute(w, nil)
 }

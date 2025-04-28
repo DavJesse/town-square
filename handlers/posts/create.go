@@ -2,7 +2,9 @@ package posts
 
 import (
 	"encoding/json"
+	"fmt"
 	"html"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -10,145 +12,130 @@ import (
 	"forum/database"
 	errors "forum/handlers/errors"
 	"forum/models"
-	utils "forum/utils"
+	"forum/utils"
 )
 
-// PostCreate handles post creation requests and returns JSON
 func PostCreate(w http.ResponseWriter, r *http.Request) {
-	var loggedIn bool
-	session, lIn := database.IsLoggedIn(r)
-	if lIn {
-		loggedIn = true
+	switch r.Method {
+	case http.MethodGet:
+		handleGetPostCreate(w, r)
+	case http.MethodPost:
+		handlePostPostCreate(w, r)
+	default:
+		WriteJSON(w, http.StatusMethodNotAllowed, models.PostResponse{
+			Message: "METHOD ERROR: method not allowed",
+			Code:    http.StatusMethodNotAllowed,
+		})
+		log.Println("METHOD ERROR: method not allowed")
+	}
+}
+
+func handleGetPostCreate(w http.ResponseWriter, r *http.Request) {
+	session, loggedIn := database.IsLoggedIn(r)
+	if !loggedIn {
+		WriteJSON(w, http.StatusUnauthorized, models.PostResponse{Message: "Unauthorized", Code: http.StatusUnauthorized})
+		return
 	}
 
-	// Retrieve user data
 	userData, _ := database.GetUserbySessionID(session.SessionID)
 
-	// Fetch categories from the database
 	categories, err := database.FetchCategories()
 	if err != nil {
 		errors.InternalServerErrorHandler(w, r)
 		return
 	}
 
-	// Create a response structure
-	response := struct {
-		Categories []models.Category `json:"categories"`
-		IsLogged   bool              `json:"is_logged"`
-		ProfPic    string            `json:"prof_pic"`
-		Message    string            `json:"message,omitempty"`
-	}{
+	WriteJSON(w, http.StatusOK, models.PostResponse{
 		Categories: categories,
 		IsLogged:   loggedIn,
 		ProfPic:    userData.Image,
+		Code:       http.StatusOK,
+	})
+}
+
+func handlePostPostCreate(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseMultipartForm(26 * 1024 * 1024); err != nil {
+		http.Error(w, "Form size too large", http.StatusRequestEntityTooLarge)
+		log.Println("INFO: Client form exceeds 26MB")
+		return
 	}
 
-	// Handle allowed methods
-	switch r.Method {
-	case http.MethodGet:
-		// Return the categories and login status as JSON
-		w.Header().Set("Content-Type", "application/json")
-		if err := json.NewEncoder(w).Encode(response); err != nil {
-			log.Println("Error encoding JSON:", err)
-			errors.InternalServerErrorHandler(w, r)
-		}
-
-	case http.MethodPost:
-		// Parse the form data
-		if err := r.ParseMultipartForm(26 * 1024 * 1024); err != nil { // Allow 26MB form data for the image + other fields
-			log.Println("INFO: Client form exceeds 26MB")
-			http.Error(w, "Form size too large", http.StatusRequestEntityTooLarge)
-			return
-		}
-
-		// Capture form values
-		title := r.FormValue("title")
-		content := html.EscapeString(r.FormValue("content"))
-		categoryIDs := r.Form["categories"]
-
-		// Default category if none are selected
-		if len(categoryIDs) == 0 {
-			categoryIDs = append(categoryIDs, "1")
-		}
-
-		// Handle file upload if present
-		var filename string
-		file, handler, err := r.FormFile("image")
-		if err == nil {
-			defer file.Close()
-
-			// Validate file size
-			if handler.Size > 20*1024*1024 {
-				response.Message = "image exceeds 20MB"
-				w.Header().Set("Content-Type", "application/json")
-				json.NewEncoder(w).Encode(response)
-				return
-			}
-
-			// Validate file type
-			allowedTypes := map[string]bool{
-				"image/png":  true,
-				"image/jpeg": true,
-				"image/gif":  true,
-			}
-			fileType := handler.Header.Get("Content-Type")
-			if !allowedTypes[fileType] {
-				response.Message = "Invalid file type. Only GIF, PNG, and JPG images are allowed."
-				w.Header().Set("Content-Type", "application/json")
-				json.NewEncoder(w).Encode(response)
-				return
-			}
-
-			// Save the image
-			filename, err = utils.SaveImage(fileType, file, utils.MEDIA)
-			if err != nil {
-				log.Println("ERROR: Failed to save image")
-				errors.InternalServerErrorHandler(w, r)
-				return
-			}
-		}
-
-		// Convert category IDs to integers
-		var categoryIDsInt []int
-		for _, idStr := range categoryIDs {
-			id, err := strconv.Atoi(idStr)
-			if err != nil {
-				log.Println("INFO: Invalid category ID")
-				errors.BadRequestHandler(w, r)
-				return
-			}
-			categoryIDsInt = append(categoryIDsInt, id)
-		}
-
-		// Validate categories
-		if err := database.ValidateCategories(categoryIDsInt); err != nil {
-			log.Printf("INFO: Invalid category %v", err)
-			errors.BadRequestHandler(w, r)
-			return
-		}
-
-		// Get user data
-		userID, _, err := database.GetUserData(r)
-		if err != nil {
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
-			return
-		}
-
-		// Create post
-		_, err = database.CreatePostWithCategories(userID, title, content, filename, categoryIDsInt)
-		if err != nil {
-			log.Printf("ERROR: Failed to create post: %v", err)
-			errors.InternalServerErrorHandler(w, r)
-			return
-		}
-
-		// Send success response
-		response.Message = "Post created successfully"
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(response)
-
-	default:
-		errors.MethodNotAllowedHandler(w, r)
-		log.Println("METHOD ERROR: method not allowed")
+	title := r.FormValue("title")
+	content := html.EscapeString(r.FormValue("content"))
+	categoryIDs := r.Form["categories"]
+	if len(categoryIDs) == 0 {
+		categoryIDs = []string{"1"}
 	}
+
+	var filename string
+	file, handler, err := r.FormFile("image")
+	if err == nil {
+		defer file.Close()
+
+		if handler.Size > 20*1024*1024 {
+			WriteJSON(w, http.StatusBadRequest, models.PostResponse{Message: "image exceeds 20MB", Code: http.StatusBadRequest})
+			return
+		}
+
+		buf := make([]byte, 512)
+		if _, err := file.Read(buf); err != nil {
+			WriteJSON(w, http.StatusInternalServerError, models.PostResponse{Message: "ERROR: reading file", Code: http.StatusInternalServerError})
+			return
+		}
+		file.Seek(0, io.SeekStart)
+
+		fileType := http.DetectContentType(buf)
+		if !map[string]bool{
+			"image/png":  true,
+			"image/jpeg": true,
+			"image/gif":  true,
+		}[fileType] {
+			WriteJSON(w, http.StatusBadRequest, models.PostResponse{Message: "Invalid file type. Only GIF, PNG, and JPG images are allowed.", Code: http.StatusBadRequest})
+			return
+		}
+
+		filename, err = utils.SaveImage(fileType, file, utils.MEDIA)
+		if err != nil {
+			log.Println("ERROR: Failed to save image")
+			WriteJSON(w, http.StatusInternalServerError, models.PostResponse{Message: "ERROR: Failed to save image", Code: http.StatusInternalServerError})
+			return
+		}
+	}
+
+	var categoryIDsInt []int
+	for _, idStr := range categoryIDs {
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			log.Println("INFO: Invalid Category ID")
+			WriteJSON(w, http.StatusBadRequest, models.PostResponse{Message: "INFO: Invalid category ID", Code: http.StatusBadRequest})
+			return
+		}
+		categoryIDsInt = append(categoryIDsInt, id)
+	}
+
+	if err := database.ValidateCategories(categoryIDsInt); err != nil {
+		log.Printf("INFO: Invalid category %v", err)
+		WriteJSON(w, http.StatusBadRequest, models.PostResponse{Message: "INFO: Invalid Category", Code: http.StatusBadRequest})
+		return
+	}
+
+	userID, _, err := database.GetUserData(r)
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	if _, err := database.CreatePostWithCategories(userID, title, content, filename, categoryIDsInt); err != nil {
+		log.Printf("ERROR: Failed to create post: %v", err)
+		WriteJSON(w, http.StatusInternalServerError, models.PostResponse{Message: fmt.Sprintf("ERROR: Failed to create post: %v", err), Code: http.StatusInternalServerError})
+		return
+	}
+
+	WriteJSON(w, http.StatusOK, models.PostResponse{Message: "Post created successfully"})
+}
+
+func WriteJSON(w http.ResponseWriter, status int, data interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(data)
 }

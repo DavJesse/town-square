@@ -5,37 +5,56 @@ import (
 	"net/http"
 
 	"forum/database"
-	errors "forum/handlers/errors"
+	"forum/models"
 )
 
 func DislikePost(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		errors.MethodNotAllowedHandler(w, r)
-		log.Println("METHOD ERROR: method not allowed")
+	// Check if user is logged in
+	_, isLogged := database.IsLoggedIn(r)
+	if !isLogged {
+		WriteJSON(w, http.StatusUnauthorized, models.DislikeResponse{
+			Success: false,
+			Message: "Please login first",
+		})
 		return
 	}
 
-	// Parse form data
-	err := r.ParseForm()
-	if err != nil {
-		http.Error(w, "Failed to parse form data", http.StatusBadRequest)
-		return
-	}
-
+	r.ParseForm()
 	postID := r.FormValue("post-id")
-
 	userID, _, err := database.GetUserData(r)
+
 	if err != nil {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		WriteJSON(w, http.StatusUnauthorized, models.DislikeResponse{
+			Success: false,
+			Message: "Please login first",
+		})
 		return
 	}
 
 	err = database.DislikePost(userID, postID)
 	if err != nil {
-		http.Error(w, "Failed to dislike post/comment", http.StatusInternalServerError)
+		log.Println("DATABASE ERROR: Failed to Log Dislike in Database")
+		WriteJSON(w, http.StatusInternalServerError, models.DislikeResponse{
+			Success: false,
+			Message: "Failed to dislike post",
+		})
 		return
 	}
 
-	// Redirect to the previous page
-	http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
+	// Get updated dislikes count
+	likesCount, err := database.GetPostDislikesCount(postID)
+	if err != nil {
+		log.Println("DATABASE ERROR: Failed to Retrieve Dislikes Count")
+		WriteJSON(w, http.StatusInternalServerError, models.DislikeResponse{
+			Success: false,
+			Message: "Failed to get updated dislikes count",
+		})
+		return
+	}
+
+	WriteJSON(w, http.StatusOK, models.DislikeResponse{
+		Success:       true,
+		DislikesCount: likesCount,
+		Message:       "Post liked successfully",
+	})
 }

@@ -28,24 +28,35 @@
     top: 80px;
     left: 0;
     position: fixed;
-    width: 30%;
+    width: 33%;
 }
 
 #right_cluster {
     top: 80px;
     right: 0;
     position: fixed;
-    width: 30%;
+    width: 33%;
 }
 
 /* Left cluster rules */
-#online_users_card, #profile_card, #category_container {
-    margin: 40px auto auto auto;
-    width: 80%;
+#online_users_card, #profile_card, #category_container {    
+    width: 55%;
     background-color: var(--secondary-color);
     border-radius: 15px;
     min-height: 300px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#online_users_card {
+    margin: 15px 32px auto auto;
+}
+
+#category_container {
+    margin: 40px 32px auto auto;
+}
+
+#profile_card {
+    margin: 40px auto auto 17px;
 }
 
 #online_users_title, #categories_title {

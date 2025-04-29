@@ -212,7 +212,7 @@ export function populateCategories(categories) {
     categories.forEach(category => {
         let categoryButton = document.createElement('button');
         let categoryText = document.createElement('p');
-        categoryButton.id = 'category_button';
+        categoryButton.id = category.id;
         categoryText.id = 'category_text';
         categoryButton.href = `/categories/${category.id}`;
         categoryText.textContent = category.name;

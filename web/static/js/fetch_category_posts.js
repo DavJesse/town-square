@@ -21,7 +21,7 @@ export function fetchPostsPerCategory(categoryID) {
                     } else {
                         // throw new Error(`HTTP error! status: ${response.status}`);
                         return response.json().then(errorData => {
-                            renderErrorPage(errorData.Issue || response.statusText, response.status);
+                            renderErrorPage(response.statusText, response.status);
                             return Promise.reject(errorData.Issue || 'Error occurred');
                         });
                     }

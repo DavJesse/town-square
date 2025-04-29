@@ -41,7 +41,7 @@
     margin: 0 auto 15px auto;
 }
 
-#category_button {
+#button_1, #button_2, #button_3, #button_4, #button_5, #button_6, #button_7, #button_8 {
     background-color: #FFFFFF;
     width: 80%;
     border-radius: 5px;

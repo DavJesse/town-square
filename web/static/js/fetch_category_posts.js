@@ -40,7 +40,7 @@ export function fetchPostsPerCategory(categoryID) {
 
          // Set category button text to white
          let categoryText = document.getElementById(`category_text_${categoryID}`);
-         categoryText.style.backgroundColor = '#FFFFFF';
+         categoryText.style.color = '#FFFFFF';
 
         // Assign data to variables for easy acces
         const posts = data.data.posts

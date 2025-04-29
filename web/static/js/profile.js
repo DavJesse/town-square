@@ -211,7 +211,7 @@ export function renderProfilePage() {
             // Populate user bio
             bioTitle.textContent = `${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)}`;
             nickname.textContent = `@${user.username}`;
-            email.textContent = `📧 ${user.email}`;
+            email.textContent = `${user.email}`;
             gender.textContent = user.gender;
             age.textContent = `${user.age} years old`;
             bioParagraph.textContent = user.bio;
@@ -224,8 +224,11 @@ export function renderProfilePage() {
             // Listen for client activity, sets posts to client preference
             setToggleEventListeners(userPosts, likedPosts);
 
+        } else if (data.code === 401) {
+            navigateTo('/login');
         } else {
-            console.error('Error fetching profile data:', data.message);
+            renderErrorPage(data.message, data.code);
+            console.error('Error fetching home page data:', data.message);
         }
     })
     .catch(error => {

@@ -3,7 +3,7 @@ import { renderErrorPage } from '/static/js/error.js';
 import { populatePosts, setToggleEventListeners } from '/static/js/profile.js';
 
 // Function to fetch posts by category
-export function fetchPostsPerCategogy(categoryID) {
+export function fetchPostsPerCategory(categoryID) {
     fetch(`/categories/${categoryID}`, {
         method: 'GET',
         credentials: 'include',

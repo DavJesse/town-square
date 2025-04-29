@@ -3,6 +3,7 @@ import { renderCreatePostButton, setCreatePostsButtonListeners } from '/static/j
 import { navigateTo } from '/static/js/routes.js';
 import { populatePosts, setToggleEventListeners } from '/static/js/profile.js';
 import { renderErrorPage } from '/static/js/error.js';
+import { fetchPostsPerCategory } from '/static/js/fetch_category_posts.js'
 
 export function renderIndexPage() {
     // Extract app from dom
@@ -212,10 +213,14 @@ export function populateCategories(categories) {
     categories.forEach(category => {
         let categoryButton = document.createElement('button');
         let categoryText = document.createElement('p');
-        categoryButton.id = `button_${category.id}`;
-        categoryText.id = 'category_text';
+        categoryButton.id = `category_button_${category.id}`;
+        categoryText.id = `category_text_${category.id}`;
         categoryButton.href = `/categories/${category.id}`;
         categoryText.textContent = category.name;
+        categoryButton.addEventListener('click', (e) => {
+            e.preventDefault;
+            fetchPostsPerCategory(category.id);
+        })
         categoryButton.appendChild(categoryText);
         categoriesContentContainer.appendChild(categoryButton);
     });

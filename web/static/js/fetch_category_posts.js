@@ -1,51 +1,48 @@
+import { navigateTo } from '/static/js/routes.js';
+import { renderErrorPage } from '/static/js/error.js';
+import { populatePosts, setToggleEventListeners } from '/static/js/profile.js';
+
 // Function to fetch posts by category
-window.fetchCategoryPosts = function(categoryID) {
+export function fetchPostsPerCategogy(categoryID) {
     fetch(`/categories/${categoryID}`, {
         method: 'GET',
-        credentials: 'include' // Ensure cookies are sent with the request
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json'
+        }
     })
-    .then(response => response.json())
+
+    .then(response => {
+        if (!response.ok) {
+                    // Check for unauthorized resposes
+                    if (response.status === 401) {
+                        navigateTo('/login');
+                        return Promise.reject('Unauthorized');
+                    } else {
+                        // throw new Error(`HTTP error! status: ${response.status}`);
+                        return response.json().then(errorData => {
+                            renderErrorPage(errorData.Issue || response.statusText, response.status);
+                            return Promise.reject(errorData.Issue || 'Error occurred');
+                        });
+                    }
+                }
+                return response.json();
+    })
+
     .then(data => {
-        const mainContent = document.getElementById('main-content');
+        // Clear current posts for repopulation
+        let mainContent = document.getElementById('posts_container');
         mainContent.innerHTML = '';
 
-        const categoryHeading = document.createElement('h3');
-        categoryHeading.classList.add('main-content__heading');
-        categoryHeading.textContent = `Posts in Category ${data.CategoryName}`;
-        mainContent.appendChild(categoryHeading);
+        let categoryButton = document.getElementById(categoryID);
+        categoryButton.style.backgroundColor = '#0000EE';
 
-        const postsContainer = document.createElement('div');
-        postsContainer.id = 'posts-container';
-        mainContent.appendChild(postsContainer);
+        const posts = data.data.posts
+        const likedPosts = data.data.liked_posts
 
         // Update posts
-        if (data.Posts?.length > 0) {
-            data.Posts.forEach(post => {
-                const postElement = document.createElement('div');
-                postElement.classList.add('card');
-                postElement.innerHTML = `
-                    <p class="card__title">
-                        <a href="#" onclick="fetchPostDisplay('${post.uuid}')" style="color: #0172eb;">${post.title}</a>
-                    </p>
-                    <p class="card__date">${post.created_at}</p>
-                    <p class="card__description">${post.Content}</p>
-                    ${post.media ? `<img src="/static/media/${post.media}" alt="Post Image" style="width: 70px; aspect-ratio: 1/1;">` : ''}
-                    <div class="actions">
-                        <form action="/posts/like" method="post">
-                            <input type="hidden" name="post-id" value="${post.uuid}">
-                            <button type="submit">${post.likes_count} Like</button>
-                        </form>
-                        <form action="/posts/dislike" method="post">
-                            <input type="hidden" name="post-id" value="${post.uuid}">
-                            <button type="submit">${post.dislikes_count} Dislike</button>
-                        </form>
-                    </div>
-                `;
-                postsContainer.appendChild(postElement);
-            });
-        } else {
-            postsContainer.innerHTML = '<p>No posts available in this category</p>';
-        }
+        populatePosts(posts);
+        setToggleEventListeners(likedPosts);
     })
     .catch(error => {
         console.error('Error fetching category posts:', error);

@@ -34,9 +34,13 @@ export function fetchPostsPerCategogy(categoryID) {
         let mainContent = document.getElementById('posts_container');
         mainContent.innerHTML = '';
 
-        // Set container button to blue
-        let categoryButton = document.getElementById(categoryID);
+        // Set category button to blue
+        let categoryButton = document.getElementById(`category_button_${categoryID}`);
         categoryButton.style.backgroundColor = '#0000EE';
+
+         // Set category button text to white
+         let categoryText = document.getElementById(`category_text_${categoryID}`);
+         categoryText.style.backgroundColor = '#FFFFFF';
 
         // Assign data to variables for easy acces
         const posts = data.data.posts
@@ -46,7 +50,7 @@ export function fetchPostsPerCategogy(categoryID) {
         populatePosts(posts);
         setToggleEventListeners(likedPosts);
     })
-    
+
     .catch(error => {
         console.error('Error fetching category posts:', error);
     });

@@ -94,19 +94,19 @@ func SingleCategoryPosts(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Retrieve liked posts
-	userLikedPosts, err := database.GetLikedPostsByUser(userData.ID)
+	userLikedPosts, err := database.FetchLikedPostsPerCategory(ID, userData.ID)
 	if err != nil {
 		log.Printf("Failed to retrieve liked posts %v", err)
-		userLikedPosts = []models.PostWithCategories{}
+		userLikedPosts = []models.PostWithUsername{}
 	}
 
 	// Prepare data for JSON response
 	data := struct {
-		Posts          []models.PostWithUsername   `json:"posts"`
-		IsLogged       bool                        `json:"is_logged"`
-		User           models.User                 `json:"user"`
-		UserLikedPosts []models.PostWithCategories `json:"liked_posts"`
-		Categories     []models.Category           `json:"categories"`
+		Posts          []models.PostWithUsername `json:"posts"`
+		IsLogged       bool                      `json:"is_logged"`
+		User           models.User               `json:"user"`
+		UserLikedPosts []models.PostWithUsername `json:"liked_posts"`
+		Categories     []models.Category         `json:"categories"`
 	}{
 		Posts:          posts,
 		IsLogged:       loggedIn,

@@ -13,7 +13,7 @@ import (
 // initializes the categories table with the predefined categories
 func InitCategories() error {
 	categories := []string{
-		"miscellaneous",
+		"general",
 		"agriculture",
 		"arts",
 		"education",

@@ -1,3 +1,13 @@
+/* Define color variables */
+:root {
+    --primary-color: #0000EE;
+    --secondary-color: #FFFFFF;
+    --tertiary-color: #656565;
+    --quaternary-color: #666666;
+    --highlight-color: #f3f3f1;
+    --border-color: #aaa;
+}
+
 body {
     /* font-family: 'Roboto', sans-serif; */
     background-color: #5c5b5b;
@@ -40,8 +50,23 @@ a {
     gap: 10px;
 }
 
+#register_first_name,
+#register_last_name,
+#register_age,
+#register_password,
+#register_confirm_password,
+#register_username,
+#register_email {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
 /* Style the bio textarea */
-textarea {
+#register_bio {
     width: 100%;          /* Make it full-width inside the form */
     height: 100px;        /* Set a fixed height */
     resize: none;         /* Disable resizing */
@@ -49,7 +74,7 @@ textarea {
     border: 1px solid #ccc; /* Light border */
     border-radius: 5px;   /* Rounded edges */
     font-size: 14px;      /* Set font size */
-    margin: 0 auto 15px auto;
+    margin: 10px auto 15px auto;
 }
 
 h1 {
@@ -60,27 +85,9 @@ h1 {
     letter-spacing: 2px;
 }
 
-/* Style form elements */
-/* form {
-    display: flex;
-    flex-direction: column;
-} */
-
-/* Style the labels */
-/* form label {
-    display: block;
-    text-align: left;
-    font-size: 14px;
-    font-weight: bold;
-    color: #000000;
-    margin-top: 10px;
-    margin-left: 15px;
-    letter-spacing: 1px;
-} */
-
-#gender_label {
+#register_gender_label {
     font-size: 18px;
-    margin: auto;
+    margin: 17px auto auto auto;
 }
 
 #file_name {
@@ -113,12 +120,12 @@ input[type="file"] {
     background-color: #1e1e99;
 }
 
-#gender {
+#register_gender {
     font-size: 16px;
     height: 44px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    margin: auto auto auto auto;
+    margin: 10px auto auto auto;
 }
 
 /* Show selected file name */

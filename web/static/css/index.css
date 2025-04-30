@@ -192,6 +192,25 @@
     margin: 0 auto 0 10px;
 }
 
+#profile_action_container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#view_profile_button, #messanger_button, #profile_logout_button {
+    width: 100%;
+    padding: 10px 15px;
+    background-color: #0000EE;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-size: 17px;
+    font-weight: 600;
+}
+
 .sidebar {
     width: 25%;
     background-color: #ffffff;

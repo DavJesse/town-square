@@ -243,9 +243,6 @@ export function populatePosts(posts) {
     let postsContainer = document.getElementById('posts_container');
     postsContainer.innerHTML = ""; // clear content for fresh population
 
-    // Set null values to empty array
-    posts = posts ?? [];
-
     if (posts && posts.length > 0) {
         posts.forEach(post => {
             let postElement = document.createElement('div');

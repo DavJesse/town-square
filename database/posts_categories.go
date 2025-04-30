@@ -108,14 +108,14 @@ func FetchCategoryPostsWithID(categoryID int) ([]models.PostWithUsername, error)
 	query := `
 		SELECT 
 		    p.uuid,
-		    p.title,
-		    p.content,
-		    p.media,
-		    p.created_at,
 		    u.first_name,
 		    u.last_name,
 		    u.username,
 		    u.image,
+		    p.title,
+		    p.content,
+		    p.media,
+		    p.created_at,
 		    COALESCE(l.likes_count, 0) AS likes_count,
 		    COALESCE(d.dislikes_count, 0) AS dislikes_count,
 		    COALESCE(

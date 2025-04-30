@@ -41,9 +41,10 @@
     margin: 0 auto 15px auto;
 }
 
-#category_button {
+#category_button_1, #category_button_2, #category_button_3, #category_button_4, #category_button_5, #category_button_6, #category_button_7, #category_button_8 {
     background-color: #FFFFFF;
     width: 80%;
+    border: none;
     border-radius: 5px;
     margin: auto;
     display: flex;
@@ -52,19 +53,40 @@
     padding: 0;
 }
 
-#category_button:hover {
+#category_button_1:hover,
+#category_button_2:hover,
+#category_button_3:hover,
+#category_button_4:hover,
+#category_button_5:hover,
+#category_button_6:hover,
+#category_button_7:hover,
+#category_button_8:hover {
     background-color: #0000EE;
-
-    #category_text {
-        color: #FFFFFF;
-    }
 }
 
-#category_text {
+#category_text_1,
+#category_text_2,
+#category_text_3,
+#category_text_4,
+#category_text_5,
+#category_text_6,
+#category_text_7,
+#category_text_8 {
     margin-left: 15px;
     color: #0000EE;
     font-size: 19px;
     font-weight: 500;
+}
+
+#category_text_1:hover,
+#category_text_2:hover,
+#category_text_3:hover,
+#category_text_4:hover,
+#category_text_5:hover,
+#category_text_6:hover,
+#category_text_7:hover,
+#category_text_8:hover {
+    color: #FFFFFF;
 }
 
 #post_head {

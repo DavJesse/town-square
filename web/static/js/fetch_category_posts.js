@@ -1,52 +1,70 @@
+import { navigateTo } from '/static/js/routes.js';
+import { renderErrorPage } from '/static/js/error.js';
+import { populatePosts, setToggleEventListeners } from '/static/js/profile.js';
+
 // Function to fetch posts by category
-window.fetchCategoryPosts = function(categoryID) {
+export function fetchPostsPerCategory(categoryID) {
     fetch(`/categories/${categoryID}`, {
         method: 'GET',
-        credentials: 'include' // Ensure cookies are sent with the request
-    })
-    .then(response => response.json())
-    .then(data => {
-        const mainContent = document.getElementById('main-content');
-        mainContent.innerHTML = '';
-
-        const categoryHeading = document.createElement('h3');
-        categoryHeading.classList.add('main-content__heading');
-        categoryHeading.textContent = `Posts in Category ${data.CategoryName}`;
-        mainContent.appendChild(categoryHeading);
-
-        const postsContainer = document.createElement('div');
-        postsContainer.id = 'posts-container';
-        mainContent.appendChild(postsContainer);
-
-        // Update posts
-        if (data.Posts?.length > 0) {
-            data.Posts.forEach(post => {
-                const postElement = document.createElement('div');
-                postElement.classList.add('card');
-                postElement.innerHTML = `
-                    <p class="card__title">
-                        <a href="#" onclick="fetchPostDisplay('${post.uuid}')" style="color: #0172eb;">${post.title}</a>
-                    </p>
-                    <p class="card__date">${post.created_at}</p>
-                    <p class="card__description">${post.Content}</p>
-                    ${post.media ? `<img src="/static/media/${post.media}" alt="Post Image" style="width: 70px; aspect-ratio: 1/1;">` : ''}
-                    <div class="actions">
-                        <form action="/posts/like" method="post">
-                            <input type="hidden" name="post-id" value="${post.uuid}">
-                            <button type="submit">${post.likes_count} Like</button>
-                        </form>
-                        <form action="/posts/dislike" method="post">
-                            <input type="hidden" name="post-id" value="${post.uuid}">
-                            <button type="submit">${post.dislikes_count} Dislike</button>
-                        </form>
-                    </div>
-                `;
-                postsContainer.appendChild(postElement);
-            });
-        } else {
-            postsContainer.innerHTML = '<p>No posts available in this category</p>';
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json'
         }
     })
+
+    .then(response => {
+        if (!response.ok) {
+                    // Check for unauthorized resposes
+                    if (response.status === 401) {
+                        navigateTo('/login');
+                        return Promise.reject('Unauthorized');
+                    } else {
+                        // throw new Error(`HTTP error! status: ${response.status}`);
+                        return response.json().then(errorData => {
+                            renderErrorPage(response.statusText, response.status);
+                            return Promise.reject(errorData.Issue || 'Error occurred');
+                        });
+                    }
+                }
+                return response.json();
+    })
+
+    .then(data => {
+        // Clear current posts for repopulation
+        let postsContainer = document.getElementById('posts_container');
+        postsContainer.innerHTML = '';
+
+        // Restore active button to white
+        let categoryContainer = document.getElementById('category_container');
+        let activeButton = categoryContainer.querySelector(`.active`);
+        if (activeButton) {
+            console.log('active found');
+            let activeText = activeButton.querySelector('p');
+            activeButton.style.backgroundColor = '#FFFFFF';
+            if (activeText) {
+                activeText.style.color = '#0000EE';
+            }
+            activeButton.classList.remove('active');
+            activeButton.classList.add('inactive');
+        }
+
+        // Set category button to blue
+        let categoryButton = document.getElementById('category_button_' + categoryID);
+        categoryButton.style.backgroundColor = '#0000EE';
+
+         // Set category button text to white
+         let categoryText = document.getElementById(`category_text_${categoryID}`);
+         categoryText.style.color = '#FFFFFF';
+
+        // Assign data to variables for easy acces
+        const posts = data.data.posts
+        const likedPosts = data.data.liked_posts
+
+        // Update posts
+        populatePosts(posts);
+        setToggleEventListeners(likedPosts);
+    })
+
     .catch(error => {
         console.error('Error fetching category posts:', error);
     });

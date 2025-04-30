@@ -38,27 +38,52 @@ func SingleCategoryPosts(w http.ResponseWriter, r *http.Request) {
 	var err error
 	session, loggedIn := database.IsLoggedIn(r)
 
+	// Handle Unauthorized Users
+	if !loggedIn {
+		WriteJSON(w, http.StatusUnauthorized, models.PostResponse{
+			Message: "Unauthorized",
+			Code:    http.StatusUnauthorized,
+		})
+	}
+
 	// Retrieve user data
-	if loggedIn {
-		userData, err = database.GetUserbySessionID(session.SessionID)
-		if err != nil {
-			errors.InternalServerErrorHandler(w, r)
-			log.Printf("Error getting user: %v\n", err)
-			return
-		}
+	userData, err = database.GetUserbySessionID(session.SessionID)
+	if err != nil {
+		log.Printf("ERROR: cannot get user %v\n", err)
+		WriteJSON(w, http.StatusInternalServerError, models.PostResponse{
+			Message: "Internal Server Error",
+			Code:    http.StatusInternalServerError,
+		})
+		return
 	}
 
 	// Extract the category ID from the URL path
 	pathParts := strings.Split(r.URL.Path, "/")
 	if len(pathParts) < 3 {
-		errors.BadRequestHandler(w, r)
+		log.Println("ERROR: Bad Request")
+		WriteJSON(w, http.StatusBadRequest, models.PostResponse{
+			Message: "Bad Request",
+			Code:    http.StatusBadRequest,
+		})
 		return
 	}
+
 	categoryID := pathParts[2]
 	ID, err := strconv.Atoi(categoryID)
 	if err != nil {
-		errors.BadRequestHandler(w, r)
+		log.Println("ERROR: Bad Request")
+		WriteJSON(w, http.StatusBadRequest, models.PostResponse{
+			Message: "Bad Request",
+			Code:    http.StatusBadRequest,
+		})
 		return
+	}
+
+	// Retrieve all categories
+	categories, err := database.FetchCategories()
+	if err != nil {
+		categories = []models.Category{}
+		log.Printf("Error getting categories: %v\n", err)
 	}
 
 	// Fetch posts from the database
@@ -68,17 +93,31 @@ func SingleCategoryPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Prepare data for JSON response
-	data := struct {
-		Posts    []models.PostWithCategories
-		IsLogged bool
-		ProfPic  string
-	}{
-		Posts:    posts,
-		IsLogged: loggedIn,
-		ProfPic:  userData.Image,
+	// Retrieve liked posts
+	userLikedPosts, err := database.FetchLikedPostsPerCategory(ID, userData.ID)
+	if err != nil {
+		log.Printf("Failed to retrieve liked posts %v", err)
+		userLikedPosts = []models.PostWithUsername{}
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(data)
+	// Prepare data for JSON response
+	data := struct {
+		Posts          []models.PostWithUsername `json:"posts"`
+		IsLogged       bool                      `json:"is_logged"`
+		User           models.User               `json:"user"`
+		UserLikedPosts []models.PostWithUsername `json:"liked_posts"`
+		Categories     []models.Category         `json:"categories"`
+	}{
+		Posts:          posts,
+		IsLogged:       loggedIn,
+		User:           userData,
+		UserLikedPosts: userLikedPosts,
+		Categories:     categories,
+	}
+
+	WriteJSON(w, http.StatusOK, models.Response{
+		Data:    data,
+		Message: "Post data retrieved",
+		Code:    http.StatusOK,
+	})
 }

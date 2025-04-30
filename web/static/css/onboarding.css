@@ -91,29 +91,6 @@ form {
     border-radius: 5px;
     font-size: 14px;
 }
-/* 
-input {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-} */
-
-/* Style buttons */
-button {
-    width: 100%;
-    background-color: #0000EE;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    font-size: 20px;
-    cursor: pointer;
-    margin: 0 auto 15px auto;
-    letter-spacing: 2px;
-}
 
 #login_btn {
     width: 100%;

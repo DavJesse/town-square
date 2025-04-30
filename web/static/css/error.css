@@ -18,12 +18,12 @@ section {
     text-align: center;
 }
 
-.code {
+#error_code {
     font-size: 48px;
     font-weight: 1000;
 }
 
-.issue {
+#error_message {
     font-size: 24px;
 }
 
@@ -31,12 +31,6 @@ h2 {
     font-size: 24px;
     color: #666;
 }
-
-/* .error-link {
-    text-decoration: none;
-    color: #ffffff;
-    font-size: 24px;
-} */
 
 #return_home_link {
         text-decoration: none;

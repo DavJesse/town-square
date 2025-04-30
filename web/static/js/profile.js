@@ -1,5 +1,6 @@
 import { renderNavBar } from '/static/js/navbar.js';
-import { renderLoginPage } from '/static/js/login.js';
+import { navigateTo } from '/static/js/routes.js';
+import { renderErrorPage } from '/static/js/error.js';
 import { handleLikePost } from '/static/js/like_post.js';
 import { handleDislikePost } from '/static/js/dislike_post.js';
 import { populateCategories } from '/static/js/index.js';
@@ -22,6 +23,19 @@ export function renderProfilePage() {
     let leftCluster = document.createElement('div');
     leftCluster.classList.add('left-cluster');
     leftCluster.id = 'left_cluster';
+
+    // Create categories and online users containers
+    let categoriesCard = document.createElement('div');
+    let categoriesCardTitle = document.createElement('h3');
+    let categoryContentContainer = document.createElement('div');
+    categoriesCard.id = 'category_container';
+    categoriesCardTitle.id = 'categories_title';
+    categoryContentContainer.id = 'category_content_container';
+    categoriesCardTitle.textContent = 'Categories';
+
+    categoriesCard.appendChild(categoriesCardTitle);
+    categoriesCard.appendChild(categoryContentContainer);
+    leftCluster.appendChild(categoriesCard);
     
     // Add card to hold online users
     let onlineUsersCard = document.createElement('div');
@@ -175,10 +189,15 @@ export function renderProfilePage() {
         if (!response.ok) { 
             // If the response is not OK, check if it's a 401 (Unauthorized)
             if (response.status === 401) {
-                renderLoginPage();  // Redirect to login page
-                return;
+                navigateTo('/login');
+                return Promise.reject('Unauthorized');
+            } else {
+                // throw new Error(`HTTP error! status: ${response.status}`);
+                return response.json().then(errorData => {
+                    renderErrorPage(errorData.Issue || response.statusText, response.status);
+                    return Promise.reject(errorData.Issue || 'Error occurred');
+                });
             }
-            throw new Error(`HTTP error! Status: ${response.status}`);
         }
         return response.json();
     })
@@ -198,7 +217,7 @@ export function renderProfilePage() {
             // Populate user bio
             bioTitle.textContent = `${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)}`;
             nickname.textContent = `@${user.username}`;
-            email.textContent = `📧 ${user.email}`;
+            email.textContent = `${user.email}`;
             gender.textContent = user.gender;
             age.textContent = `${user.age} years old`;
             bioParagraph.textContent = user.bio;
@@ -212,7 +231,7 @@ export function renderProfilePage() {
             setToggleEventListeners(userPosts, likedPosts);
 
         } else {
-            console.error('Error fetching profile data:', data.message);
+            console.error('Error fetching home page data:', data.message);
         }
     })
     .catch(error => {

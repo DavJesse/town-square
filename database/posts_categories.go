@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"strings"
@@ -12,7 +13,7 @@ import (
 // initializes the categories table with the predefined categories
 func InitCategories() error {
 	categories := []string{
-		"miscellaneous",
+		"general",
 		"agriculture",
 		"arts",
 		"education",
@@ -91,7 +92,7 @@ func ValidateCategories(categoryIDs []int) error {
 }
 
 // FetchCategoryPostsWithID retrieves all posts associated with a given category ID
-func FetchCategoryPostsWithID(categoryID int) ([]models.PostWithCategories, error) {
+func FetchCategoryPostsWithID(categoryID int) ([]models.PostWithUsername, error) {
 	// Check if the category exists
 	var exists bool
 	err := db.QueryRow("SELECT EXISTS(SELECT 1 FROM categories WHERE id = ?)", categoryID).Scan(&exists)
@@ -106,29 +107,46 @@ func FetchCategoryPostsWithID(categoryID int) ([]models.PostWithCategories, erro
 	// Fetch posts for the category
 	query := `
 		SELECT 
-			p.uuid,
-			p.title,
-			p.content,
-			p.media,
-			p.user_id,
-			p.created_at,
-			COALESCE(l.likes_count, 0) AS likes_count,
-			COALESCE(d.dislikes_count, 0) AS dislikes_count
+		    p.uuid,
+		    u.first_name,
+		    u.last_name,
+		    u.username,
+		    u.image,
+		    p.title,
+		    p.content,
+		    p.media,
+		    p.created_at,
+		    COALESCE(l.likes_count, 0) AS likes_count,
+		    COALESCE(d.dislikes_count, 0) AS dislikes_count,
+		    COALESCE(
+		        json_group_array(
+		            json_object(
+		                'id', c.uuid,
+		                'content', c.content,
+		                'created_at', c.created_at,
+		                'username', cu.username
+		            )
+		        ) FILTER (WHERE c.uuid IS NOT NULL),
+		        '[]'
+		    ) AS comments
 		FROM posts p
 		INNER JOIN post_categories pc ON p.uuid = pc.post_id
+		INNER JOIN users u ON u.id = p.user_id
 		LEFT JOIN (
-			SELECT post_id, COUNT(*) AS likes_count 
-			FROM likes 
-			GROUP BY post_id
+		    SELECT post_id, COUNT(*) AS likes_count 
+		    FROM likes 
+		    GROUP BY post_id
 		) l ON p.uuid = l.post_id
 		LEFT JOIN (
-			SELECT post_id, COUNT(*) AS dislikes_count 
-			FROM dislikes 
-			GROUP BY post_id
+		    SELECT post_id, COUNT(*) AS dislikes_count 
+		    FROM dislikes 
+		    GROUP BY post_id
 		) d ON p.uuid = d.post_id
+		LEFT JOIN comments c ON c.post_id = p.uuid
+		LEFT JOIN users cu ON cu.id = c.user_id
 		WHERE pc.category_id = ?
-		GROUP BY p.uuid  -- Added to handle potential duplicates
-		ORDER BY p.created_at DESC
+		GROUP BY p.uuid
+		ORDER BY p.created_at DESC;
 	`
 
 	rows, err := db.Query(query, categoryID)
@@ -138,19 +156,36 @@ func FetchCategoryPostsWithID(categoryID int) ([]models.PostWithCategories, erro
 	}
 	defer rows.Close()
 
-	var posts []models.PostWithCategories
+	var posts []models.PostWithUsername
 	for rows.Next() {
-		var post models.PostWithCategories
+		var post models.PostWithUsername
+		var commentsJSON string
 		var media sql.NullString
-		err := rows.Scan(&post.UUID, &post.Title, &post.Content, &media, &post.UserID, &post.CreatedAt, &post.LikesCount, &post.DislikesCount)
+
+		err := rows.Scan(
+			&post.UUID,
+			&post.CreatorFirstName,
+			&post.CreatorLastName,
+			&post.CreatorUsername,
+			&post.CreatorImage,
+			&post.Title,
+			&post.Content,
+			&media,
+			&post.CreatedAt,
+			&post.LikesCount,
+			&post.DislikesCount,
+			&commentsJSON,
+		)
 		if err != nil {
 			log.Println("Error scanning post:", err)
 			return nil, err
 		}
+		post.Media = ""
 		if media.Valid {
 			post.Media = media.String
-		} else {
-			post.Media = ""
+		}
+		if err := json.Unmarshal([]byte(commentsJSON), &post.Comments); err != nil {
+			log.Printf("DATABASE ERROR: %v", err)
 		}
 		posts = append(posts, post)
 	}

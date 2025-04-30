@@ -22,12 +22,14 @@ export function renderErrorPage(message, code) {
     // Create and append error code
     const errorCode = document.createElement('p');
     errorCode.id = 'error_code';
+    errorCode.textContent = code;
     errorCode.classList.add('code');
     errorContainer.appendChild(errorCode);
 
     // Create and append error message
     const errorMessage = document.createElement('p');
     errorMessage.id = 'error_message';
+    errorMessage.textContent = message;
     errorMessage.classList.add('issue');
     errorContainer.appendChild(errorMessage);
 

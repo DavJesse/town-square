@@ -35,10 +35,10 @@ export function fetchPostsPerCategory(categoryID) {
         postsContainer.innerHTML = '';
 
         // Restore active button to white
-        let categoryContainer = document.getElementById('category_container');
+        let categoryContainer = document.getElementById('category_content_container');
         let activeButton = categoryContainer.querySelector(`.active`);
+        
         if (activeButton) {
-            console.log('active found');
             let activeText = activeButton.querySelector('p');
             activeButton.style.backgroundColor = '#FFFFFF';
             if (activeText) {
@@ -51,6 +51,8 @@ export function fetchPostsPerCategory(categoryID) {
         // Set category button to blue
         let categoryButton = document.getElementById('category_button_' + categoryID);
         categoryButton.style.backgroundColor = '#0000EE';
+        categoryButton.classList.remove('inactive');
+        categoryButton.classList.add('active');
 
          // Set category button text to white
          let categoryText = document.getElementById(`category_text_${categoryID}`);

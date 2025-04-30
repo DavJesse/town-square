@@ -214,6 +214,8 @@ export function populateCategories(categories) {
         let categoryButton = document.createElement('button');
         let categoryText = document.createElement('p');
         categoryButton.id = `category_button_${category.id}`;
+        categoryButton.classList.add('category-button');
+        categoryButton.classList.add('inactive');
         categoryText.id = `category_text_${category.id}`;
         categoryButton.href = `/categories/${category.id}`;
         categoryText.textContent = category.name;

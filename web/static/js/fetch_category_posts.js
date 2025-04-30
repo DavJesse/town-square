@@ -34,8 +34,20 @@ export function fetchPostsPerCategory(categoryID) {
         let mainContent = document.getElementById('posts_container');
         mainContent.innerHTML = '';
 
+        // Restore active button to white
+        let activeButton = document.querySelector(`.active`);
+        if (activeButton) {
+            let activeText = activeButton.querySelector('p');
+            activeButton.style.backgroundColor = '#FFFFFF';
+            if (activeText) {
+                activeText.style.color = '#0000EE';
+            }
+            activeButton.classList.remove('active');
+            activeButton.classList.add('inactive');
+        }
+
         // Set category button to blue
-        let categoryButton = document.getElementById(`category_button_${categoryID}`);
+        let categoryButton = document.getElementById('category_button_' + categoryID);
         categoryButton.style.backgroundColor = '#0000EE';
 
          // Set category button text to white

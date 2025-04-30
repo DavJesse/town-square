@@ -40,7 +40,7 @@ export function renderRegistrationPage() {
 
     let firstName = document.createElement('input');
     firstName.type = 'text';
-    firstName.id = 'first_name';
+    firstName.id = 'register_first_name';
     firstName.name = 'first-name';
     firstName.placeholder = 'first name';
     firstName.autocomplete = 'given-name';
@@ -50,7 +50,7 @@ export function renderRegistrationPage() {
 
     let lastName = document.createElement('input');
     lastName.type = 'text';
-    lastName.id = 'last_name';
+    lastName.id = 'register_last_name';
     lastName.name = 'last-name';
     lastName.placeholder = 'last name';
     lastName.autocapitalize = 'words';
@@ -62,7 +62,7 @@ export function renderRegistrationPage() {
     // Create nickname/username field
     let username = document.createElement('input');
     username.type = 'text';
-    username.id = 'username';
+    username.id = 'register_username';
     username.name = 'username';
     username.placeholder = 'nickname / username';
     username.autocomplete = 'username';
@@ -75,7 +75,7 @@ export function renderRegistrationPage() {
  
      let age = document.createElement('input');
      age.type = 'number';
-     age.id = 'age';
+     age.id = 'register_age';
      age.name = 'age';
      age.placeholder = 'age';
      age.required = true;
@@ -84,12 +84,12 @@ export function renderRegistrationPage() {
      // Add gender label
      let genderLabel = document.createElement('label');
      genderLabel.htmlFor = 'gender';
-     genderLabel.id = 'gender_label';
+     genderLabel.id = 'register_gender_label';
      genderLabel.textContent = 'gender:';
      ageGender.appendChild(genderLabel);
  
      let gender = document.createElement('select');
-     gender.id = 'gender';
+     gender.id = 'register_gender';
      gender.name = 'gender';
      gender.textContent = 'gender';
      
@@ -114,7 +114,7 @@ export function renderRegistrationPage() {
      // Create email field
      let email = document.createElement('input');
      email.type = 'email';
-     email.id = 'email';
+     email.id = 'register_email';
      email.name = 'email';
      email.placeholder = 'email';
      email.autocomplete = 'email';
@@ -127,7 +127,7 @@ export function renderRegistrationPage() {
 
      let password = document.createElement('input');
      password.type = 'password';
-     password.id = 'password';
+     password.id = 'register_password';
      password.name = 'password';
      password.placeholder = 'password';
      password.required = true
@@ -135,7 +135,7 @@ export function renderRegistrationPage() {
 
      let confirmPassword = document.createElement('input');
      confirmPassword.type = 'password';
-     confirmPassword.id = 'confirm_password';
+     confirmPassword.id = 'register_confirm_password';
      confirmPassword.name = 'confirm-password';
      confirmPassword.placeholder = 'confirm password';
      confirmPassword.required = true
@@ -145,7 +145,7 @@ export function renderRegistrationPage() {
 
      // Create bio field
      let bio = document.createElement('textarea');
-     bio.id = 'bio';
+     bio.id = 'register_bio';
      bio.name = 'bio';
      bio.placeholder = 'bio | about me';
      bio.required = true

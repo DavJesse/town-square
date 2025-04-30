@@ -50,7 +50,13 @@ a {
     gap: 10px;
 }
 
-#first_name, #last_name, #age, #password, #confirm_password, #username, #email {
+#register_first_name,
+#register_last_name,
+#register_age,
+#register_password,
+#register_confirm_password,
+#register_username,
+#register_email {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -60,7 +66,7 @@ a {
 }
 
 /* Style the bio textarea */
-#bio {
+#register_bio {
     width: 100%;          /* Make it full-width inside the form */
     height: 100px;        /* Set a fixed height */
     resize: none;         /* Disable resizing */
@@ -79,9 +85,9 @@ h1 {
     letter-spacing: 2px;
 }
 
-#gender_label {
+#register_gender_label {
     font-size: 18px;
-    margin: 17px auto auto auto auto;
+    margin: 17px auto auto auto;
 }
 
 #file_name {
@@ -114,7 +120,7 @@ input[type="file"] {
     background-color: #1e1e99;
 }
 
-#gender {
+#register_gender {
     font-size: 16px;
     height: 44px;
     border-radius: 5px;

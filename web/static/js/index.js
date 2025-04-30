@@ -105,7 +105,7 @@ export function renderIndexPage() {
     let profileActionContainer = document.createElement('div');
     let profileLink = document.createElement('a');
     let messangerLink = document.createElement('a');
-    let logoutLink = document.createElement('a');
+    let logoutLink = document.createElement('form');
     let viewProfileButton = document.createElement('button');
     let messangerButton = document.createElement('button');
     let logoutButton = document.createElement('button');
@@ -118,9 +118,11 @@ export function renderIndexPage() {
     viewProfileButton.id = 'view_profile_button';
     messangerButton.id ='messanger_button';
     logoutButton.id = 'profile_logout_button';
+    logoutButton.type = 'submit';
     profileLink.href = '/profile';
     messangerLink.href = '/chat';
-    logoutLink.href = '/logout';
+    logoutLink.action = '/logout';
+    logoutLink.method = 'POST';
     viewProfileButton.textContent = 'View Profile';
     messangerButton.textContent = 'Messager';
     logoutButton.textContent = 'Logout';

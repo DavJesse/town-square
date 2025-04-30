@@ -31,12 +31,14 @@ export function fetchPostsPerCategory(categoryID) {
 
     .then(data => {
         // Clear current posts for repopulation
-        let mainContent = document.getElementById('posts_container');
-        mainContent.innerHTML = '';
+        let postsContainer = document.getElementById('posts_container');
+        postsContainer.innerHTML = '';
 
         // Restore active button to white
-        let activeButton = document.querySelector(`.active`);
+        let categoryContainer = document.getElementById('category_container');
+        let activeButton = categoryContainer.querySelector(`.active`);
         if (activeButton) {
+            console.log('active found');
             let activeText = activeButton.querySelector('p');
             activeButton.style.backgroundColor = '#FFFFFF';
             if (activeText) {

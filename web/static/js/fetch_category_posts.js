@@ -34,16 +34,15 @@ export function fetchPostsPerCategory(categoryID) {
         let postsContainer = document.getElementById('posts_container');
         postsContainer.innerHTML = '';
 
-        // Restore active button to white
         let categoryContainer = document.getElementById('category_content_container');
         let activeButton = categoryContainer.querySelector(`.active`);
         
+        // Restore active button to white
         if (activeButton) {
-            let activeText = activeButton.querySelector('p');
             activeButton.style.backgroundColor = '#FFFFFF';
-            if (activeText) {
-                activeText.style.color = '#0000EE';
-            }
+            activeButton.style.color = '#0000EE';
+            
+            // Update class names for correct identification
             activeButton.classList.remove('active');
             activeButton.classList.add('inactive');
         }
@@ -55,8 +54,7 @@ export function fetchPostsPerCategory(categoryID) {
         categoryButton.classList.add('active');
 
          // Set category button text to white
-         let categoryText = document.getElementById(`category_text_${categoryID}`);
-         categoryText.style.color = '#FFFFFF';
+        categoryButton.style.color = '#FFFFFF';
 
         // Assign data to variables for easy acces
         const posts = data.data.posts

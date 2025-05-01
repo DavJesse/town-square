@@ -83,7 +83,7 @@ export function renderRegistrationPage() {
 
      // Add gender label
      let genderLabel = document.createElement('label');
-     genderLabel.htmlFor = 'gender';
+     genderLabel.htmlFor = 'register_gender';
      genderLabel.id = 'register_gender_label';
      genderLabel.textContent = 'gender:';
      ageGender.appendChild(genderLabel);
@@ -145,11 +145,24 @@ export function renderRegistrationPage() {
 
      // Create bio field
      let bio = document.createElement('textarea');
+     let charCounter = document.createElement('p');
      bio.id = 'register_bio';
+     charCounter.id = 'char_counter';
      bio.name = 'bio';
-     bio.placeholder = 'bio | about me';
+     bio.placeholder = 'bio | about me (300 characters max)';
      bio.required = true
+     bio.maxLength = 300;
+     charCounter.textContent = '300 characters remaining';
      registrationForm.appendChild(bio);
+     registrationForm.appendChild(charCounter);
+
+     bio.addEventListener('input', () => {
+        let remaining = 300 - bio.value.length;
+        if (remaining < 50) {
+            charCounter.style.color = '#f95615';
+        }
+        charCounter.textContent = `${remaining} characters left`;
+     })
 
      // Create image upload container
      let imageUpload = document.createElement('div');
@@ -224,15 +237,15 @@ export function renderRegistrationPage() {
         if (event.target !== registrationForm) return; // Ensure accurate form submision
 
         let formData = new FormData();
-        formData.append("first_name", document.getElementById('first_name').value);
-        formData.append("last_name", document.getElementById('last_name').value);
-        formData.append("username", document.getElementById('username').value);
-        formData.append("age", document.getElementById('age').value);
-        formData.append("gender", document.getElementById('gender').value);
-        formData.append("email", document.getElementById('email').value);
-        formData.append("password", document.getElementById('password').value);
-        formData.append("confirm_password", document.getElementById('confirm_password').value);
-        formData.append("bio", document.getElementById('bio').value);
+        formData.append("first_name", document.getElementById('register_first_name').value);
+        formData.append("last_name", document.getElementById('register_last_name').value);
+        formData.append("username", document.getElementById('register_username').value);
+        formData.append("age", document.getElementById('register_age').value);
+        formData.append("gender", document.getElementById('register_gender').value);
+        formData.append("email", document.getElementById('register_email').value);
+        formData.append("password", document.getElementById('register_password').value);
+        formData.append("confirm_password", document.getElementById('register_confirm_password').value);
+        formData.append("bio", document.getElementById('register_bio').value);
 
         let imageFile = document.getElementById('image').files[0];
         if (imageFile)  {

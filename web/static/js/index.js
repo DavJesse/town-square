@@ -105,7 +105,7 @@ export function renderIndexPage() {
     let profileActionContainer = document.createElement('div');
     let profileLink = document.createElement('a');
     let messangerLink = document.createElement('a');
-    let logoutLink = document.createElement('a');
+    let logoutLink = document.createElement('form');
     let viewProfileButton = document.createElement('button');
     let messangerButton = document.createElement('button');
     let logoutButton = document.createElement('button');
@@ -118,9 +118,11 @@ export function renderIndexPage() {
     viewProfileButton.id = 'view_profile_button';
     messangerButton.id ='messanger_button';
     logoutButton.id = 'profile_logout_button';
+    logoutButton.type = 'submit';
     profileLink.href = '/profile';
     messangerLink.href = '/chat';
-    logoutLink.href = '/logout';
+    logoutLink.action = '/logout';
+    logoutLink.method = 'POST';
     viewProfileButton.textContent = 'View Profile';
     messangerButton.textContent = 'Messager';
     logoutButton.textContent = 'Logout';
@@ -206,24 +208,22 @@ export function renderIndexPage() {
 
 export function populateCategories(categories) {
     let categoriesContentContainer = document.getElementById('category_content_container');
-    // categoriesContentContainer.innerHTML = '';
 
     categories = categories ?? [];
 
+    // Create buttons for each category
     categories.forEach(category => {
         let categoryButton = document.createElement('button');
-        let categoryText = document.createElement('p');
         categoryButton.id = `category_button_${category.id}`;
-        categoryButton.classList.add('category-button');
         categoryButton.classList.add('inactive');
-        categoryText.id = `category_text_${category.id}`;
         categoryButton.href = `/categories/${category.id}`;
-        categoryText.textContent = category.name;
+        categoryButton.textContent = category.name;
+
+        // Update posts when category is clicked
         categoryButton.addEventListener('click', (e) => {
             e.preventDefault;
             fetchPostsPerCategory(category.id);
         })
-        categoryButton.appendChild(categoryText);
         categoriesContentContainer.appendChild(categoryButton);
     });
 }

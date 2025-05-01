@@ -67,14 +67,15 @@ a {
 
 /* Style the bio textarea */
 #register_bio {
-    width: 100%;          /* Make it full-width inside the form */
-    height: 100px;        /* Set a fixed height */
-    resize: none;         /* Disable resizing */
-    padding: 10px;        /* Add padding for spacing */
-    border: 1px solid #ccc; /* Light border */
-    border-radius: 5px;   /* Rounded edges */
-    font-size: 14px;      /* Set font size */
+    width: 100%;
+    min-height: 130px;
+    resize: none;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
     margin: 10px auto 15px auto;
+    overflow: hidden;
 }
 
 #char_counter {

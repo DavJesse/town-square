@@ -145,11 +145,24 @@ export function renderRegistrationPage() {
 
      // Create bio field
      let bio = document.createElement('textarea');
+     let charCounter = document.createElement('p');
      bio.id = 'register_bio';
+     charCounter.id = 'char_counter';
      bio.name = 'bio';
-     bio.placeholder = 'bio | about me';
+     bio.placeholder = 'bio | about me (300 characters max)';
      bio.required = true
+     bio.maxLength = 300;
+     charCounter.textContent = '300 characters remaining';
      registrationForm.appendChild(bio);
+     registrationForm.appendChild(charCounter);
+
+     bio.addEventListener('input', () => {
+        let remaining = 300 - bio.value.length;
+        if (remaining < 50) {
+            charCounter.style.color = '#f95615';
+        }
+        charCounter.textContent = `${remaining} characters left`;
+     })
 
      // Create image upload container
      let imageUpload = document.createElement('div');

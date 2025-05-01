@@ -77,6 +77,12 @@ a {
     margin: 10px auto 15px auto;
 }
 
+#char_counter {
+    text-align: right;
+    color:#4fc713;
+    margin: -15px 0 15px auto;
+}
+
 h1 {
     font-family: 'Roboto', sans-serif;
     font-size: 30px;

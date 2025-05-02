@@ -1,6 +1,6 @@
 import { navigateTo } from '/static/js/routes.js';
 import { renderErrorPage } from '/static/js/error.js';
-import { populatePosts, setToggleEventListeners } from '/static/js/profile.js';
+import { populatePosts, setToggleEventListeners } from '/static/js/populate_posts.js';
 
 // Function to fetch posts by category
 export function fetchPostsPerCategory(categoryID) {

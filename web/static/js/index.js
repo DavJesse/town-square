@@ -1,7 +1,7 @@
 import { renderNavBar } from '/static/js/navbar.js'
 import { renderCreatePostButton, setCreatePostsButtonListeners } from '/static/js/create_post_button.js';
 import { navigateTo } from '/static/js/routes.js';
-import { populatePosts, setToggleEventListeners } from '/static/js/profile.js';
+import { populatePosts, setToggleEventListeners } from '/static/js/populate_posts.js';
 import { renderErrorPage } from '/static/js/error.js';
 import { fetchPostsPerCategory } from '/static/js/fetch_category_posts.js'
 

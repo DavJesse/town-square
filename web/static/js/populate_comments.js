@@ -14,7 +14,6 @@ export function populateComments(postCard, postID, comments) {
     commentForm.action = '/comment';
     inputField.id = 'comment_input_field';
     submitButton.id = 'comment_submit_button';
-    inputField.type = 'text';
     submitButton.type = 'submit';
     inputField.placeholder = 'Write a comment...';
     submitButton.textContent = 'comment';
@@ -23,6 +22,7 @@ export function populateComments(postCard, postID, comments) {
     inputField.required = true;
     commentForm.appendChild(inputField);
     commentForm.appendChild(submitButton);
+    commentsSection.appendChild(commentForm);
 
     comments.forEach(comment => {
         // Create comment container

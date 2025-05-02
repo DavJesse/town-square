@@ -100,5 +100,14 @@ export function populateComments(postCard, comments) {
         commentEngagement.appendChild(likeLink);
         commentEngagement.appendChild(dislikeLink);
         commentContainer.appendChild(commentEngagement);
+
+        // Add 'hide comments' button
+        let hideComments = document.createElement('button');
+        hideComments.id = 'hide_comments';
+        hideComments.textContent = 'hide comments...';
+        hideComments.addEventListener('click', () => {
+            commentsSection.style.display = 'none';
+        });
+        commentContainer.appendChild(hideComments);
     });
 }

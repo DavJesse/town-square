@@ -1,7 +1,7 @@
 import { handleLikeComment } from '/static/js/like_comment.js';
 import { handleDislikeComment } from '/static/js/dislike_comment.js';
 
-export function populateComments(postCard, comments) {
+export function populateComments(postCard, postID, comments) {
     let commentsSection = document.createElement('div');
     commentsSection.id = 'comments_section';
     postCard.appendChild(commentsSection);
@@ -92,7 +92,7 @@ export function populateComments(postCard, comments) {
 
         dislikeLink.addEventListener('click', (e) => {
             e.preventDefault();
-            handleDislikeComment(post.uuid, dislikeLink);
+            handleDislikeComment(postID, dislikeLink);
         });
 
         // Append elements to engagement containers

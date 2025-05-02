@@ -8,10 +8,16 @@ export function populateComments(postCard, postID, comments) {
 
     // Add comment form
     let commentForm = document.createElement('form');
+    let postUUID = document.createElement('input');
     let inputField = document.createElement('textarea');
     let submitButton = document.createElement('button');
     commentForm.method = 'POST';
     commentForm.action = '/comment';
+    postUUID.type = 'hidden';
+    postUUID.name = 'postUUID';
+    postUUID.value = postID;
+    inputField.name = 'comment';
+    inputField.required = true;
     inputField.id = 'comment_input_field';
     submitButton.id = 'comment_submit_button';
     submitButton.type = 'submit';
@@ -20,6 +26,7 @@ export function populateComments(postCard, postID, comments) {
     inputField.maxLength = 750;
     inputField.name = 'comment';
     inputField.required = true;
+    commentForm.appendChild(postUUID);
     commentForm.appendChild(inputField);
     commentForm.appendChild(submitButton);
     commentsSection.appendChild(commentForm);

@@ -30,7 +30,7 @@ func LikeCommentHandler(w http.ResponseWriter, r *http.Request) {
 	err = database.LikeComment(userID, commentID)
 	if err != nil {
 		errors.InternalServerErrorHandler(w, r)
-		fmt.Printf("DISLIKE ERROR: %v", err)
+		fmt.Printf("LIKE ERROR: %v", err)
 		return
 	}
 

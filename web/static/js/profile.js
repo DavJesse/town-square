@@ -306,9 +306,9 @@ export function populatePosts(posts) {
             let likeContainer = document.createElement('div');
             let dislikeContainer = document.createElement('div');
             let commentContainer = document.createElement('div');
-            let likeLink = document.createElement('a');
-            let dislikeLink = document.createElement('a');
-            let commentLink = document.createElement('a');
+            let likeLink = document.createElement('button');
+            let dislikeLink = document.createElement('button');
+            let commentLink = document.createElement('button');
             let likeCount = document.createElement('p');
             let dislikeCount = document.createElement('p');
             let commentCount = document.createElement('p');
@@ -321,12 +321,9 @@ export function populatePosts(posts) {
             dislikeContainer.id = 'dislike_container';
             commentContainer.id = 'comment_container';
             likeLink.id = 'like_link';
-            likeLink.href = '#';
             likeLink.dataset.postId = post.uuid;  // Add post ID as data attribute
             dislikeLink.id = 'dislike_link';
-            dislikeLink.href = '#';
             dislikeLink.dataset.postId = post.uuid;  // Change this to prevent page refresh
-            commentLink.href = '#';   // Change this to prevent page refresh
             likeCount.id = 'engagement_count';
             dislikeCount.id = 'engagement_count';
             commentCount.id = 'engagement_count';
@@ -336,6 +333,18 @@ export function populatePosts(posts) {
             likeIcon.id = 'engagement_icon';
             dislikeIcon.id = 'engagement_icon';
             commentIcon.id = 'engagement_icon';
+            likeLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleLikePost(post.uuid, likeContainer);
+            });
+            dislikeLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleDislikePost(post.uuid, dislikeContainer);
+            });
+            commentLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Add your comment handling here
+            });   // Change this to prevent page refresh
 
             // Set content
             likeCount.textContent = post.likes_count;

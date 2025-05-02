@@ -30,6 +30,8 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 									'id', c.uuid,
 									'content', c.content,
 									'created_at', c.created_at,
+									'first_name', cu.first_name,
+									'last_name', cu.last_name,
 									'username', cu.username,
 									'image', cu.image
 									))
@@ -295,7 +297,7 @@ func GetCommentsForPost(postUUID string) ([]models.CommentWithCreator, error) {
 			&comment.UUID,
 			&comment.Content,
 			&comment.PostID,
-			&comment.Creator,
+			&comment.CreatorUsername,
 			&comment.CreatedAt,
 			&comment.LikesCount,
 			&comment.DislikesCount,

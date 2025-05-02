@@ -11,7 +11,7 @@ export function renderIndexPage() {
     app.innerHTML = "";
 
     // Set document title
-    document.title = 'real-time-forums';
+    document.title = 'real-time-forum';
 
     // Render navbar
     renderNavBar();

@@ -137,11 +137,14 @@ type Comment struct {
 }
 
 type CommentWithCreator struct {
-	UUID          string    `json:"uuid"`
-	Content       string    `json:"content"`
-	PostID        string    `json:"post_id"`
-	Creator       string    `json:"creator"`
-	CreatedAt     time.Time `json:"created_at"`
-	LikesCount    int       `json:"likes_count"`
-	DislikesCount int       `json:"dislikes_count"`
+	UUID             string    `json:"uuid"`
+	Content          string    `json:"content"`
+	PostID           string    `json:"post_id"`
+	CreatorFirstName string    `json:"creator_first_name,omitempty"`
+	CreatorLastName  string    `json:"creator_last_name,omitempty"`
+	CreatorUsername  string    `json:"creator_username"`
+	CreatorImage     string    `json:"creator_image,omitempty"`
+	CreatedAt        time.Time `json:"created_at"`
+	LikesCount       int       `json:"likes_count"`
+	DislikesCount    int       `json:"dislikes_count"`
 }

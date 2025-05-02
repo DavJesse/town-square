@@ -26,7 +26,15 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 		u.image,
 	    COALESCE((SELECT COUNT(*) FROM likes l WHERE l.post_id = p.uuid), 0) AS likes_count,
 	    COALESCE((SELECT COUNT(*) FROM dislikes d WHERE d.post_id = p.uuid), 0) AS dislikes_count,
-	    COALESCE(json_group_array(json_object('id', c.uuid, 'content', c.content, 'created_at', c.created_at, 'username', cu.username))
+	    COALESCE(json_group_array(json_object(
+									'id', c.uuid,
+									'content', c.content,
+									'created_at', c.created_at,
+									'first_name', cu.first_name,
+									'last_name', cu.last_name,
+									'username', cu.username,
+									'image', cu.image
+									))
 	             FILTER (WHERE c.uuid IS NOT NULL), '[]') AS comments
 	FROM posts p
 	JOIN users u ON u.id = p.user_id
@@ -289,7 +297,7 @@ func GetCommentsForPost(postUUID string) ([]models.CommentWithCreator, error) {
 			&comment.UUID,
 			&comment.Content,
 			&comment.PostID,
-			&comment.Creator,
+			&comment.CreatorUsername,
 			&comment.CreatedAt,
 			&comment.LikesCount,
 			&comment.DislikesCount,

@@ -33,7 +33,7 @@ func DislikePost(w http.ResponseWriter, r *http.Request) {
 
 	err = database.DislikePost(userID, postID)
 	if err != nil {
-		log.Println("DATABASE ERROR: Failed to Log Dislike in Database")
+		log.Printf("DATABASE ERROR: Failed to Log Dislike, %v", err)
 		WriteJSON(w, http.StatusInternalServerError, models.DislikeResponse{
 			Success: false,
 			Message: "Failed to dislike post",

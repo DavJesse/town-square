@@ -1,19 +1,6 @@
 import { navigateTo } from "/static/js/routes.js";
 import { renderErrorPage } from "/static/js/error.js";
 
-// Add event listener when the document loads
-document.addEventListener('DOMContentLoaded', () => {
-    // Use event delegation to handle like button clicks
-    document.addEventListener('click', (e) => {
-        const likeBtn = e.target.closest('#like_link');
-        if (likeBtn) {
-            e.preventDefault();
-            const postId = likeBtn.dataset.postId;
-            handleLikePost(postId, likeBtn);
-        }
-    });
-});
-
 export function handleLikePost(postId, likeContainer) {
     fetch('/posts/like', {
         method: 'POST',
@@ -29,6 +16,8 @@ export function handleLikePost(postId, likeContainer) {
             if (response.status === 401) {
                 navigateTo('/login');
                 return;
+            } else {
+                renderErrorPage(response.statusText, response.status);
             }
             throw new Error(`HTTP error! status: ${response.status}`);
         }

@@ -1,8 +1,9 @@
 import { renderNavBar } from '/static/js/navbar.js'
 import { renderCreatePostButton, setCreatePostsButtonListeners } from '/static/js/create_post_button.js';
 import { navigateTo } from '/static/js/routes.js';
-import { populatePosts, setToggleEventListeners } from '/static/js/profile.js';
+import { populatePosts, setToggleEventListeners } from '/static/js/populate_posts.js';
 import { renderErrorPage } from '/static/js/error.js';
+import { populateCategories } from '/static/js/populate_categories.js';
 import { fetchPostsPerCategory } from '/static/js/fetch_category_posts.js'
 
 export function renderIndexPage() {
@@ -11,7 +12,7 @@ export function renderIndexPage() {
     app.innerHTML = "";
 
     // Set document title
-    document.title = 'real-time-forums';
+    document.title = 'real-time-forum';
 
     // Render navbar
     renderNavBar();
@@ -203,27 +204,5 @@ export function renderIndexPage() {
         if (error !== 'Unauthorized') {
             console.error('Error fetching home page:', error);
         }
-    });
-}
-
-export function populateCategories(categories) {
-    let categoriesContentContainer = document.getElementById('category_content_container');
-
-    categories = categories ?? [];
-
-    // Create buttons for each category
-    categories.forEach(category => {
-        let categoryButton = document.createElement('button');
-        categoryButton.id = `category_button_${category.id}`;
-        categoryButton.classList.add('inactive');
-        categoryButton.href = `/categories/${category.id}`;
-        categoryButton.textContent = category.name;
-
-        // Update posts when category is clicked
-        categoryButton.addEventListener('click', (e) => {
-            e.preventDefault;
-            fetchPostsPerCategory(category.id);
-        })
-        categoriesContentContainer.appendChild(categoryButton);
     });
 }

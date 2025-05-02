@@ -44,7 +44,7 @@ func GetPostsComments(postUUID string) ([]models.CommentWithCreator, error) {
 			&comment.UUID,
 			&comment.Content,
 			&comment.PostID,
-			&comment.Creator,
+			&comment.CreatorUsername,
 			&comment.CreatedAt,
 			&comment.LikesCount,    // Scan the likes count
 			&comment.DislikesCount, // Scan the dislikes count

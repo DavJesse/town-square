@@ -10,11 +10,14 @@ export function populateComments(postCard, comments) {
     let commentForm = document.createElement('form');
     let inputField = document.createElement('textarea');
     let submitButton = document.createElement('button');
+    commentForm.method = 'POST';
+    commentForm.action = '/comment';
     inputField.id = 'comment_input_field';
     submitButton.id = 'comment_submit_button';
     inputField.type = 'text';
     submitButton.type = 'submit';
     inputField.placeholder = 'Write a comment...';
+    submitButton.textContent = 'comment';
     inputField.maxLength = 750;
     inputField.name = 'comment';
     inputField.required = true;

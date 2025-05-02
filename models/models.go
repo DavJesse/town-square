@@ -141,6 +141,7 @@ type CommentWithCreator struct {
 	Content       string    `json:"content"`
 	PostID        string    `json:"post_id"`
 	Creator       string    `json:"creator"`
+	CreatorImage  string    `json:"creator_image,omitempty"`
 	CreatedAt     time.Time `json:"created_at"`
 	LikesCount    int       `json:"likes_count"`
 	DislikesCount int       `json:"dislikes_count"`

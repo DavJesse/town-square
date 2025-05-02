@@ -1,7 +1,7 @@
 import { renderNavBar } from '/static/js/navbar.js';
 import { navigateTo } from '/static/js/routes.js';
 import { renderErrorPage } from '/static/js/error.js';
-import { populateCategories } from '/static/js/index.js';
+import { populateCategories } from '/static/js/populate_categories.js';
 import { populatePosts, setToggleEventListeners } from '/static/js/populate_posts.js';
 import { renderCreatePostButton, setCreatePostsButtonListeners } from '/static/js/create_post_button.js';
 import { renderLogoutButton, setLogoutButtonListeners } from '/static/js/logout_button.js';

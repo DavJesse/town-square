@@ -142,7 +142,7 @@ type CommentWithCreator struct {
 	PostID           string    `json:"post_id"`
 	CreatorFirstName string    `json:"creator_first_name,omitempty"`
 	CreatorLastName  string    `json:"creator_last_name,omitempty"`
-	CreatorUsername  string    `json:"creator"`
+	CreatorUsername  string    `json:"creator_username"`
 	CreatorImage     string    `json:"creator_image,omitempty"`
 	CreatedAt        time.Time `json:"created_at"`
 	LikesCount       int       `json:"likes_count"`

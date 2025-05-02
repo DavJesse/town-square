@@ -141,6 +141,19 @@
     margin: auto;
 }
 
+#like_link, #dislike_link, #comment_link {
+    background-color: transparent;
+    color: #0000EE;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-size: 17px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
 #profile_card {
     display: flex;
     flex-direction: column;

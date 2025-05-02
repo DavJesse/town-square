@@ -326,6 +326,7 @@ export function populatePosts(posts) {
             dislikeLink.dataset.postId = post.uuid;  // Change this to prevent page refresh
             likeCount.id = 'engagement_count';
             dislikeCount.id = 'engagement_count';
+            commentLink.id = 'comment_link';
             commentCount.id = 'engagement_count';
             likeIcon.classList.add('material-symbols-outlined');
             dislikeIcon.classList.add('material-symbols-outlined');
@@ -333,18 +334,6 @@ export function populatePosts(posts) {
             likeIcon.id = 'engagement_icon';
             dislikeIcon.id = 'engagement_icon';
             commentIcon.id = 'engagement_icon';
-            likeLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                handleLikePost(post.uuid, likeContainer);
-            });
-            dislikeLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                handleDislikePost(post.uuid, dislikeContainer);
-            });
-            commentLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                // Add your comment handling here
-            });   // Change this to prevent page refresh
 
             // Set content
             likeCount.textContent = post.likes_count;
@@ -374,15 +363,15 @@ export function populatePosts(posts) {
             postEngagement.appendChild(likeContainer);
             postEngagement.appendChild(dislikeContainer);
             postEngagement.appendChild(commentContainer);
-            likeContainer.appendChild(likeCount);
+            likeLink.appendChild(likeCount);
             likeContainer.appendChild(likeLink);
             likeLink.appendChild(likeIcon);
-            dislikeContainer.appendChild(dislikeCount);
+            dislikeLink.appendChild(dislikeCount);
             dislikeContainer.appendChild(dislikeLink);
             dislikeLink.appendChild(dislikeIcon);
-            commentContainer.appendChild(commentCount);
-            commentContainer.appendChild(commentLink);
+            commentLink.appendChild(commentCount);
             commentLink.appendChild(commentIcon);
+            commentContainer.appendChild(commentLink);
 
             postsContainer.appendChild(postElement);
         });

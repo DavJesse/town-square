@@ -1,6 +1,6 @@
 import { handleLikeComment } from '/static/js/like_comment.js';
 import { handleDislikeComment } from '/static/js/dislike_comment.js';
-import { fetchComments } from '/static/js/fetch_post_display.js';
+import { fetchComments } from '/static/js/fetch_post_comments.js';
 
 export function populateComments(postCard, postID, comments) {
     let commentsSection = document.createElement('div');

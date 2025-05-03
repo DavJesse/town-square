@@ -40,7 +40,7 @@ export function populateComments(postCard, postID, comments) {
     comments.forEach(comment => {
         // Create comment container
         let commentContainer = document.createElement('div');
-        commentContainer.id = 'comment_container';
+        commentContainer.id = 'comment_card';
         commentsSection.appendChild(commentContainer);
 
         // Create creator image container
@@ -68,6 +68,8 @@ export function populateComments(postCard, postID, comments) {
         // Create comment content container
         let commentContentContainer = document.createElement('div');
         let commentContent = document.createElement('p');
+        commentContentContainer.id = 'comment_content_text';
+        commentContent.textContent = comment.content.replace(/\n/g, '<br>');
         commentContentContainer.appendChild(commentContent)
         commentContainer.appendChild(commentContentContainer);
 
@@ -81,6 +83,7 @@ export function populateComments(postCard, postID, comments) {
         let dislikeIcon = document.createElement('span');
 
         // Set IDs and classes
+        commentEngagement.id = 'comment_engagement';
         likeLink.id = 'comment_like_link';
         dislikeLink.id = 'comment_dislike_link';
         likeCount.id = 'comment_engagement_count';

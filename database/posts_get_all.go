@@ -27,13 +27,14 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 	    COALESCE((SELECT COUNT(*) FROM likes l WHERE l.post_id = p.uuid), 0) AS likes_count,
 	    COALESCE((SELECT COUNT(*) FROM dislikes d WHERE d.post_id = p.uuid), 0) AS dislikes_count,
 	    COALESCE(json_group_array(json_object(
-									'id', c.uuid,
+									'uuid', c.uuid,
 									'content', c.content,
-									'created_at', strftime('%Y-%m-%dT%H:%M:%SZ', c.created_at),
-									'first_name', cu.first_name,
-									'last_name', cu.last_name,
-									'username', cu.username,
-									'image', cu.image
+									'post_id', c.post_id,
+									'creator_first_name', cu.first_name,
+									'creator_last_name', cu.last_name,
+									'creator_username', cu.username,
+									'creator_image', cu.image,
+									'created_at', strftime('%Y-%m-%dT%H:%M:%SZ', c.created_at)
 									))
 	             FILTER (WHERE c.uuid IS NOT NULL), '[]') AS comments
 	FROM posts p

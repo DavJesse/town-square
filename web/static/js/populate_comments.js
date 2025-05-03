@@ -89,7 +89,6 @@ export function populateComments(postCard, postID, comments) {
         dislikeIcon.classList.add('material-symbols-outlined');
         likeIcon.id = 'comment_engagement_icon';
         dislikeIcon.id = 'comment_engagement_icon';
-        commentIcon.id = 'comment_engagement_icon';
 
         // Set content
         likeCount.textContent = comment.likes_count;

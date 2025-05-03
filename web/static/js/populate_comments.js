@@ -44,13 +44,13 @@ export function populateComments(postCard, postID, comments) {
         commentsSection.appendChild(commentContainer);
 
         // Create creator image container
-        let creatorImageContainer = document.createElement('div');
+        let commentHead = document.createElement('div');
         let creatorImage = document.createElement('img');
-        creatorImageContainer.id = 'comment_creator_image_container';
+        commentHead.id = 'comment_head';
         creatorImage.id = 'comment_creator_image';
         creatorImage.src = comment.creator_image? `/static/images/${comment.creator_image}` : '/static/user-circle-svgrepo-com.svg';
-        creatorImageContainer.appendChild(creatorImage);
-        commentContainer.appendChild(creatorImageContainer);
+        commentHead.appendChild(creatorImage);
+        commentContainer.appendChild(commentHead);
 
         // Create info info container
         let creatorInfoContainer = document.createElement('div');
@@ -63,7 +63,7 @@ export function populateComments(postCard, postID, comments) {
         creatorUsername.textContent = `@${comment.creator_username}`;
         creatorInfoContainer.appendChild(creatorName);
         creatorInfoContainer.appendChild(creatorUsername);
-        commentContainer.appendChild(creatorInfoContainer);
+        commentHead.appendChild(creatorInfoContainer);
 
         // Create comment content container
         let commentContentContainer = document.createElement('div');

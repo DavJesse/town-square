@@ -34,7 +34,7 @@ export function populateComments(postCard, postID, comments) {
 
     // Add event listener to fetch comments on submit
     submitButton.addEventListener('click', (e) => {
-        fetchComments(postID);
+        fetchComments(postCard, postID);
     });
 
     comments.forEach(comment => {

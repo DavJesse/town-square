@@ -1,6 +1,6 @@
 import { navigateTo } from '/static/js/routes.js';
 import { renderErrorPage } from '/static/js/error.js';
-import { populatePosts, setToggleEventListeners } from '/static/js/profile.js';
+import { populatePosts, setToggleEventListeners } from '/static/js/populate_posts.js';
 
 // Function to fetch posts by category
 export function fetchPostsPerCategory(categoryID) {
@@ -34,16 +34,15 @@ export function fetchPostsPerCategory(categoryID) {
         let postsContainer = document.getElementById('posts_container');
         postsContainer.innerHTML = '';
 
-        // Restore active button to white
-        let categoryContainer = document.getElementById('category_container');
+        let categoryContainer = document.getElementById('category_content_container');
         let activeButton = categoryContainer.querySelector(`.active`);
+        
+        // Restore active button to white
         if (activeButton) {
-            console.log('active found');
-            let activeText = activeButton.querySelector('p');
             activeButton.style.backgroundColor = '#FFFFFF';
-            if (activeText) {
-                activeText.style.color = '#0000EE';
-            }
+            activeButton.style.color = '#0000EE';
+            
+            // Update class names for correct identification
             activeButton.classList.remove('active');
             activeButton.classList.add('inactive');
         }
@@ -51,10 +50,11 @@ export function fetchPostsPerCategory(categoryID) {
         // Set category button to blue
         let categoryButton = document.getElementById('category_button_' + categoryID);
         categoryButton.style.backgroundColor = '#0000EE';
+        categoryButton.classList.remove('inactive');
+        categoryButton.classList.add('active');
 
          // Set category button text to white
-         let categoryText = document.getElementById(`category_text_${categoryID}`);
-         categoryText.style.color = '#FFFFFF';
+        categoryButton.style.color = '#FFFFFF';
 
         // Assign data to variables for easy acces
         const posts = data.data.posts

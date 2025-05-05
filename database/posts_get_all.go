@@ -26,7 +26,16 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 		u.image,
 	    COALESCE((SELECT COUNT(*) FROM likes l WHERE l.post_id = p.uuid), 0) AS likes_count,
 	    COALESCE((SELECT COUNT(*) FROM dislikes d WHERE d.post_id = p.uuid), 0) AS dislikes_count,
-	    COALESCE(json_group_array(json_object('id', c.uuid, 'content', c.content, 'created_at', c.created_at, 'username', cu.username))
+	    COALESCE(json_group_array(json_object(
+									'uuid', c.uuid,
+									'content', c.content,
+									'post_id', c.post_id,
+									'creator_first_name', cu.first_name,
+									'creator_last_name', cu.last_name,
+									'creator_username', cu.username,
+									'creator_image', cu.image,
+									'created_at', strftime('%Y-%m-%dT%H:%M:%SZ', c.created_at)
+									))
 	             FILTER (WHERE c.uuid IS NOT NULL), '[]') AS comments
 	FROM posts p
 	JOIN users u ON u.id = p.user_id
@@ -263,17 +272,22 @@ func FetchLikedPostsPerCategory(categoryID int, userID int) ([]models.PostWithUs
 
 func GetCommentsForPost(postUUID string) ([]models.CommentWithCreator, error) {
 	query := `
-		SELECT 
-			c.uuid, 
-			c.content,
-			c.post_id, 
-			c.user_id, 
-			c.created_at
-		FROM comments c
-		INNER JOIN users u ON c.user_id = u.id
-		WHERE c.post_id = ?
-		ORDER BY c.created_at ASC
-	`
+	SELECT 
+		c.uuid, 
+		c.content,
+		c.post_id,  
+		c.created_at,
+		u.first_name,
+		u.last_name,
+		u.username,
+		u.image,
+		COALESCE((SELECT COUNT(*) FROM likes l WHERE l.comment_id = c.uuid), 0) AS likes_count,
+		COALESCE((SELECT COUNT(*) FROM dislikes d WHERE d.comment_id = c.uuid), 0) AS dislikes_count
+	FROM comments c
+	INNER JOIN users u ON c.user_id = u.id
+	WHERE c.post_id = ?
+	ORDER BY c.created_at ASC
+`
 
 	rows, err := db.Query(query, postUUID)
 	if err != nil {
@@ -289,8 +303,11 @@ func GetCommentsForPost(postUUID string) ([]models.CommentWithCreator, error) {
 			&comment.UUID,
 			&comment.Content,
 			&comment.PostID,
-			&comment.Creator,
 			&comment.CreatedAt,
+			&comment.CreatorFirstName,
+			&comment.CreatorLastName,
+			&comment.CreatorUsername,
+			&comment.CreatorImage,
 			&comment.LikesCount,
 			&comment.DislikesCount,
 		)

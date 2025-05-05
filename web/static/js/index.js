@@ -1,8 +1,9 @@
 import { renderNavBar } from '/static/js/navbar.js'
 import { renderCreatePostButton, setCreatePostsButtonListeners } from '/static/js/create_post_button.js';
 import { navigateTo } from '/static/js/routes.js';
-import { populatePosts, setToggleEventListeners } from '/static/js/profile.js';
+import { populatePosts, setToggleEventListeners } from '/static/js/populate_posts.js';
 import { renderErrorPage } from '/static/js/error.js';
+import { populateCategories } from '/static/js/populate_categories.js';
 import { fetchPostsPerCategory } from '/static/js/fetch_category_posts.js'
 
 export function renderIndexPage() {
@@ -11,7 +12,7 @@ export function renderIndexPage() {
     app.innerHTML = "";
 
     // Set document title
-    document.title = 'real-time-forums';
+    document.title = 'real-time-forum';
 
     // Render navbar
     renderNavBar();
@@ -105,7 +106,7 @@ export function renderIndexPage() {
     let profileActionContainer = document.createElement('div');
     let profileLink = document.createElement('a');
     let messangerLink = document.createElement('a');
-    let logoutLink = document.createElement('a');
+    let logoutLink = document.createElement('form');
     let viewProfileButton = document.createElement('button');
     let messangerButton = document.createElement('button');
     let logoutButton = document.createElement('button');
@@ -118,9 +119,11 @@ export function renderIndexPage() {
     viewProfileButton.id = 'view_profile_button';
     messangerButton.id ='messanger_button';
     logoutButton.id = 'profile_logout_button';
+    logoutButton.type = 'submit';
     profileLink.href = '/profile';
     messangerLink.href = '/chat';
-    logoutLink.href = '/logout';
+    logoutLink.action = '/logout';
+    logoutLink.method = 'POST';
     viewProfileButton.textContent = 'View Profile';
     messangerButton.textContent = 'Messager';
     logoutButton.textContent = 'Logout';
@@ -201,29 +204,5 @@ export function renderIndexPage() {
         if (error !== 'Unauthorized') {
             console.error('Error fetching home page:', error);
         }
-    });
-}
-
-export function populateCategories(categories) {
-    let categoriesContentContainer = document.getElementById('category_content_container');
-    // categoriesContentContainer.innerHTML = '';
-
-    categories = categories ?? [];
-
-    categories.forEach(category => {
-        let categoryButton = document.createElement('button');
-        let categoryText = document.createElement('p');
-        categoryButton.id = `category_button_${category.id}`;
-        categoryButton.classList.add('category-button');
-        categoryButton.classList.add('inactive');
-        categoryText.id = `category_text_${category.id}`;
-        categoryButton.href = `/categories/${category.id}`;
-        categoryText.textContent = category.name;
-        categoryButton.addEventListener('click', (e) => {
-            e.preventDefault;
-            fetchPostsPerCategory(category.id);
-        })
-        categoryButton.appendChild(categoryText);
-        categoriesContentContainer.appendChild(categoryButton);
     });
 }

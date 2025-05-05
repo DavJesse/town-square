@@ -33,7 +33,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 
 	err = database.LikePost(userID, postID)
 	if err != nil {
-		log.Println("DATABASE ERROR: Failed to Log Like in Database")
+		log.Printf("DATABASE ERROR: Failed to Log Like in Database, %v", err)
 		WriteJSON(w, http.StatusInternalServerError, models.LikeResponse{
 			Success: false,
 			Message: "Failed to like post",

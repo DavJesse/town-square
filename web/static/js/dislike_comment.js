@@ -1,14 +1,18 @@
 import { navigateTo } from "/static/js/routes.js";
 import { renderErrorPage } from "/static/js/error.js";
 
-export function handleLikePost(postId, likeContainer) {
-    fetch('/posts/like', {
+export function handleDislikeComment(commentID, postID, dislikeContainer) {
+    let formData = new URLSearchParams();
+    formData.append(`comment-id=${commentID}`);
+    formData.append(`post-id=${postID}`);
+
+    fetch('/comments/dislike', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'application/json',
         },
-        body: `post-id=${postId}`,
+        body: formData,
         credentials: 'include'
     })
     .then(response => {
@@ -26,19 +30,11 @@ export function handleLikePost(postId, likeContainer) {
     .then(data => {
         if (data.success) {
             // Update the likes count in the container
-            const countSpan = likeContainer.querySelector('#engagement_count');
+            const countSpan = dislikeContainer.querySelector('#comment_engagement_count');
             if (countSpan) {
                 countSpan.textContent = data.likesCount;
             }
             
-            // Optional: Add visual feedback
-            const likeLink = likeContainer.querySelector('#like_link');
-            if (likeLink) {
-                likeLink.classList.add('liked');
-                setTimeout(() => likeLink.classList.remove('liked'), 200);
-            }
-        } else if (data.message === "User is not logged in. Please log in to try again") {
-            navigateTo('/login');
         } else {
             console.error('Like failed:', data.message);
         }
@@ -47,3 +43,4 @@ export function handleLikePost(postId, likeContainer) {
         console.error('Error:', error);
     });
 }
+    

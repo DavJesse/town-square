@@ -51,11 +51,14 @@ export function populateComments(postCard, postID, comments) {
 
         // Create creator image container
         let commentHead = document.createElement('div');
+        let creatorImageContainer = document.createElement('div');
         let creatorImage = document.createElement('img');
         commentHead.id = 'comment_head';
+        creatorImageContainer.id = 'comment_creator_image_container';
         creatorImage.id = 'comment_creator_image';
         creatorImage.src = comment.creator_image? `/static/images/${comment.creator_image}` : '/static/user-circle-svgrepo-com.svg';
-        commentHead.appendChild(creatorImage);
+        creatorImageContainer.appendChild(creatorImage);
+        commentHead.appendChild(creatorImageContainer);
         commentContainer.appendChild(commentHead);
 
         // Create info info container

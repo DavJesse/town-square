@@ -14,6 +14,7 @@ export function populateComments(postCard, postID, comments) {
     let submitButton = document.createElement('button');
     commentForm.method = 'POST';
     commentForm.action = '/comment';
+    commentForm.id = 'comment_form';
     postUUID.type = 'hidden';
     postUUID.name = 'postUUID';
     postUUID.value = postID;
@@ -31,6 +32,11 @@ export function populateComments(postCard, postID, comments) {
     commentForm.appendChild(inputField);
     commentForm.appendChild(submitButton);
     commentsSection.appendChild(commentForm);
+
+    inputField.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+    });
 
     // Add event listener to fetch comments on submit
     submitButton.addEventListener('click', (e) => {
@@ -119,13 +125,14 @@ export function populateComments(postCard, postID, comments) {
         commentEngagement.appendChild(dislikeLink);
         commentContainer.appendChild(commentEngagement);
 
-        // Add 'hide comments' button
-        let hideComments = document.createElement('button');
-        hideComments.id = 'hide_comments';
-        hideComments.textContent = 'hide comments...';
-        hideComments.addEventListener('click', () => {
-            commentsSection.style.display = 'none';
-        });
-        commentContainer.appendChild(hideComments);
     });
+
+    // Add 'hide comments' button
+    let hideComments = document.createElement('button');
+    hideComments.id = 'hide_comments';
+    hideComments.textContent = 'hide comments...';
+    hideComments.addEventListener('click', () => {
+        commentsSection.style.display = 'none';
+    });
+    commentsSection.appendChild(hideComments);
 }

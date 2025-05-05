@@ -15,6 +15,27 @@
     width: 100%;
 }
 
+#comment_form {
+    border: solid #ccc;
+    border-radius: 5px;
+}
+
+#comment_input_field {
+    border: none;
+    resize: none;
+    width: 95%;
+    min-height: 50px;  /* or 75px, whichever you want */
+    max-height: 150px;
+    margin: 5px auto auto 10px;
+    overflow-y: auto; /* shows scroll if needed */
+}
+
+#comment_submit_button {
+    width: fit-content;
+    padding: 5px 8px;
+    margin: 5px 10px 5px auto;
+}
+
 #comment_head {
     display: flex;
     flex-direction: row;

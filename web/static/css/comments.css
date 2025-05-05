@@ -15,6 +15,17 @@
     width: 100%;
 }
 
+#hide_comments {
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    background-color: transparent;
+}
+
+#hide_comments:hover {
+    text-decoration: underline;
+}
+
 #comment_form {
     border: solid var(--border-color);
     border-radius: 5px;

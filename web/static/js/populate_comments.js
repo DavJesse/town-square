@@ -24,8 +24,6 @@ export function populateComments(postCard, postID, comments) {
     inputField.placeholder = 'Write a comment...';
     submitButton.textContent = 'comment';
     inputField.maxLength = 750;
-    inputField.name = 'comment';
-    inputField.required = true;
     commentForm.appendChild(postUUID);
     commentForm.appendChild(inputField);
     commentForm.appendChild(submitButton);
@@ -40,16 +38,29 @@ export function populateComments(postCard, postID, comments) {
     commentForm.addEventListener('submit', (e) => {
         e.preventDefault(); // Prevent normal submission of form
 
-        const formData = new FormData(commentForm);
-
+        // Extract form values
+        const commentText = inputField.value;
+        const postUUID = postID;
+        console.log('Comment:', commentText);
+        console.log('PostUUID:', postUUID);
+        
+        const payload = JSON.stringify({
+            comment: commentText,
+            postUUID: postUUID
+        })
+        
         fetch('/comment', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: payload
         })
 
         .then(response => {
             if (response.ok) {
-                // Re-fetch the updated comments
+                // Clear input field and Re-fetch the updated comments
+                inputField.value = '';
                 fetchComments(postCard, postID);
             } else {
                 console.error('Failed to submit comment');

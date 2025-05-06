@@ -1,5 +1,5 @@
 export function fetchComments(postCard, postID) {
-    fetch('/comments', {
+    fetch('/comment', {
         method: 'GET',
         credentials: 'include',
         headers: {

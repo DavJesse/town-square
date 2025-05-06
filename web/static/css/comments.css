@@ -41,6 +41,10 @@
     overflow-y: auto; /* shows scroll if needed */
 }
 
+#comment_input_field:focus {
+    outline: none;
+}
+
 #comment_submit_button {
     width: fit-content;
     padding: 5px 8px;

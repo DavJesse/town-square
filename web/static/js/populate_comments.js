@@ -12,8 +12,6 @@ export function populateComments(postCard, postID, comments) {
     let postUUID = document.createElement('input');
     let inputField = document.createElement('textarea');
     let submitButton = document.createElement('button');
-    commentForm.method = 'POST';
-    commentForm.action = '/comment';
     commentForm.id = 'comment_form';
     postUUID.type = 'hidden';
     postUUID.name = 'postUUID';
@@ -39,8 +37,28 @@ export function populateComments(postCard, postID, comments) {
     });
 
     // Add event listener to fetch comments on submit
-    submitButton.addEventListener('click', (e) => {
-        fetchComments(postCard, postID);
+    commentForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // Prevent normal submission of form
+
+        const formData = new FormData(commentForm);
+
+        fetch('/comment', {
+            method: 'POST',
+            body: formData
+        })
+
+        .then(response => {
+            if (response.ok) {
+                // Re-fetch the updated comments
+                fetchComments(postCard, postID);
+            } else {
+                console.error('Failed to submit comment');
+            }
+        })
+
+        .catch(error => {
+            console.error('Error submitting form:', error);
+        });
     });
 
     comments.forEach(comment => {

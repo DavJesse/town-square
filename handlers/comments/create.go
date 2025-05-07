@@ -1,18 +1,25 @@
 package comments
 
 import (
+	"encoding/json"
+	"html"
 	"log"
 	"net/http"
 
 	"forum/database"
-	"forum/handlers/auth"
 	"forum/handlers/posts"
 	"forum/models"
 )
 
+var requestData struct {
+	Comment string `json:"comment"`
+	PostID  string `json:"postUUID"`
+}
+var postID string
+
 func Comment(w http.ResponseWriter, r *http.Request) {
 	// Only allow POST requests for submitting a comment
-	if !(r.Method == http.MethodPost || r.Method == http.MethodGet) {
+	if r.Method != http.MethodPost && r.Method != http.MethodGet {
 		posts.WriteJSON(w, http.StatusMethodNotAllowed, models.PostResponse{
 			Message: "METHOD ERROR: method not allowed",
 			Code:    http.StatusMethodNotAllowed,
@@ -21,23 +28,22 @@ func Comment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var postID string
-
+	// Process json data from the front end at POST request
 	if r.Method == http.MethodPost {
-		// Parse form data (assuming the form contains a comment and post UUID)
-		err := r.ParseForm()
+		decoder := json.NewDecoder(r.Body)
+		err := decoder.Decode(&requestData)
 		if err != nil {
 			posts.WriteJSON(w, http.StatusBadRequest, models.PostResponse{
 				Message: "REQUEST ERROR: bad request",
 				Code:    http.StatusBadRequest,
 			})
-			log.Printf("REQUEST ERROR: %v", err)
+			log.Printf("JSON DECODE ERROR: %v", err)
 			return
 		}
 
 		// Retrieve the comment text and post UUID from the form
-		commentText := auth.EscapeFormSpecialCharacters(r, "comment")
-		postID = r.FormValue("postUUID")
+		commentText := html.EscapeString(requestData.Comment)
+		postID = requestData.PostID
 
 		userID, _, err := database.GetUserData(r)
 		if err != nil {
@@ -55,7 +61,6 @@ func Comment(w http.ResponseWriter, r *http.Request) {
 			log.Printf("DATABASE ERROR: %v", err)
 			return
 		}
-
 	}
 
 	// Block access to endpoint if postID is empty

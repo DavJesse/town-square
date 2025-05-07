@@ -40,7 +40,7 @@
 
 /* Left cluster rules */
 #online_users_card, #profile_card, #category_container {    
-    width: 55%;
+    width: 45%;
     background-color: var(--secondary-color);
     border-radius: 15px;
     min-height: 300px;

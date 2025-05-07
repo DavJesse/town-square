@@ -1,5 +1,9 @@
+import { populateComments } from '/static/js/populate_comments.js';
+import { navigateTo } from '/static/js/routes.js';
+import { renderErrorPage } from '/static/js/error.js';
+
 export function fetchComments(postCard, postID) {
-    fetch('/comments', {
+    fetch('/comment', {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -21,8 +25,10 @@ export function fetchComments(postCard, postID) {
     })
 
     .then(data => {
-        postCard.innerHTML = '';
-        populateComments(postCard, postID, data.comments);
+        // Clear comments section for repopulation
+        let commentSection = postCard.querySelector('#comments_section');
+        commentSection.innerHTML = '';
+        populateComments(postCard, postID, data);
     })
     
     .catch(error => {

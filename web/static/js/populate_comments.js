@@ -12,42 +12,73 @@ export function populateComments(postCard, postID, comments) {
     let postUUID = document.createElement('input');
     let inputField = document.createElement('textarea');
     let submitButton = document.createElement('button');
-    commentForm.method = 'POST';
-    commentForm.action = '/comment';
+    let commentsCluster = document.createElement('div');
     commentForm.id = 'comment_form';
+    inputField.id = 'comment_input_field';
+    submitButton.id = 'comment_submit_button';
+    commentsCluster.id = 'comments_cluster';
     postUUID.type = 'hidden';
     postUUID.name = 'postUUID';
     postUUID.value = postID;
     inputField.name = 'comment';
     inputField.required = true;
-    inputField.id = 'comment_input_field';
-    submitButton.id = 'comment_submit_button';
     submitButton.type = 'submit';
     inputField.placeholder = 'Write a comment...';
     submitButton.textContent = 'comment';
     inputField.maxLength = 750;
-    inputField.name = 'comment';
-    inputField.required = true;
     commentForm.appendChild(postUUID);
     commentForm.appendChild(inputField);
     commentForm.appendChild(submitButton);
     commentsSection.appendChild(commentForm);
+    commentsSection.appendChild(commentsCluster);
 
+    // Progressively grow textarea depending on content size
     inputField.addEventListener('input', function() {
         this.style.height = 'auto';
         this.style.height = Math.min(this.scrollHeight, 150) + 'px';
     });
 
     // Add event listener to fetch comments on submit
-    submitButton.addEventListener('click', (e) => {
-        fetchComments(postCard, postID);
+    commentForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // Prevent normal submission of form
+
+        // Extract form values
+        const commentText = inputField.value;
+        const postUUID = postID;
+        
+        const payload = JSON.stringify({
+            comment: commentText,
+            postUUID: postUUID
+        })
+        
+        fetch('/comment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: payload
+        })
+
+        .then(response => {
+            if (response.ok) {
+                // Clear input field and Re-fetch the updated comments
+                inputField.value = '';
+                fetchComments(postCard, postID);
+            } else {
+                console.error('Failed to submit comment');
+            }
+        })
+
+        .catch(error => {
+            console.error('Error submitting form:', error);
+        });
     });
 
     comments.forEach(comment => {
         // Create comment container
         let commentContainer = document.createElement('div');
         commentContainer.id = 'comment_card';
-        commentsSection.appendChild(commentContainer);
+        commentsCluster.appendChild(commentContainer);
 
         // Create creator image container
         let commentHead = document.createElement('div');
@@ -95,8 +126,8 @@ export function populateComments(postCard, postID, comments) {
         commentEngagement.id = 'comment_engagement';
         likeLink.id = 'comment_like_link';
         dislikeLink.id = 'comment_dislike_link';
-        likeCount.id = 'comment_engagement_count';
-        dislikeCount.id = 'comment_engagement_count';
+        likeCount.id = 'comment_like_count';
+        dislikeCount.id = 'comment_dislike_count';
         likeIcon.classList.add('material-symbols-outlined');
         dislikeIcon.classList.add('material-symbols-outlined');
         likeIcon.id = 'comment_engagement_icon';

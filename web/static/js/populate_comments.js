@@ -12,14 +12,16 @@ export function populateComments(postCard, postID, comments) {
     let postUUID = document.createElement('input');
     let inputField = document.createElement('textarea');
     let submitButton = document.createElement('button');
+    let commentsCluster = document.createElement('div');
     commentForm.id = 'comment_form';
+    inputField.id = 'comment_input_field';
+    submitButton.id = 'comment_submit_button';
+    commentsCluster.id = 'comments_cluster';
     postUUID.type = 'hidden';
     postUUID.name = 'postUUID';
     postUUID.value = postID;
     inputField.name = 'comment';
     inputField.required = true;
-    inputField.id = 'comment_input_field';
-    submitButton.id = 'comment_submit_button';
     submitButton.type = 'submit';
     inputField.placeholder = 'Write a comment...';
     submitButton.textContent = 'comment';
@@ -28,6 +30,7 @@ export function populateComments(postCard, postID, comments) {
     commentForm.appendChild(inputField);
     commentForm.appendChild(submitButton);
     commentsSection.appendChild(commentForm);
+    commentsSection.appendChild(commentsCluster);
 
     // Progressively grow textarea depending on content size
     inputField.addEventListener('input', function() {
@@ -75,7 +78,7 @@ export function populateComments(postCard, postID, comments) {
         // Create comment container
         let commentContainer = document.createElement('div');
         commentContainer.id = 'comment_card';
-        commentsSection.appendChild(commentContainer);
+        commentsCluster.appendChild(commentContainer);
 
         // Create creator image container
         let commentHead = document.createElement('div');

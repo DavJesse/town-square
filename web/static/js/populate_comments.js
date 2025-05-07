@@ -29,6 +29,7 @@ export function populateComments(postCard, postID, comments) {
     commentForm.appendChild(submitButton);
     commentsSection.appendChild(commentForm);
 
+    // Progressively grow textarea depending on content size
     inputField.addEventListener('input', function() {
         this.style.height = 'auto';
         this.style.height = Math.min(this.scrollHeight, 150) + 'px';
@@ -41,8 +42,6 @@ export function populateComments(postCard, postID, comments) {
         // Extract form values
         const commentText = inputField.value;
         const postUUID = postID;
-        console.log('Comment:', commentText);
-        console.log('PostUUID:', postUUID);
         
         const payload = JSON.stringify({
             comment: commentText,

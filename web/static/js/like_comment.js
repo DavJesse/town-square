@@ -1,7 +1,7 @@
 import { navigateTo } from "/static/js/routes.js";
 import { renderErrorPage } from "/static/js/error.js";
 
-export function handleLikeComment(commentID, postID, likeContainer) {
+export function handleLikeComment(commentID, postID, likeContainer, dislikeContainer) {
     let payload = JSON.stringify({
         commentID: commentID,
         postID: postID
@@ -26,7 +26,7 @@ export function handleLikeComment(commentID, postID, likeContainer) {
             }
             throw new Error(`Unable To Like Comment`);
         } else {
-            updateCommentEngagement(commentID, postID);            
+            updateCommentEngagement(likeContainer, dislikeContainer);            
         }
     })
     .catch(error => {
@@ -34,7 +34,7 @@ export function handleLikeComment(commentID, postID, likeContainer) {
     });
 }
 
-function updateCommentEngagement(commentID, postID) {
+function updateCommentEngagement(likeContainer, dislikeContainer) {
     fetch('/comments/like', {
         method: 'GET',
         headers: {

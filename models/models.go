@@ -150,6 +150,6 @@ type CommentWithCreator struct {
 }
 
 type EngagementCount struct {
-	LikesCount    int `json:"likes_count"`
-	DislikesCount int `json:"dislikes_count"`
+	LikesCount    int `json:"like_count"`
+	DislikesCount int `json:"dislike_count"`
 }

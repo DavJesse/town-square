@@ -2,9 +2,10 @@ import { navigateTo } from "/static/js/routes.js";
 import { renderErrorPage } from "/static/js/error.js";
 
 export function handleLikeComment(commentID, postID, likeContainer) {
-    let formData = new URLSearchParams();
-    formData.append(`comment-id=${commentID}`);
-    formData.append(`post-id=${postID}`);
+    let payload = JSON.stringify({
+        commentID: commentID,
+        postID: postID
+    });
 
     fetch('/comments/like', {
         method: 'POST',
@@ -12,35 +13,30 @@ export function handleLikeComment(commentID, postID, likeContainer) {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'application/json',
         },
-        body: formData,
+        body: payload,
         credentials: 'include'
     })
     .then(response => {
-        if (!response.ok) {
-            if (response.status === 401) {
-                navigateTo('/login');
-                return;
-            } else {
-                renderErrorPage(response.statusText, response.status);
-            }
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            // Update the likes count in the container
-            const countSpan = likeContainer.querySelector('#comment_engagement_count');
-            if (countSpan) {
-                countSpan.textContent = data.likesCount;
-            }
-            
+        if (response.ok) {
+            UpdateCommentLikesAndDislikes(commentID, postID);            
         } else {
-            console.error('Like failed:', data.message);
+            throw new Error(`Unable To Like Comment`);
         }
     })
     .catch(error => {
         console.error('Error:', error);
     });
 }
-    
+
+// .then(data => {
+//     if (data.success) {
+//         // Update the likes count in the container
+//         const countSpan = likeContainer.querySelector('#comment_engagement_count');
+//         if (countSpan) {
+//             countSpan.textContent = data.likesCount;
+//         }
+        
+//     } else {
+//         console.error('Like failed:', data.message);
+//     }
+// })

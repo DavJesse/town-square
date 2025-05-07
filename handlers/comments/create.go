@@ -11,10 +11,15 @@ import (
 	"forum/models"
 )
 
+var requestData struct {
+	Comment string `json:"comment"`
+	PostID  string `json:"postUUID"`
+}
+var postID string
+
 func Comment(w http.ResponseWriter, r *http.Request) {
-	log.Printf("Method: %v", r.Method)
 	// Only allow POST requests for submitting a comment
-	if !(r.Method == http.MethodPost || r.Method == http.MethodGet) {
+	if r.Method != http.MethodPost && r.Method != http.MethodGet {
 		posts.WriteJSON(w, http.StatusMethodNotAllowed, models.PostResponse{
 			Message: "METHOD ERROR: method not allowed",
 			Code:    http.StatusMethodNotAllowed,
@@ -23,15 +28,8 @@ func Comment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var postID string
-
+	// Process json data from the front end at POST request
 	if r.Method == http.MethodPost {
-		log.Printf("Content-type: %v", r.Header.Get("Content-Type"))
-		var requestData struct {
-			Comment string `json:"comment"`
-			PostID  string `json:"postUUID"`
-		}
-
 		decoder := json.NewDecoder(r.Body)
 		err := decoder.Decode(&requestData)
 		if err != nil {
@@ -63,7 +61,6 @@ func Comment(w http.ResponseWriter, r *http.Request) {
 			log.Printf("DATABASE ERROR: %v", err)
 			return
 		}
-
 	}
 
 	// Block access to endpoint if postID is empty

@@ -25,7 +25,9 @@ export function fetchComments(postCard, postID) {
     })
 
     .then(data => {
-        postCard.innerHTML = '';
+        // Clear comments section for repopulation
+        let commentSection = postCard.querySelector('#comments_section');
+        commentSection.innerHTML = '';
         populateComments(postCard, postID, data);
     })
     

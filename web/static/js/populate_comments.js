@@ -126,8 +126,8 @@ export function populateComments(postCard, postID, comments) {
         commentEngagement.id = 'comment_engagement';
         likeLink.id = 'comment_like_link';
         dislikeLink.id = 'comment_dislike_link';
-        likeCount.id = 'comment_engagement_count';
-        dislikeCount.id = 'comment_engagement_count';
+        likeCount.id = 'comment_like_count';
+        dislikeCount.id = 'comment_dislike_count';
         likeIcon.classList.add('material-symbols-outlined');
         dislikeIcon.classList.add('material-symbols-outlined');
         likeIcon.id = 'comment_engagement_icon';

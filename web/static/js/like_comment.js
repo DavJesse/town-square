@@ -10,7 +10,7 @@ export function handleLikeComment(commentID, postID, likeContainer) {
     fetch('/comments/like', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
             'Accept': 'application/json',
         },
         body: payload,

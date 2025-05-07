@@ -1,3 +1,7 @@
+import { populateComments } from '/static/js/populate_comments.js';
+import { navigateTo } from '/static/js/routes.js';
+import { renderErrorPage } from '/static/js/error.js';
+
 export function fetchComments(postCard, postID) {
     fetch('/comment', {
         method: 'GET',
@@ -22,7 +26,7 @@ export function fetchComments(postCard, postID) {
 
     .then(data => {
         postCard.innerHTML = '';
-        populateComments(postCard, postID, data.comments);
+        populateComments(postCard, postID, data);
     })
     
     .catch(error => {

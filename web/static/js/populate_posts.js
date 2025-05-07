@@ -1,5 +1,6 @@
 import { handleLikePost } from '/static/js/like_post.js';
 import { handleDislikePost } from '/static/js/dislike_post.js';
+import { populateComments } from '/static/js/populate_comments.js';
 
 export function populatePosts(posts) {
     let postsContainer = document.getElementById('posts_container');
@@ -118,7 +119,7 @@ export function populatePosts(posts) {
 
             commentLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                // Add your comment handling here
+                populateComments(postElement, post.uuid, post.comments);
             });
 
             // Assemble the structure

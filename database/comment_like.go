@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"forum/models"
 )
 
 // LikeComment adds a like for a comment and removes any existing dislike for the same comment.
@@ -52,4 +53,20 @@ func LikeComment(userID int, commentID string) error {
 	}
 
 	return nil
+}
+
+func GetCommentReactionsCounts(commentID string) (models.EngagementCount, error) {
+	query := `
+	SELECT
+	(SELECT COUNT(*) FROM likes WHERE comment_id = ?) AS like_count,
+	(SELECT COUNT(*) FROM dislikes WHERE comment_id = ?) AS dislike_count;
+    `
+
+	var engagement models.EngagementCount
+	err := db.QueryRow(query, commentID, commentID).Scan(&engagement.LikesCount, &engagement.DislikesCount)
+	if err != nil {
+		return models.EngagementCount{}, err
+	}
+
+	return engagement, nil
 }

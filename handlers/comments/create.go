@@ -1,53 +1,89 @@
 package comments
 
 import (
-	"fmt"
+	"encoding/json"
+	"html"
 	"log"
 	"net/http"
 
 	"forum/database"
-	"forum/handlers/auth"
-	errors "forum/handlers/errors"
+	"forum/handlers/posts"
+	"forum/models"
 )
 
-func Comment(w http.ResponseWriter, r *http.Request) {
-	// take the contents from the form
-	// call the database function to insert a comment
-	// redirect to /posts/display?pid={{.UUID}}
+var requestData struct {
+	Comment string `json:"comment"`
+	PostID  string `json:"postUUID"`
+}
+var postID string
 
+func Comment(w http.ResponseWriter, r *http.Request) {
 	// Only allow POST requests for submitting a comment
-	if r.Method != http.MethodPost {
-		errors.MethodNotAllowedHandler(w, r)
+	if r.Method != http.MethodPost && r.Method != http.MethodGet {
+		posts.WriteJSON(w, http.StatusMethodNotAllowed, models.PostResponse{
+			Message: "METHOD ERROR: method not allowed",
+			Code:    http.StatusMethodNotAllowed,
+		})
 		log.Println("METHOD ERROR: method not allowed")
 		return
 	}
 
-	// Parse form data (assuming the form contains a comment and post UUID)
-	err := r.ParseForm()
-	if err != nil {
-		errors.BadRequestHandler(w, r)
-		log.Printf("REQUEST ERROR: %v", err)
+	// Process json data from the front end at POST request
+	if r.Method == http.MethodPost {
+		decoder := json.NewDecoder(r.Body)
+		err := decoder.Decode(&requestData)
+		if err != nil {
+			posts.WriteJSON(w, http.StatusBadRequest, models.PostResponse{
+				Message: "REQUEST ERROR: bad request",
+				Code:    http.StatusBadRequest,
+			})
+			log.Printf("JSON DECODE ERROR: %v", err)
+			return
+		}
+
+		// Retrieve the comment text and post UUID from the form
+		commentText := html.EscapeString(requestData.Comment)
+		postID = requestData.PostID
+
+		userID, _, err := database.GetUserData(r)
+		if err != nil {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+
+		// Call the CreateComment function to insert the comment into the database
+		_, err = database.CreateComment(userID, postID, commentText)
+		if err != nil {
+			posts.WriteJSON(w, http.StatusInternalServerError, models.PostResponse{
+				Message: "Internal Server Error",
+				Code:    http.StatusInternalServerError,
+			})
+			log.Printf("DATABASE ERROR: %v", err)
+			return
+		}
+	}
+
+	// Block access to endpoint if postID is empty
+	if postID == "" {
+		posts.WriteJSON(w, http.StatusMethodNotAllowed, models.PostResponse{
+			Message: "METHOD ERROR: method not allowed",
+			Code:    http.StatusMethodNotAllowed,
+		})
+		log.Println("METHOD ERROR: method not allowed")
 		return
 	}
 
-	// Retrieve the comment text and post UUID from the form
-	commentText := auth.EscapeFormSpecialCharacters(r, "comment")
-	postUUID := r.FormValue("postUUID")
-
-	userID, _, err := database.GetUserData(r)
+	// Fetch updated comments for the post
+	comments, err := database.GetCommentsForPost(postID)
 	if err != nil {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		posts.WriteJSON(w, http.StatusInternalServerError, models.PostResponse{
+			Message: "Internal Server Error",
+			Code:    http.StatusInternalServerError,
+		})
+		log.Printf("COMMENTS DATABASE ERROR: %v", err)
 		return
 	}
 
-	// Call the CreateComment function to insert the comment into the database
-	_, err = database.CreateComment(userID, postUUID, commentText)
-	if err != nil {
-		errors.InternalServerErrorHandler(w, r)
-		log.Printf("DATABASE ERROR: %v", err)
-		return
-	}
-
-	// Redirect to the post's display page with the post UUID
-	http.Redirect(w, r, fmt.Sprintf("/posts/display?pid=%s", postUUID), http.StatusSeeOther)
+	// Return the updated comments as JSON
+	posts.WriteJSON(w, http.StatusOK, comments)
 }

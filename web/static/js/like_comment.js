@@ -17,10 +17,16 @@ export function handleLikeComment(commentID, postID, likeContainer) {
         credentials: 'include'
     })
     .then(response => {
-        if (response.ok) {
-            UpdateCommentLikesAndDislikes(commentID, postID);            
-        } else {
+        if (!response.ok) {
+            if (response.status === 401) {
+                navigateTo('/login');
+                return;
+            } else {
+                renderErrorPage(response.statusText, response.status);
+            }
             throw new Error(`Unable To Like Comment`);
+        } else {
+            UpdateCommentLikesAndDislikes(commentID, postID);            
         }
     })
     .catch(error => {

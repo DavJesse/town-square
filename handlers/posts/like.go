@@ -20,7 +20,7 @@ func LikePostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		// Capture post ID
 		r.ParseForm()
-		postID := r.FormValue("post-id")
+		postID = r.FormValue("post-id")
 
 		// Capture  user data while blocking unauthorized users
 		userID, _, err := database.GetUserData(r)

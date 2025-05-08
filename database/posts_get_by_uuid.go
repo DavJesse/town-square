@@ -45,7 +45,7 @@ func GetPostByUUID(postID string) (models.PostWithCategories, error) {
 		&post.Title,
 		&post.Content,
 		&post.Media,
-		&post.Username,
+		&post.CreatorUsername,
 		&post.UserID,
 		&post.CreatedAt,
 		&categoryNames, // Scan aggregated category names

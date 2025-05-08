@@ -42,7 +42,7 @@ func LikePostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		postEngagement, err := database.GetPostEngagementCount(postID)
 		if err != nil {
-			log.Println("DATABASE ERROR: Failed to Retrieve Likes Count")
+			log.Printf("DATABASE ERROR: Failed to Retrieve Likes Count, %v", err)
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}

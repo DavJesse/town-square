@@ -87,8 +87,8 @@ export function populatePosts(posts) {
             likeLink.dataset.postId = post.uuid;  // Add post ID as data attribute
             dislikeLink.id = 'dislike_link';
             dislikeLink.dataset.postId = post.uuid;  // Change this to prevent page refresh
-            likeCount.id = 'engagement_count';
-            dislikeCount.id = 'engagement_count';
+            likeCount.id = 'post_like_count';
+            dislikeCount.id = 'post_dislike_count';
             commentLink.id = 'comment_link';
             commentCount.id = 'engagement_count';
             likeIcon.classList.add('material-symbols-outlined');

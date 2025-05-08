@@ -7,7 +7,7 @@ import (
 	"forum/database"
 )
 
-func DislikePost(w http.ResponseWriter, r *http.Request) {
+func DislikePostHandler(w http.ResponseWriter, r *http.Request) {
 	// Block non-POST and non-GET requests
 	if r.Method != http.MethodPost && r.Method != http.MethodGet {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)

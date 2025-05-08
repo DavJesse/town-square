@@ -36,7 +36,7 @@ func RegisterRoutes() {
 	http.HandleFunc("/liked-posts", posts.ShowLikedPosts)
 	http.Handle("/posts/create", middleware.AuthMiddleware(http.HandlerFunc(posts.PostCreate)))
 	http.Handle("/posts/like", middleware.AuthMiddleware(http.HandlerFunc(posts.LikePostHandler)))
-	http.Handle("/posts/dislike", middleware.AuthMiddleware(http.HandlerFunc(posts.DislikePost)))
+	http.Handle("/posts/dislike", middleware.AuthMiddleware(http.HandlerFunc(posts.DislikePostHandler)))
 
 	// Comments
 	http.Handle("/comment", middleware.AuthMiddleware(http.HandlerFunc(comments.Comment)))

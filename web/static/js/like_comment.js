@@ -1,13 +1,13 @@
 import { navigateTo } from "/static/js/routes.js";
 import { renderErrorPage } from "/static/js/error.js";
 
-export function handleLikeComment(commentID, postID, likeContainer, dislikeContainer) {
+export function handleLikeComment(commentID, likeContainer, dislikeContainer) {
+    let fetchLink = 'comments/like';
     let payload = JSON.stringify({
-        commentID: commentID,
-        postID: postID
+        commentID: commentID
     });
 
-    fetch('/comments/like', {
+    fetch(fetchLink, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ export function handleLikeComment(commentID, postID, likeContainer, dislikeConta
             }
             throw new Error(`Unable To Like Comment`);
         } else {
-            updateCommentEngagement(likeContainer, dislikeContainer);            
+            updateCommentEngagement(fetchLink, likeContainer, dislikeContainer);            
         }
     })
     .catch(error => {
@@ -34,8 +34,8 @@ export function handleLikeComment(commentID, postID, likeContainer, dislikeConta
     });
 }
 
-function updateCommentEngagement(likeContainer, dislikeContainer) {
-    fetch('/comments/like', {
+export function updateCommentEngagement(fetchLink, likeContainer, dislikeContainer) {
+    fetch(fetchLink, {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -59,14 +59,14 @@ function updateCommentEngagement(likeContainer, dislikeContainer) {
     .then(data => {
          // Update the like count in the container
         const likeCountSpan = likeContainer.querySelector('#comment_like_count');
-        if (countSpan) {
-            countSpan.textContent = data.likes_count;
+        if (likeCountSpan) {
+            likeCountSpan.textContent = data.like_count;
         }
         
         // Update the dislike count in the container
-        const dislikeCountSpan = likeContainer.querySelector('#comment_dislike_count');
-        if (countSpan) {
-            countSpan.textContent = data.dislikes_count;
+        const dislikeCountSpan = dislikeContainer.querySelector('#comment_dislike_count');
+        if (dislikeCountSpan) {
+            dislikeCountSpan.textContent = data.dislike_count;
         }
     })
 

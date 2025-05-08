@@ -114,17 +114,20 @@ type PostWithUsername struct {
 
 // PostWithCategories struct to hold post data along with categories, likes, dislikes, and comments
 type PostWithCategories struct {
-	UUID          string               `json:"uuid"`
-	Title         string               `json:"title"`
-	Content       string               `json:"content"`
-	Media         string               `json:"media"`
-	Username      string               `json:"username"`
-	UserID        int                  `json:"user_id"`
-	CreatedAt     time.Time            `json:"created_at"`
-	Categories    []string             `json:"categories"` // Categories as a slice of strings
-	LikesCount    int                  `json:"likes_count"`
-	DislikesCount int                  `json:"dislikes_count"`
-	Comments      []CommentWithCreator `json:"comments"` // Slice of comments
+	UUID             string               `json:"uuid"`
+	CreatorFirstName string               `json:"creator_first_name,omitempty"`
+	CreatorLastName  string               `json:"creator_last_name,omitempty"`
+	CreatorUsername  string               `json:"creator_username"`
+	CreatorImage     string               `json:"creator_image,omitempty"`
+	Title            string               `json:"title"`
+	Content          string               `json:"content"`
+	Media            string               `json:"media"`
+	UserID           int                  `json:"user_id"`
+	CreatedAt        time.Time            `json:"created_at"`
+	Categories       []string             `json:"categories"` // Categories as a slice of strings
+	LikesCount       int                  `json:"likes_count"`
+	DislikesCount    int                  `json:"dislikes_count"`
+	Comments         []CommentWithCreator `json:"comments"` // Slice of comments
 }
 
 // Comment struct to hold comment data

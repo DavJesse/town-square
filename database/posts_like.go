@@ -65,7 +65,7 @@ func GetPostEngagementCount(postID string) (models.PostEngagementResponse, error
 	`
 
 	// Retrieve the count of likes for the post
-	err := db.QueryRow(query, postID).Scan(&engagementCount.LikesCount, &engagementCount.DislikeCount)
+	err := db.QueryRow(query, postID, postID).Scan(&engagementCount.LikesCount, &engagementCount.DislikeCount)
 	if err != nil {
 		return models.PostEngagementResponse{}, err
 	}

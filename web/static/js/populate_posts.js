@@ -109,7 +109,7 @@ export function populatePosts(posts) {
             // Add event listeners
             likeLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                handleLikePost(post.uuid, likeContainer);
+                handleLikePost(post.uuid, likeContainer, dislikeContainer);
             });
 
             dislikeLink.addEventListener('click', (e) => {

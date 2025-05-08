@@ -2,11 +2,12 @@ import { navigateTo } from "/static/js/routes.js";
 import { renderErrorPage } from "/static/js/error.js";
 
 export function handleLikeComment(commentID, likeContainer, dislikeContainer) {
+    let fetchLink = 'comments/like';
     let payload = JSON.stringify({
         commentID: commentID
     });
 
-    fetch('/comments/like', {
+    fetch(fetchLink, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -25,7 +26,7 @@ export function handleLikeComment(commentID, likeContainer, dislikeContainer) {
             }
             throw new Error(`Unable To Like Comment`);
         } else {
-            updateCommentEngagement(likeContainer, dislikeContainer);            
+            updateCommentEngagement(fetchLink, likeContainer, dislikeContainer);            
         }
     })
     .catch(error => {
@@ -33,8 +34,8 @@ export function handleLikeComment(commentID, likeContainer, dislikeContainer) {
     });
 }
 
-function updateCommentEngagement(likeContainer, dislikeContainer) {
-    fetch('/comments/like', {
+export function updateCommentEngagement(fetchLink, likeContainer, dislikeContainer) {
+    fetch(fetchLink, {
         method: 'GET',
         headers: {
             'Accept': 'application/json',

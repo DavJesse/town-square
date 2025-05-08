@@ -34,7 +34,9 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 									'creator_last_name', cu.last_name,
 									'creator_username', cu.username,
 									'creator_image', cu.image,
-									'created_at', strftime('%Y-%m-%dT%H:%M:%SZ', c.created_at)
+									'created_at', strftime('%Y-%m-%dT%H:%M:%SZ', c.created_at),
+									'likes_count', COALESCE((SELECT COUNT(*) FROM likes l WHERE l.comment_id = c.uuid), 0),
+    								'dislikes_count', COALESCE((SELECT COUNT(*) FROM dislikes d WHERE d.comment_id = c.uuid), 0)
 									))
 	             FILTER (WHERE c.uuid IS NOT NULL), '[]') AS comments
 	FROM posts p

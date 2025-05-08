@@ -58,14 +58,14 @@ function updateCommentEngagement(likeContainer, dislikeContainer) {
     .then(data => {
          // Update the like count in the container
         const likeCountSpan = likeContainer.querySelector('#comment_like_count');
-        if (countSpan) {
-            countSpan.textContent = data.likes_count;
+        if (likeCountSpan) {
+            likeCountSpan.textContent = data.likes_count;
         }
         
         // Update the dislike count in the container
         const dislikeCountSpan = dislikeContainer.querySelector('#comment_dislike_count');
-        if (countSpan) {
-            countSpan.textContent = data.dislikes_count;
+        if (dislikeCountSpan) {
+            dislikeCountSpan.textContent = data.dislikes_count;
         }
     })
 

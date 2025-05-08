@@ -142,12 +142,12 @@ export function populateComments(postCard, postID, comments) {
         // Add event listeners
         likeLink.addEventListener('click', (e) => {
             e.preventDefault();
-            handleLikeComment(comment.uuid, likeLink);
+            handleLikeComment(comment.uuid, likeLink, dislikeLink);
         });
 
         dislikeLink.addEventListener('click', (e) => {
             e.preventDefault();
-            handleDislikeComment(postID, dislikeLink);
+            handleDislikeComment(comment.uuid, likeLink, dislikeLink);
         });
 
         // Append elements to engagement containers

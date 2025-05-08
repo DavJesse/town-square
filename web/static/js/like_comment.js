@@ -1,10 +1,9 @@
 import { navigateTo } from "/static/js/routes.js";
 import { renderErrorPage } from "/static/js/error.js";
 
-export function handleLikeComment(commentID, postID, likeContainer, dislikeContainer) {
+export function handleLikeComment(commentID, likeContainer, dislikeContainer) {
     let payload = JSON.stringify({
-        commentID: commentID,
-        postID: postID
+        commentID: commentID
     });
 
     fetch('/comments/like', {

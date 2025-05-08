@@ -1,18 +1,20 @@
 import { navigateTo } from "/static/js/routes.js";
 import { renderErrorPage } from "/static/js/error.js";
+import { updateCommentEngagement } from '/static/js/like_comment.js';
 
-export function handleDislikeComment(commentID, postID, dislikeContainer) {
-    let formData = new URLSearchParams();
-    formData.append(`comment-id=${commentID}`);
-    formData.append(`post-id=${postID}`);
+export function handleDislikeComment(commentID, likeContainer, dislikeContainer) {
+    let fetchLink = '/comments/dislike';
+    let payload = JSON.stringify({
+        commentID: commentID
+    });
 
-    fetch('/comments/dislike', {
+    fetch(fetchLink, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
             'Accept': 'application/json',
         },
-        body: formData,
+        body: payload,
         credentials: 'include'
     })
     .then(response => {
@@ -23,24 +25,13 @@ export function handleDislikeComment(commentID, postID, dislikeContainer) {
             } else {
                 renderErrorPage(response.statusText, response.status);
             }
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            // Update the likes count in the container
-            const countSpan = dislikeContainer.querySelector('#comment_engagement_count');
-            if (countSpan) {
-                countSpan.textContent = data.likesCount;
-            }
-            
+            throw new Error(`Unable To Like Comment`);
         } else {
-            console.error('Like failed:', data.message);
+            updateCommentEngagement(fetchLink, likeContainer, dislikeContainer);            
         }
     })
     .catch(error => {
         console.error('Error:', error);
     });
 }
-    
+

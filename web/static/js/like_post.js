@@ -1,7 +1,7 @@
 import { navigateTo } from "/static/js/routes.js";
 import { renderErrorPage } from "/static/js/error.js";
 
-export function handleLikePost(postId, likeContainer) {
+export function handleLikePost(postId, likeContainer, dislikeContainer) {
     let fetchLink = '/posts/like';
     fetch(fetchLink, {
         method: 'POST',
@@ -12,6 +12,7 @@ export function handleLikePost(postId, likeContainer) {
         body: `post-id=${postId}`,
         credentials: 'include'
     })
+
     .then(response => {
         if (!response.ok) {
             if (response.status === 401) {
@@ -21,29 +22,12 @@ export function handleLikePost(postId, likeContainer) {
                 renderErrorPage(response.statusText, response.status);
             }
             throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            // Update the likes count in the container
-            const countSpan = likeContainer.querySelector('#engagement_count');
-            if (countSpan) {
-                countSpan.textContent = data.likesCount;
-            }
-            
-            // Optional: Add visual feedback
-            const likeLink = likeContainer.querySelector('#like_link');
-            if (likeLink) {
-                likeLink.classList.add('liked');
-                setTimeout(() => likeLink.classList.remove('liked'), 200);
-            }
-        } else if (data.message === "User is not logged in. Please log in to try again") {
-            navigateTo('/login');
         } else {
-            console.error('Like failed:', data.message);
+            updatePostEngagement(fetchLink, likeContainer, dislikeContainer);
         }
+        
     })
+  
     .catch(error => {
         console.error('Error:', error);
     });

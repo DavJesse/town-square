@@ -91,11 +91,14 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 func GetLikedPostsByUser(userID int) ([]models.PostWithCategories, error) {
 	query := `
 		SELECT 
-			p.uuid, 
+			p.uuid,
+			u.first_name,
+			u.last_name, 
+			u.username,
+			u.image, 
 			p.title, 
 			p.content, 
 			p.media, 
-			u.username, 
 			p.user_id, 
 			p.created_at,
 			GROUP_CONCAT(DISTINCT c.name) AS category_names,
@@ -125,10 +128,13 @@ func GetLikedPostsByUser(userID int) ([]models.PostWithCategories, error) {
 
 		err := rows.Scan(
 			&post.UUID,
+			&post.CreatorFirstName,
+			&post.CreatorLastName,
+			&post.CreatorUsername,
+			&post.CreatorImage,
 			&post.Title,
 			&post.Content,
 			&post.Media,
-			&post.Username,
 			&post.UserID,
 			&post.CreatedAt,
 			&categoryNames,

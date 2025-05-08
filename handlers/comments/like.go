@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 
-	errors "forum/handlers/errors"
 	"forum/handlers/posts"
 
 	"forum/database"
@@ -42,7 +41,7 @@ func LikeCommentHandler(w http.ResponseWriter, r *http.Request) {
 
 		err = database.LikeComment(userID, commentID)
 		if err != nil {
-			errors.InternalServerErrorHandler(w, r)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			fmt.Printf("LIKE ERROR: %v", err)
 			return
 		}

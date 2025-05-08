@@ -74,7 +74,7 @@ export function renderIndexPage() {
     myPostsButton.classList.add('active');
     myPostsButton.id = 'my_posts_button';
     likedPostsButton.id = 'liked_posts_button';
-    myPostsButton.textContent = 'My Posts';
+    myPostsButton.textContent = window.location.pathname === '/' ? 'All Posts' : 'My Posts';
     likedPostsButton.textContent = 'Liked Posts'
 
     // Append post buttons to button container

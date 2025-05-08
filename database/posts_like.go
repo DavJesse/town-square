@@ -1,6 +1,10 @@
 package database
 
-import "fmt"
+import (
+	"fmt"
+
+	"forum/models"
+)
 
 // LikePost adds a like for a post and removes any existing dislike for the same post.
 func LikePost(userID int, postID string) error {
@@ -52,13 +56,18 @@ func LikePost(userID int, postID string) error {
 	return nil
 }
 
-func GetPostLikesCount(postID string) (int, error) {
-	var likesCount int
+func GetPostEngagementCount(postID string) (models.PostEngagementResponse, error) {
+	var engagementCount models.PostEngagementResponse
+	query := `
+	SELECT
+	(SELECT COUNT(*) FROM likes WHERE post_id = ?) AS like_count,
+	(SELECT COUNT(*) FROM dislikes WHERE post_id = ?) AS dislike_count;
+	`
 
 	// Retrieve the count of likes for the post
-	err := db.QueryRow(`SELECT COUNT(*) FROM likes WHERE post_id = ?`, postID).Scan(&likesCount)
+	err := db.QueryRow(query, postID, postID).Scan(&engagementCount.LikesCount, &engagementCount.DislikeCount)
 	if err != nil {
-		return 0, err
+		return models.PostEngagementResponse{}, err
 	}
-	return likesCount, nil
+	return engagementCount, nil
 }

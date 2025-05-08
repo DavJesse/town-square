@@ -5,56 +5,49 @@ import (
 	"net/http"
 
 	"forum/database"
-	"forum/models"
 )
 
-func LikePost(w http.ResponseWriter, r *http.Request) {
-	// Check if user is logged in
-	_, isLogged := database.IsLoggedIn(r)
-	if !isLogged {
-		WriteJSON(w, http.StatusUnauthorized, models.LikeResponse{
-			Success: false,
-			Message: "Please login first",
-		})
+var postID string
+
+func LikePostHandler(w http.ResponseWriter, r *http.Request) {
+	// Block non-POST and non-GET requests
+	if r.Method != http.MethodPost && r.Method != http.MethodGet {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		log.Println("METHOD ERROR: method not allowed")
 		return
 	}
 
-	r.ParseForm()
-	postID := r.FormValue("post-id")
-	userID, _, err := database.GetUserData(r)
+	if r.Method == "POST" {
+		// Capture post ID
+		r.ParseForm()
+		postID = r.FormValue("post-id")
 
-	if err != nil {
-		WriteJSON(w, http.StatusUnauthorized, models.LikeResponse{
-			Success: false,
-			Message: "Please login first",
-		})
+		// Capture  user data while blocking unauthorized users
+		userID, _, err := database.GetUserData(r)
+		if err != nil {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+
+		err = database.LikePost(userID, postID)
+		if err != nil {
+			log.Printf("DATABASE ERROR: Failed to Log Like in Database, %v", err)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
 		return
 	}
 
-	err = database.LikePost(userID, postID)
-	if err != nil {
-		log.Printf("DATABASE ERROR: Failed to Log Like in Database, %v", err)
-		WriteJSON(w, http.StatusInternalServerError, models.LikeResponse{
-			Success: false,
-			Message: "Failed to like post",
-		})
-		return
-	}
+	// Send updated like and dislike counts at GET request
+	if r.Method == "GET" {
+		postEngagement, err := database.GetPostEngagementCount(postID)
+		if err != nil {
+			log.Printf("DATABASE ERROR: Failed to Retrieve Likes Count, %v", err)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
 
-	// Get updated likes count
-	likesCount, err := database.GetPostLikesCount(postID)
-	if err != nil {
-		log.Println("DATABASE ERROR: Failed to Retrieve Likes Count")
-		WriteJSON(w, http.StatusInternalServerError, models.LikeResponse{
-			Success: false,
-			Message: "Failed to get updated likes count",
-		})
-		return
+		postID = "" // Reset postID
+		WriteJSON(w, http.StatusOK, postEngagement)
 	}
-
-	WriteJSON(w, http.StatusOK, models.LikeResponse{
-		Success:    true,
-		LikesCount: likesCount,
-		Message:    "Post liked successfully",
-	})
 }

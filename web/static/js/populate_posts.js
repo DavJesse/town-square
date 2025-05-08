@@ -114,7 +114,7 @@ export function populatePosts(posts) {
 
             dislikeLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                handleDislikePost(post.uuid, dislikeContainer);
+                handleDislikePost(post.uuid, likeContainer, dislikeContainer);
             });
 
             commentLink.addEventListener('click', (e) => {

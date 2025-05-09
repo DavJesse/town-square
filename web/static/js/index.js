@@ -69,17 +69,21 @@ export function renderIndexPage() {
     postsButtonContainer.id = 'posts_button_container';
 
     // Create buttons to toggle prefered posts    
-    let myPostsButton = document.createElement('button');
+    let allPostsButton = document.createElement('button');
     let likedPostsButton = document.createElement('button');
-    myPostsButton.classList.add('active');
-    myPostsButton.id = 'my_posts_button';
+    let myPostsButton = document.createElement('button');
+    allPostsButton.classList.add('active');
+    allPostsButton.id = 'all_posts_button';
     likedPostsButton.id = 'liked_posts_button';
-    myPostsButton.textContent = window.location.pathname === '/' ? 'All Posts' : 'My Posts';
-    likedPostsButton.textContent = 'Liked Posts'
+    myPostsButton.id = 'my_posts_button';
+    allPostsButton.textContent = 'All Posts';
+    likedPostsButton.textContent = 'Liked Posts';
+    myPostsButton.textContent = 'My Posts';
 
     // Append post buttons to button container
-    postsButtonContainer.appendChild(myPostsButton);
+    postsButtonContainer.appendChild(allPostsButton);
     postsButtonContainer.appendChild(likedPostsButton);
+    postsButtonContainer.appendChild(myPostsButton);
 
     // Add posts card to hold user's recent posts
     let postsCard = document.createElement('div');

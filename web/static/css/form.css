@@ -98,7 +98,7 @@ h1 {
 }
 
 #file_name {
-    margin: 0 auto 15px auto;
+    margin: 5px auto;
 }
 
 /* Hide the default file input */
@@ -115,11 +115,11 @@ input[type="file"] {
     padding: 10px;
     border: none;
     border-radius: 5px;
-    font-size: 1rem;  /* Match font size */
+    font-size: 17px;  /* Match font size */
     cursor: pointer;
     text-align: center;
     transition: background-color 0.3s;
-    margin: 0 auto 15px auto;
+    margin: 5px auto;
 }
 
 /* Hover effect */
@@ -162,8 +162,8 @@ button:hover {
 .custom-file-upload {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centers content */
-    gap: 5px;
+    align-items: center;
+    gap: 1px;
 }
 
 .upload-btn {
@@ -172,7 +172,7 @@ button:hover {
     padding: 8px 15px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 20px;
+    font-size: 17px;
     font-weight: bold;
     display: inline-block;
     text-align: center;
@@ -201,7 +201,7 @@ button:hover {
     cursor: pointer;
     font-size: 14px;
     font-weight: bold;
-    margin-top: 5px;
+    margin: 5px auto;
     display: none;
 }
 

@@ -49,6 +49,7 @@ export function renderCreatePostForm() {
     let postTitle = document.createElement('input');
     postTitle.type = 'text';
     postTitle.id = 'post_subject';
+    postTitle.classList.add('create_post_input');
     postTitle.name = 'title';
     postTitle.placeholder = 'subject of your post';
     postTitle.required = true;
@@ -57,6 +58,7 @@ export function renderCreatePostForm() {
     // Create content field
     let postContent = document.createElement('textarea');
     postContent.id = 'post_content';
+    postContent.classList.add('create_post_input');
     postContent.name = 'content';
     postContent.placeholder = 'share your thoughts';
     postContent.required = true;

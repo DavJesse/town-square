@@ -141,6 +141,7 @@ export function renderCreatePostForm() {
     
     // Create submit button
     let submitButton = document.createElement('button');
+    submitButton.classList.add('upload-btn');
     submitButton.type = 'submit';
     submitButton.textContent = 'Create Post';
     form.appendChild(submitButton);

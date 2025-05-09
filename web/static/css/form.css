@@ -115,7 +115,7 @@ input[type="file"] {
     padding: 10px;
     border: none;
     border-radius: 5px;
-    font-size: 1rem;  /* Match font size */
+    font-size: 17px;  /* Match font size */
     cursor: pointer;
     text-align: center;
     transition: background-color 0.3s;
@@ -172,7 +172,7 @@ button:hover {
     padding: 8px 15px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 20px;
+    font-size: 17px;
     font-weight: bold;
     display: inline-block;
     text-align: center;

@@ -91,7 +91,7 @@
     justify-content: space-between;
 }
 
-#left_categories_cluster, #right_categories_cluster {
+.categories-cluster {
     display: flex;
     flex-direction: column;
     gap: 5px;

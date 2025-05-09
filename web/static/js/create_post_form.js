@@ -189,10 +189,12 @@ function fetchCategories() {
 
             let leftCategoriesCluster = document.createElement('div');
             leftCategoriesCluster.id = 'left_categories_cluster';
+            leftCategoriesCluster.classList.add('categories-cluster');
             combinedCluster.appendChild(leftCategoriesCluster);
 
             let rightCategoriesCluster = document.createElement('div');
             rightCategoriesCluster.id = 'right_categories_cluster';
+            rightCategoriesCluster.classList.add('categories-cluster');
             combinedCluster.appendChild(rightCategoriesCluster);
 
             categories.forEach((category, index) => {

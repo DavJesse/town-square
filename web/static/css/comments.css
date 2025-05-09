@@ -48,11 +48,15 @@
     overflow-y: auto;
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
-    font-style: italic;
 }
 
 #comment_input_field:focus {
     outline: none;
+}
+
+#comment_input_field::placeholder {
+    color: var(--tertiary-color);
+    font-style: italic;
 }
 
 #comment_submit_button {

@@ -4,7 +4,6 @@ import { navigateTo } from '/static/js/routes.js';
 import { populatePosts, setToggleEventListeners } from '/static/js/populate_posts.js';
 import { renderErrorPage } from '/static/js/error.js';
 import { populateCategories } from '/static/js/populate_categories.js';
-import { fetchPostsPerCategory } from '/static/js/fetch_category_posts.js'
 
 export function renderIndexPage() {
     // Extract app from dom

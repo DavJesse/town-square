@@ -1,5 +1,6 @@
 import { navigateTo } from '/static/js/routes.js';
 import { renderErrorPage } from '/static/js/error.js';
+import { setupImageUpload } from '/static/js/onboarding.js'
 
 export function renderCreatePostForm() {
     document.title = 'Create Post';
@@ -110,6 +111,7 @@ export function renderCreatePostForm() {
     categoriesTitle.id = 'category_selection_title';
     categoriesContainer.appendChild(categoriesTitle);
 
+    setupImageUpload();
     fetchCategories(); // fetch and render categories
 
     form.addEventListener('submit', async (e) => {
@@ -145,12 +147,6 @@ export function renderCreatePostForm() {
     submitButton.type = 'submit';
     submitButton.textContent = 'Create Post';
     form.appendChild(submitButton);
-
-    // Link js
-    let scriptTag = document.createElement('script');
-    scriptTag.src = '/static/js/onboarding.js';
-    scriptTag.defer = true;
-    app.appendChild(scriptTag);
 }
 
 function fetchCategories() {

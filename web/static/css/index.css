@@ -175,6 +175,28 @@
     margin: 5px auto auto 20px;
 }
 
+#profile_subtitle {
+    font-size: 20px;
+    margin: auto;
+}
+
+#profile_contact {
+    font-size: 14px;
+    margin: 0 auto auto 20px;
+}
+
+#profile_age_gender {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    justify-content: space-evenly;
+}
+
+#profile_age_gender_separator {
+    font-size: 14px;
+    margin: auto;
+}
+
 #profile_bio_text {
     font-size: 14px;
     margin: 0 auto 0 10px;
@@ -186,7 +208,7 @@
     gap: 10px;
 }
 
-#view_profile_button, #messanger_button, #profile_logout_button {
+#messanger_button, #profile_logout_button {
     width: 100%;
     padding: 10px 15px;
     background-color: #0000EE;

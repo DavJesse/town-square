@@ -76,8 +76,8 @@
 
 #close_button {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 17%;
+    right: 30%;
     font-size: 30px;
     color: var(--danger-color);
     cursor: pointer;

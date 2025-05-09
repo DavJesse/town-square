@@ -27,9 +27,10 @@ export function renderCreatePostForm() {
 
 
     // Create forum logo
-    let logo = document.createElement('h1');
-    logo.textContent = 'Create New Post';
-    formContainer.appendChild(logo);
+    let formTitle = document.createElement('h1');
+    formTitle.id = 'create_post_form_title';
+    formTitle.textContent = 'Create New Post';
+    formContainer.appendChild(formTitle);
 
     // Create text to capture user-generated errors
     let errorMessage = document.createElement('p');

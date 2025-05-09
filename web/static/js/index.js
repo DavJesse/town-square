@@ -107,10 +107,8 @@ export function renderIndexPage() {
     let bioTitle = document.createElement('h3');
     let bioText = document.createElement('p');
     let profileActionContainer = document.createElement('div');
-    let profileLink = document.createElement('a');
     let messangerLink = document.createElement('a');
     let logoutLink = document.createElement('form');
-    let viewProfileButton = document.createElement('button');
     let messangerButton = document.createElement('button');
     let logoutButton = document.createElement('button');
     profileTitle.id = 'profile_title';
@@ -119,25 +117,20 @@ export function renderIndexPage() {
     bioTitle.id = 'profile_bio_title';
     bioText.id = 'profile_bio_text';
     profileActionContainer.id = 'profile_action_container';
-    viewProfileButton.id = 'view_profile_button';
     messangerButton.id ='messanger_button';
     logoutButton.id = 'profile_logout_button';
     logoutButton.type = 'submit';
-    profileLink.href = '/profile';
     messangerLink.href = '/chat';
     logoutLink.action = '/logout';
     logoutLink.method = 'POST';
-    viewProfileButton.textContent = 'View Profile';
     messangerButton.textContent = 'Messager';
     logoutButton.textContent = 'Logout';
 
     // Append profile components to container
     bioContainer.appendChild(bioTitle);
     bioContainer.appendChild(bioText);
-    profileLink.appendChild(viewProfileButton);
     messangerLink.appendChild(messangerButton);
     logoutLink.appendChild(logoutButton);
-    profileActionContainer.appendChild(profileLink);
     profileActionContainer.appendChild(messangerLink);
     profileActionContainer.appendChild(logoutLink);
     profileCard.appendChild(profileTitle);
@@ -186,7 +179,6 @@ function fetchIndexData() {
             let profilePic = document.getElementById('index_profile_pic');
             let bioTitle = document.getElementById('profile_bio_title');
             let bioText = document.getElementById('profile_bio_text');
-            let viewProfileButton = document.getElementById('view_profile_button');
             let messangerButton = document.getElementById('messanger_button');
 
             // Update page with user infomation
@@ -195,7 +187,6 @@ function fetchIndexData() {
             profilePic.alt = `${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)} image`
             bioTitle.textContent = `About ${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)}`;
             bioText.textContent = `${user.bio.charAt(0).toUpperCase()}${user.bio.slice(1)}`;
-            viewProfileButton.href = `/profile`;
             messangerButton.href = `/chat`;
 
             // Render categories and populate posts

@@ -162,24 +162,21 @@ export function renderIndexPage() {
                 navigateTo('/login');
                 return Promise.reject('Unauthorized');
             } else {
-                // throw new Error(`HTTP error! status: ${response.status}`);
-                return response.json().then(errorData => {
-                    renderErrorPage(errorData.Issue || response.statusText, response.status);
-                    return Promise.reject(errorData.Issue || 'Error occurred');
-                });
+                // Render error page
+                renderErrorPage(response.statusText, response.status);
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
         }
         return response.json();
     })
     
     .then(data => {
-        if (data.code === 200) {
-
             // Extract data for rendering
-            const categories = data.data.categories
-            const posts = data.data.posts
-            const likedPosts = data.data.liked_posts
-            const user = data.data.user
+            const categories = data.categories
+            const allPosts = data.all_posts
+            const likedPosts = data.liked_posts
+            const userPosts = data.user_posts
+            const user = data.user
 
             // Update page with user infomation
             profileTitle.textContent = `${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)}`;
@@ -192,20 +189,11 @@ export function renderIndexPage() {
 
             // Render categories and populate posts
             populateCategories(categories);
-            populatePosts(posts);
-            setToggleEventListeners(posts, likedPosts, []);
-
-        } else if (data.code === 401) {
-            navigateTo('/login');
-        } else {
-            renderErrorPage(data.message, data.code);
-            console.error('Error fetching home page data:', data.message);
-        }
+            populatePosts(allPosts);
+            setToggleEventListeners(allPosts, likedPosts, userPosts);
     })
 
     .catch(error => {
-        if (error !== 'Unauthorized') {
             console.error('Error fetching home page:', error);
-        }
     });
 }

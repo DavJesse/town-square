@@ -162,7 +162,7 @@ func GetLikedPostsByUser(userID int) ([]models.PostWithCategories, error) {
 		comments, err := GetCommentsForPost(post.UUID)
 		if err != nil {
 			log.Printf("Failed to fetch comments for post %s: %v", post.UUID, err)
-			comments = []models.CommentWithCreator{}
+			return nil, err
 		}
 		post.Comments = comments
 

@@ -197,12 +197,13 @@ function fetchCategories() {
             categories.forEach((category, index) => {
                 // Create category container
                 let categoryPill = document.createElement('div');
-                categoryPill.id = 'category_pill';
+                categoryPill.classList.add('category-check-options');
 
                 // Create category checkbox
                 let categoryCheckbox = document.createElement('input');
                 categoryCheckbox.type = 'checkbox';
-                categoryCheckbox.id = `category_checkbox`;
+                categoryCheckbox.id = 'category_checkbox';
+                categoryCheckbox.classList.add('category_checkbox');
                 categoryCheckbox.name = 'categories';
                 categoryCheckbox.value = category.id;
                 categoryPill.appendChild(categoryCheckbox);

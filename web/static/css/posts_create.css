@@ -98,6 +98,16 @@
     width: 100%;
 }
 
+.category-check-options {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width: 90%;
+    height: fit-content;
+    border-radius: 10px;
+    align-items: center;
+}
+
 @media (max-width: 768px) {
 
 }

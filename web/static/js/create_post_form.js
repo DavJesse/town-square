@@ -107,7 +107,7 @@ export function renderCreatePostForm() {
     // Create categories title
     let categoriesTitle = document.createElement('h2');
     categoriesTitle.textContent = 'Select Categories';
-    categoriesTitle.id = 'categories_title';
+    categoriesTitle.id = 'category_selection_title';
     categoriesContainer.appendChild(categoriesTitle);
 
     fetchCategories(); // fetch and render categories

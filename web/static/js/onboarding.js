@@ -15,7 +15,7 @@ export function setupImageUpload () {
     // Handle file selection
     imageInput.addEventListener("change", function () {
         if (this.files.length > 0) {
-            fileNameDisplay.textContent = this.files[0].name;
+            fileNameDisplay.textContent = `image to upload: ${this.files[0].name}`;
             removeButton.style.display = "inline-block"; // Show remove button
         }
     });

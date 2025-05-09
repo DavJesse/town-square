@@ -101,9 +101,11 @@ export function renderIndexPage() {
     profileCard.id = 'profile_card';
 
     // Add contents of profile container
+    let profileHead = document.createElement('div');
     let profileTitle = document.createElement('h2');
     let profileSubtitle = document.createElement('h2');
     let profilePic = document.createElement('img');
+    let profileUserInfo = document.createElement('div');
     let profileContact = document.createElement('h3');
     let profileAgeGender = document.createElement('div');
     let profileAgeGenderSeparator = document.createElement('h3');
@@ -130,6 +132,8 @@ export function renderIndexPage() {
     bioText.id = 'profile_bio_text';
     profileAge.classList.add('profile-age-gender');
     profileGender.classList.add('profile-age-gender');
+    profileHead.classList.add('profile-user-info-container');
+    profileUserInfo.classList.add('profile-user-info-container');
     profileActionContainer.id = 'profile_action_container';
     messangerButton.id ='messanger_button';
     logoutButton.id = 'profile_logout_button';
@@ -151,11 +155,13 @@ export function renderIndexPage() {
     logoutLink.appendChild(logoutButton);
     profileActionContainer.appendChild(messangerLink);
     profileActionContainer.appendChild(logoutLink);
-    profileCard.appendChild(profileTitle);
-    profileCard.appendChild(profileSubtitle);
+    profileHead.appendChild(profileTitle);
+    profileHead.appendChild(profileSubtitle);
+    profileUserInfo.appendChild(profileContact);
+    profileUserInfo.appendChild(profileAgeGender);
+    profileCard.appendChild(profileHead);
     profileCard.appendChild(profilePic);
-    profileCard.appendChild(profileContact);
-    profileCard.appendChild(profileAgeGender);
+    profileCard.appendChild(profileUserInfo);
     profileCard.appendChild(bioContainer);
     profileCard.appendChild(profileActionContainer);
     rightCluster.appendChild(profileCard);

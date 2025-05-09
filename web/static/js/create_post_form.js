@@ -38,17 +38,12 @@ export function renderCreatePostForm() {
     errorMessage.style.color = 'red';
     formContainer.appendChild(errorMessage);
 
-    // Create container to house form
-    let innerFormContainer = document.createElement('div');
-    innerFormContainer.id = 'inner_form_container';
-    formContainer.appendChild(innerFormContainer);
-
     // Create form to capture user input
     let form = document.createElement('form');
     form.method = 'POST';
     form.action = '/posts/create';
     form.enctype = 'multipart/form-data';
-    innerFormContainer.appendChild(form);
+    formContainer.appendChild(form);
 
     // Create title field
     let postTitle = document.createElement('input');

@@ -86,12 +86,6 @@
     color: #666666;
 }
 
-#post_title {
-    font-size: 22px;
-    color: #0000EE;
-    font-weight: 700;
-}
-
 #posts_card {
     display: flex;
     flex-direction: column;

@@ -51,6 +51,12 @@
     gap: 10px;
 }
 
+#post_subject {
+    font-size: 22px;
+    color: #0000EE;
+    font-weight: 700;
+}
+
 @media (max-width: 768px) {
 
 }

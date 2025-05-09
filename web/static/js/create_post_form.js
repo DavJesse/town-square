@@ -48,7 +48,7 @@ export function renderCreatePostForm() {
     // Create title field
     let postTitle = document.createElement('input');
     postTitle.type = 'text';
-    postTitle.id = 'post_title';
+    postTitle.id = 'post_subject';
     postTitle.name = 'title';
     postTitle.placeholder = 'subject of your post';
     postTitle.required = true;

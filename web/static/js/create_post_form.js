@@ -61,6 +61,7 @@ export function renderCreatePostForm() {
     postContent.classList.add('create_post_input');
     postContent.name = 'content';
     postContent.placeholder = 'share your thoughts';
+    postContent.maxLength = '63206';
     postContent.required = true;
     form.appendChild(postContent);
 

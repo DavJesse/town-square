@@ -145,8 +145,13 @@ export function renderIndexPage() {
     profileCard.appendChild(bioContainer);
     profileCard.appendChild(profileActionContainer);
     rightCluster.appendChild(profileCard);
-    
-    // fetch data from response
+
+    // Fetch home page data from server
+    fetchIndexData();
+}
+
+// fetch data from response
+function fetchIndexData() {
     fetch('/api/index-data', {
         method: 'GET',
         credentials: 'include',
@@ -177,6 +182,12 @@ export function renderIndexPage() {
             const likedPosts = data.liked_posts
             const userPosts = data.user_posts
             const user = data.user
+            let profileTitle = document.getElementById('profile_title');
+            let profilePic = document.getElementById('index_profile_pic');
+            let bioTitle = document.getElementById('profile_bio_title');
+            let bioText = document.getElementById('profile_bio_text');
+            let viewProfileButton = document.getElementById('view_profile_button');
+            let messangerButton = document.getElementById('messanger_button');
 
             // Update page with user infomation
             profileTitle.textContent = `${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)}`;
@@ -185,7 +196,7 @@ export function renderIndexPage() {
             bioTitle.textContent = `About ${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)}`;
             bioText.textContent = `${user.bio.charAt(0).toUpperCase()}${user.bio.slice(1)}`;
             viewProfileButton.href = `/profile`;
-            messangerButton.href = `/messages`;
+            messangerButton.href = `/chat`;
 
             // Render categories and populate posts
             populateCategories(categories);

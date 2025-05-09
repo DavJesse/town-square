@@ -102,7 +102,13 @@ export function renderIndexPage() {
 
     // Add contents of profile container
     let profileTitle = document.createElement('h2');
+    let profileSubtitle = document.createElement('h2');
     let profilePic = document.createElement('img');
+    let profileContact = document.createElement('h3');
+    let profileAgeGender = document.createElement('div');
+    let profileAgeGenderSeparator = document.createElement('h3');
+    let profileAge = document.createElement('h3');
+    let profileGender = document.createElement('h3');
     let bioContainer = document.createElement('div');
     let bioTitle = document.createElement('h3');
     let bioText = document.createElement('p');
@@ -112,6 +118,12 @@ export function renderIndexPage() {
     let messangerButton = document.createElement('button');
     let logoutButton = document.createElement('button');
     profileTitle.id = 'profile_title';
+    profileSubtitle.id = 'profile_subtitle';
+    profileContact.id = 'profile_contact';
+    profileAgeGender.id = 'profile_age_gender';
+    profileAgeGenderSeparator.id = 'profile_age_gender_separator';
+    profileAge.id = 'profile_age';
+    profileGender.id = 'profile_gender';
     profilePic.id = 'index_profile_pic';
     bioContainer.id = 'index_bio_container';
     bioTitle.id = 'profile_bio_title';
@@ -123,10 +135,14 @@ export function renderIndexPage() {
     messangerLink.href = '/chat';
     logoutLink.action = '/logout';
     logoutLink.method = 'POST';
+    profileAgeGenderSeparator.textContent = '|';
     messangerButton.textContent = 'Messager';
     logoutButton.textContent = 'Logout';
 
     // Append profile components to container
+    profileAgeGender.appendChild(profileGender);
+    profileAgeGender.appendChild(profileAgeGenderSeparator);
+    profileAgeGender.appendChild(profileAge);
     bioContainer.appendChild(bioTitle);
     bioContainer.appendChild(bioText);
     messangerLink.appendChild(messangerButton);
@@ -134,7 +150,10 @@ export function renderIndexPage() {
     profileActionContainer.appendChild(messangerLink);
     profileActionContainer.appendChild(logoutLink);
     profileCard.appendChild(profileTitle);
+    profileCard.appendChild(profileSubtitle);
     profileCard.appendChild(profilePic);
+    profileCard.appendChild(profileContact);
+    profileCard.appendChild(profileAgeGender);
     profileCard.appendChild(bioContainer);
     profileCard.appendChild(profileActionContainer);
     rightCluster.appendChild(profileCard);
@@ -176,18 +195,24 @@ function fetchIndexData() {
             const userPosts = data.user_posts
             const user = data.user
             let profileTitle = document.getElementById('profile_title');
+            let profileSubtitle = document.getElementById('profile_subtitle');
             let profilePic = document.getElementById('index_profile_pic');
+            let profileContact = document.getElementById('profile_contact');
+            let profileGender = document.getElementById('profile_gender');
+            let profileAge = document.getElementById('profile_age');
             let bioTitle = document.getElementById('profile_bio_title');
             let bioText = document.getElementById('profile_bio_text');
-            let messangerButton = document.getElementById('messanger_button');
 
             // Update page with user infomation
             profileTitle.textContent = `${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)}`;
+            profileSubtitle.textContent = `@${user.username}`;
             profilePic.src = `/static/images/${user.image}`;
-            profilePic.alt = `${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)} image`
+            profilePic.alt = `${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)} image`;
+            profileContact.textContent = `contact: ${user.email}`;
+            profileGender.textContent = `${user.gender.charAt(0).toUpperCase()}${user.gender.slice(1)}`;
+            profileAge.textContent = `${user.age} years old`;
             bioTitle.textContent = `About ${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)}`;
             bioText.textContent = `${user.bio.charAt(0).toUpperCase()}${user.bio.slice(1)}`;
-            messangerButton.href = `/chat`;
 
             // Render categories and populate posts
             populateCategories(categories);

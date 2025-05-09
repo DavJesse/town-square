@@ -79,7 +79,7 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 		// Convert the JSON string into a slice of CommentWithCreator
 		if err := json.Unmarshal([]byte(commentsJSON), &post.Comments); err != nil {
 			log.Println("Error parsing comments JSON:", err)
-			post.Comments = []models.CommentWithCreator{} // Ensure it's an empty slice on error
+			return []models.PostWithUsername{}, err
 		}
 
 		posts = append(posts, post)

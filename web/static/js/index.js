@@ -120,7 +120,7 @@ export function renderIndexPage() {
     profileTitle.id = 'profile_title';
     profileSubtitle.id = 'profile_subtitle';
     profileContact.id = 'profile_contact';
-    profileAgeGender.id = 'profile_age_gender';
+    profileAgeGender.id = 'profile_age_gender_container';
     profileAgeGenderSeparator.id = 'profile_age_gender_separator';
     profileAge.id = 'profile_age';
     profileGender.id = 'profile_gender';
@@ -128,6 +128,8 @@ export function renderIndexPage() {
     bioContainer.id = 'index_bio_container';
     bioTitle.id = 'profile_bio_title';
     bioText.id = 'profile_bio_text';
+    profileAge.classList.add('profile-age-gender');
+    profileGender.classList.add('profile-age-gender');
     profileActionContainer.id = 'profile_action_container';
     messangerButton.id ='messanger_button';
     logoutButton.id = 'profile_logout_button';

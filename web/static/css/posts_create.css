@@ -24,6 +24,19 @@
     flex-direction: column;
 }
 
+#close_button {
+    position: absolute;
+    top: 17%;
+    right: 30%;
+    font-size: 35px;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+#close_button:hover {
+    color: var(--danger-color);
+}
+
 @media (max-width: 768px) {
 
 }

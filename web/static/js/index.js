@@ -193,7 +193,7 @@ export function renderIndexPage() {
             // Render categories and populate posts
             populateCategories(categories);
             populatePosts(posts);
-            setToggleEventListeners(posts, likedPosts, userPosts);
+            setToggleEventListeners(posts, likedPosts, []);
 
         } else if (data.code === 401) {
             navigateTo('/login');

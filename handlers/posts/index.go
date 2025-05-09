@@ -61,19 +61,28 @@ func GetIndexData(w http.ResponseWriter, r *http.Request) {
 		userLikedPosts = []models.PostWithCategories{}
 	}
 
+	// Get user's posts
+	userPosts, err := database.PostsFilterByUser(userData.ID)
+	if err != nil {
+		log.Printf("Error getting posts: %v\n", err)
+		userPosts = []models.PostWithUsername{}
+	}
+
 	// Combine post data
 	postsData := struct {
-		Posts          []models.PostWithUsername   `json:"posts"`
-		IsLogged       bool                        `json:"is_logged"`
 		User           models.User                 `json:"user"`
-		UserLikedPosts []models.PostWithCategories `json:"liked_posts"`
+		IsLogged       bool                        `json:"is_logged"`
 		Categories     []models.Category           `json:"categories"`
+		AllPosts       []models.PostWithUsername   `json:"all_posts"`
+		UserLikedPosts []models.PostWithCategories `json:"liked_posts"`
+		UserPosts      []models.PostWithUsername   `json:"user_posts"`
 	}{
-		Posts:          posts,
-		IsLogged:       loggedIn,
 		User:           userData,
-		UserLikedPosts: userLikedPosts,
+		IsLogged:       loggedIn,
 		Categories:     categories,
+		AllPosts:       posts,
+		UserLikedPosts: userLikedPosts,
+		UserPosts:      userPosts,
 	}
 
 	// Compile post data in json response

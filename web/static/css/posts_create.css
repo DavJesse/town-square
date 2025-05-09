@@ -38,23 +38,28 @@
 }
 
 #create_post_form_title {
-    color: #0000EE;
+    color: var(--primary-color);
     font-size: 24px;
     font-weight: 700;
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
 }
 
-#inner_form_container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+#post_subject {
+    font-size: 17px;
+    color: #000000;
+    font-weight: 500;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    padding: 5px;
+    margin: 5px 0;
 }
 
-#post_subject {
-    font-size: 22px;
-    color: #0000EE;
-    font-weight: 700;
+#post_subject::placeholder {
+    color: var(--tertiary-color);
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: italic;
 }
 
 @media (max-width: 768px) {

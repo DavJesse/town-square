@@ -37,6 +37,14 @@
     color: var(--danger-color);
 }
 
+#create_post_form_title {
+    color: #0000EE;
+    font-size: 24px;
+    font-weight: 700;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+}
+
 @media (max-width: 768px) {
 
 }

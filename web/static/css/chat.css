@@ -2,7 +2,7 @@
 :root {
     --primary-color: #4f46e5;
     --primary-hover: #4338ca;
-    --secondary-color: #10b981;
+    --secondary-color: #ecf3f1;
     --danger-color: #ef4444;
     --danger-hover: #dc2626;
     --light-bg: #f9fafb;
@@ -20,9 +20,19 @@
 }
 
 /* Chat Container */
+/* Chat page container - matches the site's layout */
+.chat-page-container {
+    margin-top: 20px;
+    padding: 0 20px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Chat container */
 .chat-container {
     display: flex;
-    height: calc(100vh - 2rem); /* Subtract margin to fit in viewport */
+    height: calc(100vh - 120px); /* Account for navbar and margins */
     border-radius: 8px;
     overflow: hidden;
     box-shadow: var(--shadow-md);
@@ -113,10 +123,14 @@
     display: flex;
     align-items: center;
     font-size: 0.875rem;
+    color: var(--text-color);
+    transition: all 0.2s ease;
 }
 
 .back-button:hover {
     background-color: var(--light-bg);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 .back-icon {
@@ -227,10 +241,14 @@
     display: flex;
     align-items: center;
     font-size: 0.875rem;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
 }
 
 .send-button:hover {
     background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
 }
 
 .send-icon {
@@ -419,6 +437,28 @@
     100% { opacity: 0.7; }
 }
 
+/* Mini notification */
+.mini-notification {
+    position: fixed;
+    top: 4rem;
+    right: 1rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-md);
+    color: white;
+    font-size: 0.875rem;
+    z-index: 1000;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+}
+
+.mini-notification.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 /* Toast Notifications */
 .toast {
     position: fixed;
@@ -470,11 +510,17 @@
 
 /* Responsive Styles */
 @media (max-width: 768px) {
+    .chat-page-container {
+        padding: 0 10px;
+        margin-top: 10px;
+    }
+
     .chat-container {
         flex-direction: column;
-        height: 100vh;
+        height: calc(100vh - 80px);
         margin: 0;
         border-radius: 0;
+        box-shadow: none;
     }
 
     .chat-sidebar {
@@ -501,6 +547,11 @@
     .mobile-toggle {
         display: block;
     }
+
+    .back-button span:last-child {
+        display: none; /* Hide the "Back" text on mobile, just show the arrow */
+    }
+}
 
     /* Adjust message area for mobile */
     .message-area {

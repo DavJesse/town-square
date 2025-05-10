@@ -193,7 +193,7 @@ function setupScrollHandler() {
   const SCROLL_THRESHOLD = 100;
 
   // Use throttling to prevent excessive API calls
-  // 300ms is a good balance between responsiveness and preventing spam
+  // 2s is a good balance between responsiveness and preventing spam
   const handleScroll = throttle(async function () {
     // Only proceed if we have a selected user and we're not already loading
     if (isLoading || !selectedUser) return;
@@ -243,7 +243,7 @@ function setupScrollHandler() {
         isLoading = false;
       }
     }
-  }, 300); // 300ms throttle time
+  }, 2000); // 2s throttle time
 
   messageArea.addEventListener('scroll', handleScroll);
 
@@ -406,7 +406,6 @@ function showNotification(msg) {
  * Fetch all users from the server
  */
 async function fetchAllUsers() {
-  console.log("TRY FETCH USERS");
   try {
     // Add a small delay to ensure the session is properly established
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -796,97 +795,203 @@ function renderChatInterface(user) {
   const app = document.getElementById('app');
   if (!app) return;
 
-  app.innerHTML = `
-    <div class="chat-container">
-      <!-- Mini notification for new messages -->
-      <div id="mini-notification" class="fixed top-4 right-4 z-50 p-4 bg-transparent text-transparent rounded transition-all duration-300"></div>
+  // Clear the app container
+  app.innerHTML = "";
 
-      <!-- Chat Sidebar -->
-      <div class="chat-sidebar">
-        <div class="sidebar-header">
-          <h2 class="sidebar-title">Messages</h2>
-          <div class="search-container">
-            <input type="text" class="search-input" placeholder="Search users...">
-          </div>
-        </div>
-        <div class="users-container">
-          <ul id="online-users-list" class="user-list">
-            <!-- User categories and lists will be populated here -->
-          </ul>
-        </div>
-      </div>
+  // Import and render the navbar
+  import('/static/js/navbar.js').then(module => {
+    const { renderNavBar } = module;
+    renderNavBar();
 
-      <!-- Main Chat Area -->
-      <div class="chat-main">
-        <div class="chat-header">
-          <button id="mobile-toggle" class="mobile-toggle">
-            <span class="mobile-toggle-icon">👥</span>
-          </button>
-          <h3 id="chat-title" class="chat-title">Chat with ${user.nickname}</h3>
-          <button id="back-button" class="back-button">
-            <span class="back-icon">←</span>
-            <span>Back</span>
-          </button>
-        </div>
+    // Create the chat page container
+    const chatPageContainer = document.createElement('div');
+    chatPageContainer.id = 'chat_page';
+    chatPageContainer.classList.add('chat-page-container');
+    app.appendChild(chatPageContainer);
 
-        <div class="message-container">
-          <div id="message-area" class="message-area">
-            <!-- Messages will appear here -->
-          </div>
+    // Create the chat container
+    const chatContainer = document.createElement('div');
+    chatContainer.classList.add('chat-container');
+    chatPageContainer.appendChild(chatContainer);
 
-          <!-- New message notification that appears when user has scrolled up -->
-          <div id="new-message-notification" class="new-message-notification">
-            New messages ↓
-          </div>
-        </div>
+    // Add mini notification
+    const miniNotification = document.createElement('div');
+    miniNotification.id = 'mini-notification';
+    miniNotification.classList.add('mini-notification');
+    chatContainer.appendChild(miniNotification);
 
-        <div class="message-input-container">
-          <input id="message-input" class="message-input" type="text" placeholder="Type your message...">
-          <button id="send-button" class="send-button">
-            Send
-            <svg class="send-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
-  `;
+    // Create chat sidebar
+    const chatSidebar = document.createElement('div');
+    chatSidebar.classList.add('chat-sidebar');
 
-  // Add back button handler
-  const backButton = document.getElementById('back-button');
-  if (backButton) {
-    backButton.addEventListener('click', () => {
-      // Navigate back to the users list
-      history.pushState(null, "", "/chat");
-      renderUsersList();
-    });
-  }
+    // Create sidebar header
+    const sidebarHeader = document.createElement('div');
+    sidebarHeader.classList.add('sidebar-header');
 
-  // Add mobile toggle button handler
-  const mobileToggle = document.getElementById('mobile-toggle');
-  const chatSidebar = document.querySelector('.chat-sidebar');
-  if (mobileToggle && chatSidebar) {
-    mobileToggle.addEventListener('click', () => {
-      // Toggle the active class on the sidebar
-      chatSidebar.classList.toggle('active');
-    });
+    const sidebarTitle = document.createElement('h2');
+    sidebarTitle.classList.add('sidebar-title');
+    sidebarTitle.textContent = 'Messages';
 
-    // Close sidebar when a user is selected on mobile
-    const userItems = chatSidebar.querySelectorAll('.user-item');
-    userItems.forEach(item => {
-      item.addEventListener('click', () => {
-        chatSidebar.classList.remove('active');
+    const searchContainer = document.createElement('div');
+    searchContainer.classList.add('search-container');
+
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.classList.add('search-input');
+    searchInput.placeholder = 'Search users...';
+
+    searchContainer.appendChild(searchInput);
+    sidebarHeader.appendChild(sidebarTitle);
+    sidebarHeader.appendChild(searchContainer);
+    chatSidebar.appendChild(sidebarHeader);
+
+    // Create users container
+    const usersContainer = document.createElement('div');
+    usersContainer.classList.add('users-container');
+
+    const usersList = document.createElement('ul');
+    usersList.id = 'online-users-list';
+    usersList.classList.add('user-list');
+
+    usersContainer.appendChild(usersList);
+    chatSidebar.appendChild(usersContainer);
+    chatContainer.appendChild(chatSidebar);
+
+    // Create main chat area
+    const chatMain = document.createElement('div');
+    chatMain.classList.add('chat-main');
+
+    // Create chat header
+    const chatHeader = document.createElement('div');
+    chatHeader.classList.add('chat-header');
+
+    const mobileToggle = document.createElement('button');
+    mobileToggle.id = 'mobile-toggle';
+    mobileToggle.classList.add('mobile-toggle');
+
+    const mobileToggleIcon = document.createElement('span');
+    mobileToggleIcon.classList.add('mobile-toggle-icon');
+    mobileToggleIcon.textContent = '👥';
+
+    mobileToggle.appendChild(mobileToggleIcon);
+
+    const chatTitle = document.createElement('h3');
+    chatTitle.id = 'chat-title';
+    chatTitle.classList.add('chat-title');
+    chatTitle.textContent = `Chat with ${user.nickname}`;
+
+    const backButton = document.createElement('button');
+    backButton.id = 'back-button';
+    backButton.classList.add('back-button', 'navbar__button');
+
+    const backIcon = document.createElement('span');
+    backIcon.classList.add('back-icon');
+    backIcon.textContent = '←';
+
+    const backText = document.createElement('span');
+    backText.textContent = 'Back';
+
+    backButton.appendChild(backIcon);
+    backButton.appendChild(backText);
+
+    chatHeader.appendChild(mobileToggle);
+    chatHeader.appendChild(chatTitle);
+    chatHeader.appendChild(backButton);
+    chatMain.appendChild(chatHeader);
+
+    // Create message container
+    const messageContainer = document.createElement('div');
+    messageContainer.classList.add('message-container');
+
+    const messageArea = document.createElement('div');
+    messageArea.id = 'message-area';
+    messageArea.classList.add('message-area');
+
+    const newMessageNotification = document.createElement('div');
+    newMessageNotification.id = 'new-message-notification';
+    newMessageNotification.classList.add('new-message-notification');
+    newMessageNotification.textContent = 'New messages ↓';
+
+    messageContainer.appendChild(messageArea);
+    messageContainer.appendChild(newMessageNotification);
+    chatMain.appendChild(messageContainer);
+
+    // Create message input container
+    const messageInputContainer = document.createElement('div');
+    messageInputContainer.classList.add('message-input-container');
+
+    const messageInput = document.createElement('input');
+    messageInput.id = 'message-input';
+    messageInput.classList.add('message-input');
+    messageInput.type = 'text';
+    messageInput.placeholder = 'Type your message...';
+
+    const sendButton = document.createElement('button');
+    sendButton.id = 'send-button';
+    sendButton.classList.add('send-button', 'navbar__button');
+    sendButton.textContent = 'Send';
+
+    const sendIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    sendIcon.classList.add('send-icon');
+    sendIcon.setAttribute('width', '16');
+    sendIcon.setAttribute('height', '16');
+    sendIcon.setAttribute('viewBox', '0 0 24 24');
+    sendIcon.setAttribute('fill', 'none');
+    sendIcon.setAttribute('stroke', 'currentColor');
+    sendIcon.setAttribute('stroke-width', '2');
+    sendIcon.setAttribute('stroke-linecap', 'round');
+    sendIcon.setAttribute('stroke-linejoin', 'round');
+
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', '22');
+    line.setAttribute('y1', '2');
+    line.setAttribute('x2', '11');
+    line.setAttribute('y2', '13');
+
+    const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    polygon.setAttribute('points', '22 2 15 22 11 13 2 9 22 2');
+
+    sendIcon.appendChild(line);
+    sendIcon.appendChild(polygon);
+    sendButton.appendChild(sendIcon);
+
+    messageInputContainer.appendChild(messageInput);
+    messageInputContainer.appendChild(sendButton);
+    chatMain.appendChild(messageInputContainer);
+
+    chatContainer.appendChild(chatMain);
+
+    // Add back button handler
+    if (backButton) {
+      backButton.addEventListener('click', () => {
+        // Navigate back to the users list
+        history.pushState(null, "", "/chat");
+        renderUsersList();
       });
-    });
-  }
+    }
 
-  // Fetch users to populate the sidebar
-  fetchAllUsers();
+    // Add mobile toggle button handler
+    if (mobileToggle && chatSidebar) {
+      mobileToggle.addEventListener('click', () => {
+        // Toggle the active class on the sidebar
+        chatSidebar.classList.toggle('active');
+      });
 
-  // Re-setup UI components after rendering
-  setupUI();
+      // Close sidebar when a user is selected on mobile
+      const userItems = chatSidebar.querySelectorAll('.user-item');
+      userItems.forEach(item => {
+        item.addEventListener('click', () => {
+          chatSidebar.classList.remove('active');
+        });
+      });
+    }
+
+    // Fetch users to populate the sidebar
+    fetchAllUsers();
+
+    // Re-setup UI components after rendering
+    setupUI();
+  });
 }
 
 /**
@@ -896,39 +1001,97 @@ function renderUsersList() {
   const app = document.getElementById('app');
   if (!app) return;
 
-  app.innerHTML = `
-    <div class="chat-container">
-      <!-- Mini notification for new messages -->
-      <div id="mini-notification" class="fixed top-4 right-4 z-50 p-4 bg-transparent text-transparent rounded transition-all duration-300"></div>
+  // Clear the app container
+  app.innerHTML = "";
 
-      <!-- Chat Sidebar -->
-      <div class="chat-sidebar">
-        <div class="sidebar-header">
-          <h2 class="sidebar-title">Messages</h2>
-          <div class="search-container">
-            <input type="text" class="search-input" placeholder="Search users...">
-          </div>
-        </div>
-        <div class="users-container">
-          <ul id="online-users-list" class="user-list">
-            <!-- User categories and lists will be populated here -->
-          </ul>
-        </div>
-      </div>
+  // Import and render the navbar
+  import('/static/js/navbar.js').then(module => {
+    const { renderNavBar } = module;
+    renderNavBar();
 
-      <!-- Main Chat Area (Empty State) -->
-      <div class="chat-main">
-        <div class="empty-state">
-          <div class="empty-state-icon">💬</div>
-          <h2 class="empty-state-title">Select a conversation</h2>
-          <p class="empty-state-text">Choose a user from the sidebar to start chatting</p>
-        </div>
-      </div>
-    </div>
-  `;
+    // Create the chat page container
+    const chatPageContainer = document.createElement('div');
+    chatPageContainer.id = 'chat_page';
+    chatPageContainer.classList.add('chat-page-container');
+    app.appendChild(chatPageContainer);
 
-  // Fetch users after rendering the list view
-  fetchAllUsers();
+    // Create the chat container
+    const chatContainer = document.createElement('div');
+    chatContainer.classList.add('chat-container');
+    chatPageContainer.appendChild(chatContainer);
+
+    // Add mini notification
+    const miniNotification = document.createElement('div');
+    miniNotification.id = 'mini-notification';
+    miniNotification.classList.add('mini-notification');
+    chatContainer.appendChild(miniNotification);
+
+    // Create chat sidebar
+    const chatSidebar = document.createElement('div');
+    chatSidebar.classList.add('chat-sidebar');
+
+    // Create sidebar header
+    const sidebarHeader = document.createElement('div');
+    sidebarHeader.classList.add('sidebar-header');
+
+    const sidebarTitle = document.createElement('h2');
+    sidebarTitle.classList.add('sidebar-title');
+    sidebarTitle.textContent = 'Messages';
+
+    const searchContainer = document.createElement('div');
+    searchContainer.classList.add('search-container');
+
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.classList.add('search-input');
+    searchInput.placeholder = 'Search users...';
+
+    searchContainer.appendChild(searchInput);
+    sidebarHeader.appendChild(sidebarTitle);
+    sidebarHeader.appendChild(searchContainer);
+    chatSidebar.appendChild(sidebarHeader);
+
+    // Create users container
+    const usersContainer = document.createElement('div');
+    usersContainer.classList.add('users-container');
+
+    const usersList = document.createElement('ul');
+    usersList.id = 'online-users-list';
+    usersList.classList.add('user-list');
+
+    usersContainer.appendChild(usersList);
+    chatSidebar.appendChild(usersContainer);
+    chatContainer.appendChild(chatSidebar);
+
+    // Create main chat area with empty state
+    const chatMain = document.createElement('div');
+    chatMain.classList.add('chat-main');
+
+    const emptyState = document.createElement('div');
+    emptyState.classList.add('empty-state');
+
+    const emptyStateIcon = document.createElement('div');
+    emptyStateIcon.classList.add('empty-state-icon');
+    emptyStateIcon.textContent = '💬';
+
+    const emptyStateTitle = document.createElement('h2');
+    emptyStateTitle.classList.add('empty-state-title');
+    emptyStateTitle.textContent = 'Select a conversation';
+
+    const emptyStateText = document.createElement('p');
+    emptyStateText.classList.add('empty-state-text');
+    emptyStateText.textContent = 'Choose a user from the sidebar to start chatting';
+
+    emptyState.appendChild(emptyStateIcon);
+    emptyState.appendChild(emptyStateTitle);
+    emptyState.appendChild(emptyStateText);
+    chatMain.appendChild(emptyState);
+
+    chatContainer.appendChild(chatMain);
+
+    // Fetch users after rendering the list view
+    fetchAllUsers();
+  });
 }
 
 /**

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"sync"
 	"time"
 
 	"forum/database"
@@ -24,7 +25,10 @@ var upgrader = websocket.Upgrader{
 
 // UserConnections holds the WebSocket connections for each user.
 // key = userID
-var UserConnections = make(map[int]models.WSUser)
+var (
+	UserConnections = make(map[int]models.WSUser)
+	userConnMutex   = &sync.Mutex{} // Mutex to protect concurrent access to UserConnections
+)
 
 // HandleWebSocket handles WebSocket connections for sending and receiving messages.
 func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
@@ -62,18 +66,22 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 		// database.UpdateUserOnlineStatus(userID, false)
 		return
 	} else {
+		userConnMutex.Lock()
 		UserConnections[userID] = models.WSUser{
 			User: currentUser,
 			Conn: conn,
 		}
+		userConnMutex.Unlock()
 		log.Printf("User %d connected\n", userID)
-		database.UpdateUserOnlineStatus(userID, false)
+		database.UpdateUserOnlineStatus(userID, true)
 		BroadcastUserStatus(userID, true)
 	}
 
 	defer func() {
 		conn.Close()
+		userConnMutex.Lock()
 		delete(UserConnections, userID)
+		userConnMutex.Unlock()
 		database.UpdateUserOnlineStatus(userID, false)
 		// Broadcast offline status to all other users
 		BroadcastUserStatus(userID, false)
@@ -168,7 +176,9 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 			}
 
 			// Send to receiver if online
+			userConnMutex.Lock()
 			receiverUser, ok := UserConnections[wsMessage.ReceiverID]
+			userConnMutex.Unlock()
 			if ok {
 				if err := receiverUser.Conn.WriteMessage(websocket.TextMessage, messageJSON); err != nil {
 					log.Printf("Error sending message to receiver %d: %v", wsMessage.ReceiverID, err)
@@ -201,12 +211,20 @@ func BroadcastUserStatus(userID int, isOnline bool) {
 	}
 
 	// Broadcast to all connected users
+	userConnMutex.Lock()
+	// Create a copy of the connections to avoid holding the lock during I/O
+	connections := make(map[int]models.WSUser)
 	for id, wsUser := range UserConnections {
-		// Don't send to the user who's status is changing
 		if id != userID {
-			if err := wsUser.Conn.WriteMessage(websocket.TextMessage, messageJSON); err != nil {
-				log.Printf("Error sending status update to user %d: %v", id, err)
-			}
+			connections[id] = wsUser
+		}
+	}
+	userConnMutex.Unlock()
+
+	// Send messages without holding the lock
+	for id, wsUser := range connections {
+		if err := wsUser.Conn.WriteMessage(websocket.TextMessage, messageJSON); err != nil {
+			log.Printf("Error sending status update to user %d: %v", id, err)
 		}
 	}
 }
@@ -289,6 +307,7 @@ func GetAllUsers() http.HandlerFunc {
 
 		// Update online status based on active WebSocket connections
 		// This ensures real-time online status tracking beyond just the database timestamp
+		userConnMutex.Lock()
 		for index, user := range users {
 			if _, ok = UserConnections[user.ID]; ok {
 				users[index].IsOnline = true
@@ -296,6 +315,7 @@ func GetAllUsers() http.HandlerFunc {
 				database.UpdateUserOnlineStatus(user.ID, true)
 			}
 		}
+		userConnMutex.Unlock()
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(users)
@@ -381,7 +401,10 @@ func SendMessageHTTPHandler() http.HandlerFunc {
 		}
 
 		// Try to send to receiver if online
+		userConnMutex.Lock()
 		receiverUser, online := UserConnections[receiverID]
+		userConnMutex.Unlock()
+
 		if online {
 			messageJSON, _ := json.Marshal(messageToSend)
 			if err := receiverUser.Conn.WriteMessage(websocket.TextMessage, messageJSON); err != nil {
@@ -399,9 +422,17 @@ func SendMessageHTTPHandler() http.HandlerFunc {
 
 func LogoutWS(userID int) {
 	// If user has an active websocket connection, close it
-	if wsUser, exists := UserConnections[userID]; exists {
-		wsUser.Conn.Close()
+	userConnMutex.Lock()
+	wsUser, exists := UserConnections[userID]
+	if exists {
+		// Get the connection but delete from map under lock
 		delete(UserConnections, userID)
+		userConnMutex.Unlock()
+
+		// Close the connection outside the lock
+		wsUser.Conn.Close()
+	} else {
+		userConnMutex.Unlock()
 	}
 
 	// Broadcast status change to all connected users

@@ -10,7 +10,6 @@ let userNotifications = {}; // Track notifications per user
 let lastLoadedMessages = []; // Track the last batch of loaded messages
 let isLoading = false;
 let firstMessageId = null; // ID of the first (oldest) message loaded
-let lastMessageId = null; // ID of the last (newest) message loaded
 const limit = 10;
 
 /**
@@ -193,7 +192,7 @@ function setupScrollHandler() {
   const SCROLL_THRESHOLD = 100;
 
   // Use throttling to prevent excessive API calls
-  // 2s is a good balance between responsiveness and preventing spam
+  // 500ms is a good balance between responsiveness and preventing spam
   const handleScroll = throttle(async function () {
     // Only proceed if we have a selected user and we're not already loading
     if (isLoading || !selectedUser) return;
@@ -210,18 +209,30 @@ function setupScrollHandler() {
         return;
       }
 
-      // Add loading indicator at the top of the message area
-      const loadingIndicator = createLoadingIndicator();
+      // Add a more noticeable loading indicator at the top of the message area
+      const loadingIndicator = document.createElement('div');
+      loadingIndicator.className = 'loading-indicator';
+      loadingIndicator.innerHTML = `
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading older messages...</div>
+      `;
       messageArea.insertBefore(loadingIndicator, messageArea.firstChild);
 
       try {
         console.log(`Loading older messages: firstMessageId=${firstMessageId}, limit=${limit}`);
 
+        // Add a deliberate delay to make loading more noticeable (800ms)
+        await new Promise(resolve => setTimeout(resolve, 800));
+
         // Use the ID of the first (oldest) message as the cursor for pagination
         const messages = await fetchMessageHistory(selectedUser.id, firstMessageId, limit);
 
-        // Remove loading indicator
-        removeLoadingIndicator(loadingIndicator);
+        // Remove loading indicator with a slight delay for better UX
+        setTimeout(() => {
+          if (loadingIndicator && loadingIndicator.parentNode) {
+            loadingIndicator.parentNode.removeChild(loadingIndicator);
+          }
+        }, 200);
 
         // Check if we've reached the beginning of the conversation
         if (messages.length === 0 || messages.length < limit) {
@@ -237,42 +248,30 @@ function setupScrollHandler() {
         }
       } catch (error) {
         console.error('Error loading more messages:', error);
-        removeLoadingIndicator(loadingIndicator);
+        // Remove loading indicator if there's an error
+        if (loadingIndicator && loadingIndicator.parentNode) {
+          loadingIndicator.parentNode.removeChild(loadingIndicator);
+        }
         showToast('Error loading older messages', 'error');
       } finally {
         isLoading = false;
       }
     }
-  }, 2000); // 2s throttle time
+  }, 500); // 500ms throttle time
 
   messageArea.addEventListener('scroll', handleScroll);
 
-  // Check if we need to load more messages when the chat is first opened
-  function checkInitialScroll() {
-    // Make sure we have messages and the message area isn't filled
-    if (messageArea.scrollHeight <= messageArea.clientHeight &&
-        !isLoading &&
-        selectedUser &&
-        lastLoadedMessages &&
-        lastLoadedMessages.length >= limit) {
+  // We're not going to auto-load more messages on initial load
+  // This ensures users see the loading process when they scroll up
 
-      // Check if we already have the "Beginning of conversation" message
-      const existingEndOfHistoryMsg = messageArea.querySelector('.end-of-history-message');
-      if (existingEndOfHistoryMsg) {
-        // We've already reached the beginning, no need to load more
-        return;
-      }
-
-      // If the message area isn't filled, load more messages
-      handleScroll();
+  // Still listen for window resize events
+  window.addEventListener('resize', () => {
+    // Only check if the window is resized significantly
+    if (!isLoading && selectedUser && messageArea.scrollHeight <= messageArea.clientHeight) {
+      // If the message area is too small, we might need to load more
+      // But we'll let the user scroll to trigger loading
     }
-  }
-
-  // Check after initial messages are loaded
-  setTimeout(checkInitialScroll, 300);
-
-  // Also check when window is resized
-  window.addEventListener('resize', checkInitialScroll);
+  });
 }
 
 /**
@@ -505,10 +504,7 @@ async function fetchMessageHistory(receiverId, oldestMessageId = null, limit = 1
         firstMessageId = messageArray[0].id;
       }
 
-      // Update lastMessageId if this is the first batch
-      if (!oldestMessageId && messageArray.length > 0) {
-        lastMessageId = messageArray[messageArray.length - 1].id;
-      }
+      // We only need to track the oldest message ID for pagination
     }
 
     // Get the message area element
@@ -767,9 +763,8 @@ function navigateToChat(user) {
   userNotifications[user.id] = 0;
   updateNotificationBadges();
 
-  // Reset message IDs for fresh load
+  // Reset message ID for fresh load
   firstMessageId = null;
-  lastMessageId = null;
 
   // Update chat title
   const chatTitle = document.getElementById('chat-title');
@@ -1151,26 +1146,7 @@ function createMessageElement(msg) {
   return messageDiv;
 }
 
-/**
- * Create loading indicator for message loading
- * @returns {HTMLElement} Loading indicator element
- */
-function createLoadingIndicator() {
-  const loadingIndicator = document.createElement('div');
-  loadingIndicator.className = 'message-loading';
-  loadingIndicator.textContent = 'Loading earlier messages...';
-  return loadingIndicator;
-}
-
-/**
- * Remove loading indicator from DOM
- * @param {HTMLElement} indicator - Loading indicator element
- */
-function removeLoadingIndicator(indicator) {
-  if (indicator && indicator.parentNode) {
-    indicator.parentNode.removeChild(indicator);
-  }
-}
+// Removed unused loading indicator functions
 
 /**
  * Update notification badges in the user list

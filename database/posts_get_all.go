@@ -79,7 +79,7 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 		// Convert the JSON string into a slice of CommentWithCreator
 		if err := json.Unmarshal([]byte(commentsJSON), &post.Comments); err != nil {
 			log.Println("Error parsing comments JSON:", err)
-			post.Comments = []models.CommentWithCreator{} // Ensure it's an empty slice on error
+			return nil, err
 		}
 
 		posts = append(posts, post)
@@ -162,7 +162,7 @@ func GetLikedPostsByUser(userID int) ([]models.PostWithCategories, error) {
 		comments, err := GetCommentsForPost(post.UUID)
 		if err != nil {
 			log.Printf("Failed to fetch comments for post %s: %v", post.UUID, err)
-			comments = []models.CommentWithCreator{}
+			return nil, err
 		}
 		post.Comments = comments
 

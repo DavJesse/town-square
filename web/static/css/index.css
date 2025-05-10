@@ -157,7 +157,7 @@
 }
 
 #profile_title {
-    margin: auto;
+    margin: 0 auto;
 }
 
 #index_bio_container {
@@ -175,6 +175,44 @@
     margin: 5px auto auto 20px;
 }
 
+#profile_subtitle {
+    font-size: 17px;
+    margin: 0 auto;
+    font-weight: 500;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#profile_contact {
+    font-size: 18px;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: auto;
+}
+
+#profile_age_gender_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+#profile_age_gender_separator {
+    font-size: 18px;
+    margin: auto;
+}
+
+.profile-age-gender {
+    font-size: 16px;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: auto;
+}
+
+.profile-user-info-container {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+
 #profile_bio_text {
     font-size: 14px;
     margin: 0 auto 0 10px;
@@ -186,7 +224,7 @@
     gap: 10px;
 }
 
-#view_profile_button, #messanger_button, #profile_logout_button {
+#messanger_button, #profile_logout_button {
     width: 100%;
     padding: 10px 15px;
     background-color: #0000EE;

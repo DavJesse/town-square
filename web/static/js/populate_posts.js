@@ -117,9 +117,13 @@ export function populatePosts(posts) {
                 handleDislikePost(post.uuid, likeContainer, dislikeContainer);
             });
 
+            // Add event listener to fetch comments only if comments section is not rendered
             commentLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                populateComments(postElement, post.uuid, post.comments);
+                let commentsSection = document.getElementById('comments_section');
+                if (!commentsSection) {
+                    populateComments(postElement, post.uuid, post.comments);                    
+                }
             });
 
             // Assemble the structure
@@ -151,24 +155,35 @@ export function populatePosts(posts) {
     }
 }
 
-export function setToggleEventListeners(userPosts, likedPosts) {
+export function setToggleEventListeners(allPosts, likedPosts, userPosts) {
     // Extract page elements
-    let myPostsButton = document.getElementById('my_posts_button');
+    let allPostsButton = document.getElementById('all_posts_button');
     let likedPostsButton = document.getElementById('liked_posts_button');
+    let myPostsButton = document.getElementById('my_posts_button');
 
     // Set null values to empty array
-    userPosts = userPosts ?? [];
+    allPosts = allPosts ?? [];
     likedPosts = likedPosts ?? [];
+    userPosts = userPosts ?? [];
 
-    myPostsButton.addEventListener('click', () => {
-        myPostsButton.classList.add('active');
+    allPostsButton.addEventListener('click', () => {
+        allPostsButton.classList.add('active');
         likedPostsButton.classList.remove('active');
-        populatePosts(userPosts);
+        myPostsButton.classList.remove('active');
+        populatePosts(allPosts);
     });
 
     likedPostsButton.addEventListener('click', () => {
         likedPostsButton.classList.add('active');
+        allPostsButton.classList.remove('active');
         myPostsButton.classList.remove('active');
         populatePosts(likedPosts);
+    });
+
+    myPostsButton.addEventListener('click', () => {
+        myPostsButton.classList.add('active');
+        allPostsButton.classList.remove('active');
+        likedPostsButton.classList.remove('active');
+        populatePosts(userPosts);
     });
 }

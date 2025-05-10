@@ -30,8 +30,12 @@ export function fetchPostsPerCategory(categoryID) {
     })
 
     .then(data => {
-        // Clear current posts for repopulation
         let postsContainer = document.getElementById('posts_container');
+        let allPostsButton = document.getElementById('all_posts_button');
+        let likedPostsButton = document.getElementById('liked_posts_button');
+        let myPostsButton = document.getElementById('my_posts_button');
+
+        // Clear current posts for repopulation
         postsContainer.innerHTML = '';
 
         let categoryContainer = document.getElementById('category_content_container');
@@ -62,7 +66,16 @@ export function fetchPostsPerCategory(categoryID) {
 
         // Update posts
         populatePosts(posts);
-        setToggleEventListeners(likedPosts);
+
+        // Set active button to all posts
+        if (likedPostsButton.classList.contains('active')) {
+            likedPostsButton.classList.remove('active');
+            allPostsButton.classList.add('active');
+        } else if (myPostsButton.classList.contains('active')) {
+            myPostsButton.classList.remove('active');
+            allPostsButton.classList.add('active');
+        }
+        setToggleEventListeners(posts, likedPosts, []);
     })
 
     .catch(error => {

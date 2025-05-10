@@ -1,10 +1,23 @@
+.navbar-clusters {
+    width: 25%;
+}
+
+#navbar_left_cluster {
+    display: flex;
+    justify-content: right;
+}
+
 #navbar_center_cluster {
     display: flex;
     justify-content: space-evenly; /* Ensures even spacing */
     align-items: center;
-    width: 25%;
     margin: 0 auto; /* Centers the navbar */
     padding: 10px 0;
+}
+
+#navbar_right_cluster {
+    display: flex;
+    justify-content: left;
 }
 
 #navbar_center_cluster .material-symbols-outlined {

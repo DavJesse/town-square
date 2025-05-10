@@ -366,11 +366,21 @@ async function fetchAllUsers() {
 
     const users = await response.json();
     console.log("Fetched users:", users);
+
+    // Update the main chat users list if it exists
     updateUsersList(users);
 
+    // Also update the homepage online users list if it exists
+    const onlineUsersContent = document.getElementById('online_users_content');
+    if (onlineUsersContent) {
+      populateOnlineUsersList(users, onlineUsersContent);
+    }
+
+    return users;
   } catch (error) {
     console.error('Error fetching users:', error);
     showToast('Error loading users. Please try refreshing the page.', 'error');
+    return [];
   }
 }
 
@@ -960,5 +970,125 @@ function truncateText(text, maxLength) {
   return text.substring(0, maxLength - 3) + '...';
 }
 
+/**
+ * Create a compact user list for the homepage
+ * @param {Array} users - Array of user objects
+ * @param {HTMLElement} container - Container element to append users to
+ */
+function populateOnlineUsersList(users, container) {
+  if (!container) return;
+
+  // Clear current list
+  container.innerHTML = '';
+
+  // Filter out current user and get only online users
+  const onlineUsers = users.filter(user => user.id !== myUserId && user.is_online);
+  const offlineUsers = users.filter(user => user.id !== myUserId && !user.is_online);
+
+  if (onlineUsers.length === 0 && offlineUsers.length === 0) {
+    const emptyItem = document.createElement('div');
+    emptyItem.textContent = 'No users available';
+    emptyItem.className = 'empty-user-item';
+    container.appendChild(emptyItem);
+    return;
+  }
+
+  // Create a compact user item
+  const createCompactUserItem = (user) => {
+    const userItem = document.createElement('div');
+    userItem.className = 'compact-user-item';
+    userItem.dataset.userId = user.id;
+
+    // Create status indicator
+    const statusIndicator = document.createElement('span');
+    statusIndicator.className = `status-indicator ${user.is_online ? 'status-online' : 'status-offline'}`;
+
+    // Create user nickname
+    const userNickname = document.createElement('span');
+    userNickname.className = 'user-nickname';
+    userNickname.textContent = user.nickname;
+
+    // Add notification badge if needed
+    if (userNotifications[user.id] && userNotifications[user.id] > 0) {
+      const badge = document.createElement('span');
+      badge.className = 'notification-badge';
+      badge.textContent = userNotifications[user.id];
+      userItem.appendChild(badge);
+    }
+
+    // Assemble user item
+    userItem.appendChild(statusIndicator);
+    userItem.appendChild(userNickname);
+
+    // Add click handler to open chat
+    userItem.addEventListener('click', () => {
+      // Navigate to chat with this user
+      history.pushState(null, "", `/chat/${user.id}`);
+      navigateToChat(user);
+    });
+
+    return userItem;
+  };
+
+  // Add online users first
+  if (onlineUsers.length > 0) {
+    const onlineHeader = document.createElement('div');
+    onlineHeader.className = 'user-section-header';
+    onlineHeader.textContent = 'Online';
+    container.appendChild(onlineHeader);
+
+    // Sort online users by last message time or alphabetically
+    onlineUsers.sort((a, b) => {
+      if (a.has_chat_history && b.has_chat_history) {
+        if (a.last_message?.timestamp && b.last_message?.timestamp) {
+          return new Date(b.last_message.timestamp) - new Date(a.last_message.timestamp);
+        }
+      }
+      return a.nickname.localeCompare(b.nickname);
+    });
+
+    onlineUsers.forEach(user => {
+      container.appendChild(createCompactUserItem(user));
+    });
+  }
+
+  // Add offline users
+  if (offlineUsers.length > 0) {
+    const offlineHeader = document.createElement('div');
+    offlineHeader.className = 'user-section-header';
+    offlineHeader.textContent = 'Offline';
+    container.appendChild(offlineHeader);
+
+    // Sort offline users by last message time or alphabetically
+    offlineUsers.sort((a, b) => {
+      if (a.has_chat_history && b.has_chat_history) {
+        if (a.last_message?.timestamp && b.last_message?.timestamp) {
+          return new Date(b.last_message.timestamp) - new Date(a.last_message.timestamp);
+        }
+      }
+      return a.nickname.localeCompare(b.nickname);
+    });
+
+    // Only show first 5 offline users to save space
+    const displayedOfflineUsers = offlineUsers.slice(0, 5);
+    displayedOfflineUsers.forEach(user => {
+      container.appendChild(createCompactUserItem(user));
+    });
+
+    // Add "Show more" button if there are more offline users
+    if (offlineUsers.length > 5) {
+      const showMoreBtn = document.createElement('div');
+      showMoreBtn.className = 'show-more-btn';
+      showMoreBtn.textContent = `Show ${offlineUsers.length - 5} more...`;
+      showMoreBtn.addEventListener('click', () => {
+        // Navigate to full chat page
+        history.pushState(null, "", "/chat");
+        renderUsersList();
+      });
+      container.appendChild(showMoreBtn);
+    }
+  }
+}
+
 // Export the public API
-export { initChat, renderUsersList, renderChatInterface };
+export { initChat, renderUsersList, renderChatInterface, navigateToChat, populateOnlineUsersList, fetchAllUsers };

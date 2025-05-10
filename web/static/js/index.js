@@ -4,7 +4,7 @@ import { navigateTo } from '/static/js/routes.js';
 import { populatePosts, setToggleEventListeners } from '/static/js/populate_posts.js';
 import { renderErrorPage } from '/static/js/error.js';
 import { populateCategories } from '/static/js/populate_categories.js';
-import { initChat } from '/static/js/chat.js';
+import { initChat, populateOnlineUsersList, fetchAllUsers } from '/static/js/chat.js';
 
 export function renderIndexPage() {
     // Extract app from dom
@@ -63,12 +63,12 @@ export function renderIndexPage() {
     categoriesCard.appendChild(categoryContentContainer);
     leftCluster.appendChild(categoriesCard);
     leftCluster.appendChild(onlineUsersCard);
-   
+
     // Create container for post toggling button
     let postsButtonContainer = document.createElement('div');
     postsButtonContainer.id = 'posts_button_container';
 
-    // Create buttons to toggle prefered posts    
+    // Create buttons to toggle prefered posts
     let allPostsButton = document.createElement('button');
     let likedPostsButton = document.createElement('button');
     let myPostsButton = document.createElement('button');
@@ -90,10 +90,10 @@ export function renderIndexPage() {
     postsCard.classList.add('posts-card');
     postsCard.id = 'posts_card';
 
-    // Add Posts Section            
+    // Add Posts Section
     let postsContainer = document.createElement('div');
     postsContainer.id = 'posts_container';
-    postsCard.appendChild(postsButtonContainer);    
+    postsCard.appendChild(postsButtonContainer);
     postsCard.appendChild(postsContainer);
     centerCluster.appendChild(postsCard);
 
@@ -168,7 +168,7 @@ export function renderIndexPage() {
     rightCluster.appendChild(profileCard);
 
     // Fetch home page data from server
-    fetchIndexData(); 
+    fetchIndexData();
 }
 
 // fetch data from response
@@ -195,7 +195,7 @@ function fetchIndexData() {
         }
         return response.json();
     })
-    
+
     .then(data => {
             // Extract data for rendering
             const categories = data.categories
@@ -225,11 +225,94 @@ function fetchIndexData() {
 
             // Render categories and populate posts
             populateCategories(categories);
-            populatePosts(allPosts);    
+            populatePosts(allPosts);
             setToggleEventListeners(allPosts, likedPosts, userPosts);
+
+            // Initialize chat and fetch online users
             console.log("USERID: ", user.id);
-            console.log("USER: ", user);
             initChat(user.id);
+
+            // Get the online users container and populate it
+            const onlineUsersCard = document.getElementById('online_users_card');
+            if (onlineUsersCard) {
+                // Create a container for the online users list
+                const onlineUsersContent = document.createElement('div');
+                onlineUsersContent.id = 'online_users_content';
+                onlineUsersCard.appendChild(onlineUsersContent);
+
+                // Add some CSS styles for the online users list
+                const style = document.createElement('style');
+                style.textContent = `
+                    #online_users_content {
+                        padding: 10px;
+                        max-height: 300px;
+                        overflow-y: auto;
+                    }
+                    .compact-user-item {
+                        display: flex;
+                        align-items: center;
+                        padding: 8px;
+                        cursor: pointer;
+                        border-radius: 4px;
+                        margin-bottom: 4px;
+                        transition: background-color 0.2s;
+                    }
+                    .compact-user-item:hover {
+                        background-color: #f0f0f0;
+                    }
+                    .user-section-header {
+                        font-weight: bold;
+                        margin-top: 8px;
+                        margin-bottom: 4px;
+                        color: #555;
+                        font-size: 0.9em;
+                    }
+                    .status-indicator {
+                        width: 8px;
+                        height: 8px;
+                        border-radius: 50%;
+                        margin-right: 8px;
+                    }
+                    .status-online {
+                        background-color: #4CAF50;
+                    }
+                    .status-offline {
+                        background-color: #9e9e9e;
+                    }
+                    .user-nickname {
+                        font-size: 0.9em;
+                    }
+                    .notification-badge {
+                        background-color: #f44336;
+                        color: white;
+                        border-radius: 50%;
+                        padding: 2px 6px;
+                        font-size: 0.7em;
+                        margin-left: auto;
+                    }
+                    .show-more-btn {
+                        text-align: center;
+                        color: #2196F3;
+                        font-size: 0.8em;
+                        padding: 5px;
+                        cursor: pointer;
+                        margin-top: 5px;
+                    }
+                    .show-more-btn:hover {
+                        text-decoration: underline;
+                    }
+                    .empty-user-item {
+                        color: #757575;
+                        font-style: italic;
+                        padding: 8px;
+                        font-size: 0.9em;
+                    }
+                `;
+                document.head.appendChild(style);
+
+                // Fetch users and populate the list
+                fetchAllUsers();
+            }
     })
 
     .catch(error => {

@@ -101,25 +101,6 @@ const (
 	DISLIKES_TABLE_INDEX_post_id    = `CREATE INDEX IF NOT EXISTS idx_dislikes_post_id ON dislikes (post_id);`
 	DISLIKES_TABLE_INDEX_comment_id = `CREATE INDEX IF NOT EXISTS idx_dislikes_comment_id ON dislikes (comment_id);`
 
-	MESSAGES_TABLE_CREATE = `CREATE TABLE IF NOT EXISTS messages (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		sender_id INTEGER NOT NULL,
-		receiver_id INTEGER NOT NULL,
-		content TEXT NOT NULL,
-		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-		read_at TIMESTAMP,
-		is_deleted BOOLEAN DEFAULT false,
-		reply_to INTEGER DEFAULT NULL,
-		media_url TEXT DEFAULT NULL,
-		FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
-		FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
-	);
-	CREATE INDEX IF NOT EXISTS idx_messages_users ON messages(sender_id, receiver_id);
-	CREATE INDEX IF NOT EXISTS idx_messages_timestamp ON messages(created_at);
-	CREATE INDEX IF NOT EXISTS idx_messages_read_at ON messages(read_at);
-	CREATE INDEX IF NOT EXISTS idx_messages_reply_to ON messages(reply_to);
-	`
-
 	USER_STATUS_TABLE_CREATE = `CREATE TABLE IF NOT EXISTS user_status (
 		user_id INTEGER PRIMARY KEY,
 		is_online BOOLEAN DEFAULT false,

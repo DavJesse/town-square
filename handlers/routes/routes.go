@@ -2,14 +2,11 @@
 package routes
 
 import (
-	"html/template"
 	"net/http"
 
-	"forum/database"
 	"forum/handlers/auth"
 	"forum/handlers/comments"
 	"forum/handlers/errors"
-	"forum/handlers/messages"
 	"forum/handlers/middleware"
 	"forum/handlers/misc"
 	"forum/handlers/posts"
@@ -46,26 +43,7 @@ func RegisterRoutes() {
 	// Users
 	http.HandleFunc("GET /profile", users.ProfileRouteHandle)
 	http.HandleFunc("/api/profile-data", users.GetProfileData)
-	http.HandleFunc("/api/users", database.GetUsers)
-	http.HandleFunc("/api/users/", database.GetUserById)
-
-	// Messages (WebSocket & API)
-	messages.NewMessageHub()
-	http.Handle("/ws", middleware.AuthMiddleware(http.HandlerFunc(messages.ServeWS)))
-	http.HandleFunc("/api/messages/conversations", messages.GetConversationsHandler)
-	http.HandleFunc("/api/messages/{userId}", messages.GetMessagesHandler)
-	http.HandleFunc("/chat", serveChatPage)
 
 	// Errors
 	http.HandleFunc("/error", errors.ErrorHandler)
-}
-
-func serveChatPage(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "./web/templates/chat.html")
-}
-
-func WSProcess(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("./web/templates/chat.html"))
-
-	tmpl.Execute(w, nil)
 }

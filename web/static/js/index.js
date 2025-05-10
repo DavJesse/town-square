@@ -167,7 +167,7 @@ export function renderIndexPage() {
     rightCluster.appendChild(profileCard);
 
     // Fetch home page data from server
-    fetchIndexData();
+    fetchIndexData(); 
 }
 
 // fetch data from response

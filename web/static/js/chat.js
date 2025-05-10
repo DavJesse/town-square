@@ -490,8 +490,19 @@ function updateUsersList(users) {
 
   if (filteredUsers.length === 0) {
     const emptyItem = document.createElement('li');
-    emptyItem.textContent = 'No users available';
-    emptyItem.className = 'user-item';
+    emptyItem.className = 'user-item empty-state';
+
+    const emptyIcon = document.createElement('div');
+    emptyIcon.className = 'empty-state-icon';
+    emptyIcon.textContent = '👥';
+
+    const emptyText = document.createElement('div');
+    emptyText.className = 'empty-state-text';
+    emptyText.textContent = 'No users available';
+
+    emptyItem.appendChild(emptyIcon);
+    emptyItem.appendChild(emptyText);
+
     onlineUsersList.appendChild(emptyItem);
     return;
   }
@@ -505,30 +516,48 @@ function updateUsersList(users) {
   };
 
   // Separate users into three categories
-  const onlineUsers = filteredUsers.filter(user => user.is_online && user.has_chat_history);
-  const offlineUsers = filteredUsers.filter(user => !user.is_online && user.has_chat_history);
-  const noMessageUsers = filteredUsers.filter(user => !user.has_chat_history);
+  const usersWithMessages = filteredUsers.filter(user => user.has_chat_history);
+  const usersWithoutMessages = filteredUsers.filter(user => !user.has_chat_history);
+
+  // Further separate by online status
+  const onlineUsersWithMessages = usersWithMessages.filter(user => user.is_online);
+  const offlineUsersWithMessages = usersWithMessages.filter(user => !user.is_online);
+  const onlineUsersWithoutMessages = usersWithoutMessages.filter(user => user.is_online);
+  const offlineUsersWithoutMessages = usersWithoutMessages.filter(user => !user.is_online);
 
   // Sort users with messages by last message time (most recent first)
-  onlineUsers.sort((a, b) => new Date(b.last_message?.timestamp || 0) - new Date(a.last_message?.timestamp || 0));
-  offlineUsers.sort((a, b) => new Date(b.last_message?.timestamp || 0) - new Date(a.last_message?.timestamp || 0));
+  onlineUsersWithMessages.sort((a, b) => new Date(b.last_message?.timestamp || 0) - new Date(a.last_message?.timestamp || 0));
+  offlineUsersWithMessages.sort((a, b) => new Date(b.last_message?.timestamp || 0) - new Date(a.last_message?.timestamp || 0));
 
   // Sort users with no messages alphabetically
-  noMessageUsers.sort((a, b) => a.nickname.localeCompare(b.nickname));
+  onlineUsersWithoutMessages.sort((a, b) => a.nickname.localeCompare(b.nickname));
+  offlineUsersWithoutMessages.sort((a, b) => a.nickname.localeCompare(b.nickname));
 
   // Create user item
   const createUserItem = (user) => {
     const userItem = document.createElement('li');
     userItem.className = 'user-item';
+    if (selectedUser && selectedUser.id === user.id) {
+      userItem.classList.add('selected');
+    }
     userItem.dataset.userId = user.id;
+
+    // Create user item header (status + nickname)
+    const userItemHeader = document.createElement('div');
+    userItemHeader.className = 'user-item-header';
 
     // Create online status indicator
     const statusIndicator = document.createElement('span');
     statusIndicator.className = `status-indicator ${user.is_online ? 'status-online' : 'status-offline'}`;
+    userItemHeader.appendChild(statusIndicator);
 
     // Create user nickname element
     const userNickname = document.createElement('span');
+    userNickname.className = 'user-nickname';
     userNickname.textContent = user.nickname;
+    userItemHeader.appendChild(userNickname);
+
+    userItem.appendChild(userItemHeader);
 
     // Add notification badge if needed
     if (userNotifications[user.id] && userNotifications[user.id] > 0) {
@@ -543,19 +572,14 @@ function updateUsersList(users) {
       const messagePreview = document.createElement('div');
       messagePreview.className = 'message-preview';
       messagePreview.textContent = truncateText(user.last_message.content, 30);
+      userItem.appendChild(messagePreview);
 
       // Add timestamp
-      const timestamp = document.createElement('span');
+      const timestamp = document.createElement('div');
       timestamp.className = 'message-time';
       timestamp.textContent = formatMessageTime(new Date(user.last_message.timestamp));
-
-      userItem.appendChild(messagePreview);
       userItem.appendChild(timestamp);
     }
-
-    // Assemble user item
-    userItem.insertAdjacentElement('afterbegin', statusIndicator);
-    userItem.insertAdjacentElement('afterbegin', userNickname);
 
     // Handle click to select user
     userItem.addEventListener('click', () => {
@@ -566,26 +590,34 @@ function updateUsersList(users) {
     return userItem;
   };
 
-  // Add online users with chat history section
-  if (onlineUsers.length > 0) {
-    onlineUsersList.appendChild(createSection('Online Users'));
-    onlineUsers.forEach(user => {
+  // Add users with chat history first (online)
+  if (onlineUsersWithMessages.length > 0) {
+    onlineUsersList.appendChild(createSection('Recent Conversations (Online)'));
+    onlineUsersWithMessages.forEach(user => {
       onlineUsersList.appendChild(createUserItem(user));
     });
   }
 
-  // Add offline users with chat history section
-  if (offlineUsers.length > 0) {
-    onlineUsersList.appendChild(createSection('Offline Users'));
-    offlineUsers.forEach(user => {
+  // Add users with chat history (offline)
+  if (offlineUsersWithMessages.length > 0) {
+    onlineUsersList.appendChild(createSection('Recent Conversations (Offline)'));
+    offlineUsersWithMessages.forEach(user => {
       onlineUsersList.appendChild(createUserItem(user));
     });
   }
 
-  // Add users with no chat history section
-  if (noMessageUsers.length > 0) {
-    onlineUsersList.appendChild(createSection('New Users'));
-    noMessageUsers.forEach(user => {
+  // Add users without chat history (online)
+  if (onlineUsersWithoutMessages.length > 0) {
+    onlineUsersList.appendChild(createSection('New Users (Online)'));
+    onlineUsersWithoutMessages.forEach(user => {
+      onlineUsersList.appendChild(createUserItem(user));
+    });
+  }
+
+  // Add users without chat history (offline)
+  if (offlineUsersWithoutMessages.length > 0) {
+    onlineUsersList.appendChild(createSection('New Users (Offline)'));
+    offlineUsersWithoutMessages.forEach(user => {
       onlineUsersList.appendChild(createUserItem(user));
     });
   }
@@ -635,43 +667,48 @@ function renderChatInterface(user) {
   if (!app) return;
 
   app.innerHTML = `
-    <div class="h-screen flex">
+    <div class="chat-container">
       <!-- Mini notification for new messages -->
       <div id="mini-notification" class="fixed top-4 right-4 z-50 p-4 bg-transparent text-transparent rounded transition-all duration-300"></div>
 
-      <div class="flex w-full h-full bg-white app-container">
-        <!-- Main content area -->
-        <div class="flex-grow flex flex-col">
-          <!-- Chat Area -->
-          <div id="chat-area" class="flex-grow flex flex-col h-full">
-            <!-- App header with logo and user info -->
-            <div class="app-header flex items-center justify-between p-4 border-b">
-              <div class="flex items-center">
-                <div class="app-logo">
-                  <span class="logo-icon">💬</span>
-                </div>
-                <h3 id="chat-title" class="text-lg font-semibold ml-3">Chat with ${user.nickname}</h3>
-              </div>
-              <button id="back-button" class="back-btn">
-                <span class="back-text">Back to Users</span>
-                <span class="back-icon">←</span>
-              </button>
-            </div>
-
-            <!-- Message area with improved styling -->
-            <div id="message-area" class="flex-grow overflow-y-auto p-4 bg-gray-50 message-container">
-              <!-- Messages will appear here -->
-            </div>
-
-            <!-- Message input area with improved styling -->
-            <div class="message-input-container p-4 border-t flex">
-              <input id="message-input" class="message-input flex-grow px-4 py-3" type="text" placeholder="Type your message...">
-              <button id="send-button" class="send-button">
-                <span>Send</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-              </button>
-            </div>
+      <!-- Chat Sidebar -->
+      <div class="chat-sidebar">
+        <div class="sidebar-header">
+          <h2 class="sidebar-title">Messages</h2>
+          <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search users...">
           </div>
+        </div>
+        <div class="users-container">
+          <ul id="online-users-list" class="user-list">
+            <!-- User categories and lists will be populated here -->
+          </ul>
+        </div>
+      </div>
+
+      <!-- Main Chat Area -->
+      <div class="chat-main">
+        <div class="chat-header">
+          <h3 id="chat-title" class="chat-title">Chat with ${user.nickname}</h3>
+          <button id="back-button" class="back-button">
+            <span class="back-icon">←</span>
+            <span>Back</span>
+          </button>
+        </div>
+
+        <div id="message-area" class="message-area">
+          <!-- Messages will appear here -->
+        </div>
+
+        <div class="message-input-container">
+          <input id="message-input" class="message-input" type="text" placeholder="Type your message...">
+          <button id="send-button" class="send-button">
+            Send
+            <svg class="send-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -687,6 +724,9 @@ function renderChatInterface(user) {
     });
   }
 
+  // Fetch users to populate the sidebar
+  fetchAllUsers();
+
   // Re-setup UI components after rendering
   setupUI();
 }
@@ -699,37 +739,31 @@ function renderUsersList() {
   if (!app) return;
 
   app.innerHTML = `
-    <div class="h-screen flex">
+    <div class="chat-container">
       <!-- Mini notification for new messages -->
       <div id="mini-notification" class="fixed top-4 right-4 z-50 p-4 bg-transparent text-transparent rounded transition-all duration-300"></div>
 
-      <div class="flex w-full h-full bg-white app-container">
-        <!-- Sidebar for users -->
-        <div id="sidebar" class="sidebar w-80 flex flex-col h-full">
-          <div class="sidebar-header p-4 border-b border-gray-200">
-            <h2 class="text-lg font-semibold">Contacts</h2>
-            <div class="search-container mt-2">
-              <input type="text" class="search-input" placeholder="Search users...">
-              <span class="search-icon">🔍</span>
-            </div>
-          </div>
-          <div class="overflow-y-auto flex-grow">
-            <ul id="online-users-list" class="user-list divide-y divide-gray-200">
-              <!-- User categories and lists will be populated here -->
-            </ul>
+      <!-- Chat Sidebar -->
+      <div class="chat-sidebar">
+        <div class="sidebar-header">
+          <h2 class="sidebar-title">Messages</h2>
+          <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search users...">
           </div>
         </div>
+        <div class="users-container">
+          <ul id="online-users-list" class="user-list">
+            <!-- User categories and lists will be populated here -->
+          </ul>
+        </div>
+      </div>
 
-        <!-- Main content area -->
-        <div class="flex-grow flex flex-col">
-          <!-- Empty state for chat area -->
-          <div class="flex-grow flex flex-col items-center justify-center">
-            <div class="text-center p-8">
-              <div class="text-6xl mb-4">💬</div>
-              <h2 class="text-2xl font-semibold mb-2">Chat Application</h2>
-              <p class="text-gray-500">Select a user from the sidebar to start chatting</p>
-            </div>
-          </div>
+      <!-- Main Chat Area (Empty State) -->
+      <div class="chat-main">
+        <div class="empty-state">
+          <div class="empty-state-icon">💬</div>
+          <h2 class="empty-state-title">Select a conversation</h2>
+          <p class="empty-state-text">Choose a user from the sidebar to start chatting</p>
         </div>
       </div>
     </div>

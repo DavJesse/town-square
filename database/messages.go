@@ -23,16 +23,16 @@ func InsertMessage(senderID, receiverID int, content string, timestamp time.Time
 // GetLastMessage gets the last message between two users.
 func GetLastMessage(userID1, userID2 int) (models.Message, error) {
 	query := `
-		SELECT 
-			m.id, 
-			m.sender_id, 
-			m.receiver_id, 
-			m.content, 
+		SELECT
+			m.id,
+			m.sender_id,
+			m.receiver_id,
+			m.content,
 			m.timestamp,
 			u.nickname as sender_nickname
 		FROM messages m
 		JOIN users u ON m.sender_id = u.id
-		WHERE (m.sender_id = ? AND m.receiver_id = ?) 
+		WHERE (m.sender_id = ? AND m.receiver_id = ?)
 			OR (m.sender_id = ? AND m.receiver_id = ?)
 		ORDER BY m.timestamp DESC
 		LIMIT 1
@@ -73,16 +73,17 @@ func GetMessages(senderID, receiverID int, offset, limit int) ([]models.Message,
 	var messages []models.Message
 
 	// Modify the SQL query to properly sort messages by timestamp in ascending order
+	// Using SQLite's ? placeholders instead of PostgreSQL's $1, $2, etc.
 	query := `
-		SELECT m.id, m.sender_id, m.receiver_id, m.content, m.timestamp, u.nickname as sender_nickname
+		SELECT m.id, m.sender_id, m.receiver_id, m.content, m.timestamp, u.username as sender_nickname
 		FROM messages m
 		JOIN users u ON m.sender_id = u.id
-		WHERE (m.sender_id = $1 AND m.receiver_id = $2) OR (m.sender_id = $2 AND m.receiver_id = $1)
+		WHERE (m.sender_id = ? AND m.receiver_id = ?) OR (m.sender_id = ? AND m.receiver_id = ?)
 		ORDER BY m.timestamp DESC
-		LIMIT $3 OFFSET $4
+		LIMIT ? OFFSET ?
 	`
 
-	rows, err := db.Query(query, senderID, receiverID, limit, offset)
+	rows, err := db.Query(query, senderID, receiverID, receiverID, senderID, limit, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -90,14 +91,20 @@ func GetMessages(senderID, receiverID int, offset, limit int) ([]models.Message,
 
 	for rows.Next() {
 		var msg models.Message
-		var timestamp time.Time
+		var timestampStr string // SQLite returns dates as strings
 
-		err := rows.Scan(&msg.ID, &msg.SenderID, &msg.ReceiverID, &msg.Content, &timestamp, &msg.SenderNickname)
+		err := rows.Scan(&msg.ID, &msg.SenderID, &msg.ReceiverID, &msg.Content, &timestampStr, &msg.SenderNickname)
 		if err != nil {
 			return nil, err
 		}
 
-		msg.Timestamp = timestamp
+		// Parse the timestamp
+		msg.Timestamp, err = time.Parse("2006-01-02 15:04:05", timestampStr)
+		if err != nil {
+			// If parsing fails, just use current time
+			msg.Timestamp = time.Now()
+		}
+
 		messages = append(messages, msg)
 	}
 

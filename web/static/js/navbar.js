@@ -32,18 +32,6 @@ export function renderNavBar() {
   
   centerCluster.appendChild(homeIconLink);
   
-  // Create like icon
-  let likeIconLink = document.createElement('a');
-  likeIconLink.href = '/liked-posts';
-  
-  let likeIcon = document.createElement('span');
-  likeIcon.classList.add('material-symbols-outlined');
-  likeIcon.id = 'like_icon';
-  likeIcon.textContent = 'thumb_up';
-  likeIconLink.appendChild(likeIcon);
-  
-  centerCluster.appendChild(likeIconLink);
-  
   // Create chat icon
   let chatIconLink = document.createElement('a');
   chatIconLink.href = '/chat';

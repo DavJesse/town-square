@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"html"
 	"log"
 	"strings"
 
@@ -54,6 +55,7 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 	defer rows.Close()
 
 	var posts []models.PostWithUsername
+	var postContent string
 	var commentsJSON string
 
 	for rows.Next() {
@@ -61,7 +63,7 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 		err := rows.Scan(
 			&post.UUID,
 			&post.Title,
-			&post.Content,
+			&postContent,
 			&post.Media,
 			&post.CreatedAt,
 			&post.CreatorUsername,
@@ -75,6 +77,9 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 		if err != nil {
 			return nil, err
 		}
+
+		post.Content = html.UnescapeString(postContent)
+		commentsJSON = html.UnescapeString(commentsJSON)
 
 		// Convert the JSON string into a slice of CommentWithCreator
 		if err := json.Unmarshal([]byte(commentsJSON), &post.Comments); err != nil {

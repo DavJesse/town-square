@@ -35,7 +35,9 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get the user ID from the request context. This should have been added by the AuthMiddleware.
-	userID, ok := r.Context().Value("userID").(int)
+	sessionWithUsername, ok := r.Context().Value(database.SESSION_KEY).(*models.SessionWithUsername)
+	userID := sessionWithUsername.UserID
+	fmt.Println("SESSSIONWIT: ", userID)
 	if !ok {
 		log.Println("User ID not found in request context")
 		conn.Close()
@@ -47,6 +49,7 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatalf("Error getting user: %v", err)
 	}
+	fmt.Println("USER: ", currentUser.FirstName)
 
 	// Send auth_success message immediately after connection
 	authMessage := map[string]interface{}{
@@ -259,6 +262,7 @@ func GetMessagesHandler() http.HandlerFunc {
 // - Chat history information for message sorting
 // - Last message data for each user with chat history
 func GetAllUsers() http.HandlerFunc {
+	fmt.Println("ATTEMPT FETCH ALL USERS HANDLER")
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID, ok := r.Context().Value("userID").(int)
 		if !ok {
@@ -266,12 +270,15 @@ func GetAllUsers() http.HandlerFunc {
 			return
 		}
 
+		fmt.Println("FETCHING_USERS: ", userID);
 		users, err := database.GetAllUsers(userID)
+		fmt.Println("ATTEMPTED_USERS: ", users)
 		if err != nil {
 			log.Printf("Error getting users: %v", err)
 			errs.JSONErrorResponse(w, "Failed to get users", http.StatusInternalServerError)
 			return
 		}
+		fmt.Println("AFTER: ", users)
 
 		// Update online status based on active WebSocket connections
 		// This ensures real-time online status tracking beyond just the database timestamp

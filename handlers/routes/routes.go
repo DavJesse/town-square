@@ -11,6 +11,7 @@ import (
 	"forum/handlers/misc"
 	"forum/handlers/posts"
 	users "forum/handlers/users"
+	messages "forum/handlers/messages"
 )
 
 func RegisterRoutes() {
@@ -43,6 +44,12 @@ func RegisterRoutes() {
 	// Users
 	http.HandleFunc("GET /profile", users.ProfileRouteHandle)
 	http.HandleFunc("/api/profile-data", users.GetProfileData)
+
+	// messages
+	http.Handle("/ws", middleware.AuthMiddleware(http.HandlerFunc(messages.HandleWebSocket)))
+	http.Handle("/users", middleware.AuthMiddleware(messages.GetAllUsers()))
+	http.Handle("/messages", middleware.AuthMiddleware(messages.GetMessagesHandler()))
+	http.Handle("POST /send_message", middleware.AuthMiddleware(messages.SendMessageHTTPHandler()))
 
 	// Errors
 	http.HandleFunc("/error", errors.ErrorHandler)

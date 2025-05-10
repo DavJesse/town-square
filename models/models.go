@@ -46,6 +46,22 @@ type User struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+// User struct to represent a user in the system
+type UserWS struct {
+	ID            int       `json:"id"`
+	Nickname      string    `json:"nickname"`
+	Age           int       `json:"age"`
+	Gender        string    `json:"gender"`
+	FirstName     string    `json:"first_name"`
+	LastName      string    `json:"last_name"`
+	Email         string    `json:"email"`
+	PasswordHash  string    `json:"-"` // Omit this from JSON output
+	IsOnline      bool      `json:"is_online"` // Flag to indicate online status
+	HasChatHistory bool      `json:"has_chat_history"` // Flag to indicate if there's any message history
+	LastMessage   Message   `json:"last_message,omitempty"` // Last message for sorting
+	LastSeen      time.Time `json:"last_seen,omitempty"` // Last time user was seen online
+}
+
 type Session struct {
 	SessionID string    `json:"session_id"`
 	UserID    int       `json:"user_id"`

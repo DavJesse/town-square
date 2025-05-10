@@ -44,6 +44,8 @@ func IsLoggedIn(r *http.Request) (*models.SessionWithUsername, bool) {
 		return nil, false
 	}
 
+	fmt.Println("DBSESSION: ", session.UserID)
+
 	// If session is found and valid, return the session object and true indicating the user is logged in
 	return &session, true
 }

@@ -17,7 +17,7 @@ type Message struct {
 
 // WSUser holds a user and their WebSocket connection
 type WSUser struct {
-	User User
+	User UserWS
 	Conn *websocket.Conn
 }
 

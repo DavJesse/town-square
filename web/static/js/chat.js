@@ -9,7 +9,8 @@ let ws = null; // WebSocket connection
 let userNotifications = {}; // Track notifications per user
 let lastLoadedMessages = []; // Track the last batch of loaded messages
 let isLoading = false;
-let offset = 0;
+let firstMessageId = null; // ID of the first (oldest) message loaded
+let lastMessageId = null; // ID of the last (newest) message loaded
 const limit = 10;
 
 /**
@@ -63,6 +64,10 @@ function connectWebSocket() {
           // If this is the currently selected chat, display the message
           if (selectedUser && (selectedUser.id == data.message.sender_id ||
               selectedUser.id == data.message.receiver_id)) {
+
+            // No need to update pagination IDs for new messages
+            // We only care about the oldest message ID for loading older messages
+
             displayMessage(data.message);
 
             // Check if we should auto-scroll after adding the message
@@ -80,6 +85,12 @@ function connectWebSocket() {
                 const newMessageNotification = document.getElementById('new-message-notification');
                 if (newMessageNotification) {
                   newMessageNotification.classList.add('active');
+
+                  // Add click handler to scroll to bottom
+                  newMessageNotification.onclick = () => {
+                    messageArea.scrollTop = messageArea.scrollHeight;
+                    newMessageNotification.classList.remove('active');
+                  };
 
                   // Auto-hide after 5 seconds
                   setTimeout(() => {
@@ -172,7 +183,7 @@ function setupUI() {
 }
 
 /**
- * Set up scroll handler for loading older messages
+ * Set up scroll handler for loading older messages using ID-based pagination
  */
 function setupScrollHandler() {
   const messageArea = document.getElementById('message-area');
@@ -190,40 +201,39 @@ function setupScrollHandler() {
     // Check if we're near the top of the message area
     if (messageArea.scrollTop <= SCROLL_THRESHOLD && lastLoadedMessages.length >= limit) {
       isLoading = true;
-      offset += limit;
+
+      // Check if we already have the "Beginning of conversation" message
+      const existingEndOfHistoryMsg = messageArea.querySelector('.end-of-history-message');
+      if (existingEndOfHistoryMsg) {
+        // We've already reached the beginning, no need to load more
+        isLoading = false;
+        return;
+      }
 
       // Add loading indicator at the top of the message area
       const loadingIndicator = createLoadingIndicator();
       messageArea.insertBefore(loadingIndicator, messageArea.firstChild);
 
-      // Save current scroll position and height
-      const prevHeight = messageArea.scrollHeight;
-      const prevScrollTop = messageArea.scrollTop;
-
       try {
-        console.log(`Loading older messages: offset=${offset}, limit=${limit}`);
-        const messages = await fetchMessageHistory(selectedUser.id, offset, limit);
+        console.log(`Loading older messages: firstMessageId=${firstMessageId}, limit=${limit}`);
+
+        // Use the ID of the first (oldest) message as the cursor for pagination
+        const messages = await fetchMessageHistory(selectedUser.id, firstMessageId, limit);
 
         // Remove loading indicator
         removeLoadingIndicator(loadingIndicator);
 
-        if (messages.length > 0) {
-          // Calculate new scroll position to maintain the same view
-          // This ensures the user stays at the same position in the conversation
-          const newHeight = messageArea.scrollHeight;
-          const heightDifference = newHeight - prevHeight;
-
-          // Set scroll position to maintain the same view
-          messageArea.scrollTop = prevScrollTop + heightDifference;
-        }
-
-        if (messages.length < limit) {
+        // Check if we've reached the beginning of the conversation
+        if (messages.length === 0 || messages.length < limit) {
           console.log('Reached the beginning of the conversation history');
-          // Optionally show a message to the user that they've reached the beginning
-          const endOfHistoryMsg = document.createElement('div');
-          endOfHistoryMsg.className = 'end-of-history-message';
-          endOfHistoryMsg.textContent = 'Beginning of conversation';
-          messageArea.insertBefore(endOfHistoryMsg, messageArea.firstChild);
+
+          // Only add the end-of-history message if it doesn't already exist
+          if (!messageArea.querySelector('.end-of-history-message')) {
+            const endOfHistoryMsg = document.createElement('div');
+            endOfHistoryMsg.className = 'end-of-history-message';
+            endOfHistoryMsg.textContent = 'Beginning of conversation';
+            messageArea.insertBefore(endOfHistoryMsg, messageArea.firstChild);
+          }
         }
       } catch (error) {
         console.error('Error loading more messages:', error);
@@ -239,10 +249,20 @@ function setupScrollHandler() {
 
   // Check if we need to load more messages when the chat is first opened
   function checkInitialScroll() {
+    // Make sure we have messages and the message area isn't filled
     if (messageArea.scrollHeight <= messageArea.clientHeight &&
         !isLoading &&
         selectedUser &&
+        lastLoadedMessages &&
         lastLoadedMessages.length >= limit) {
+
+      // Check if we already have the "Beginning of conversation" message
+      const existingEndOfHistoryMsg = messageArea.querySelector('.end-of-history-message');
+      if (existingEndOfHistoryMsg) {
+        // We've already reached the beginning, no need to load more
+        return;
+      }
+
       // If the message area isn't filled, load more messages
       handleScroll();
     }
@@ -431,17 +451,25 @@ async function fetchAllUsers() {
 }
 
 /**
- * Fetch message history between current user and selected user
+ * Fetch message history between current user and selected user using ID-based pagination
  * @param {string|number} receiverId - ID of the user to fetch messages with
- * @param {number} offset - Number of messages to skip (for pagination)
+ * @param {number|null} oldestMessageId - ID of the oldest message loaded (for cursor-based pagination)
  * @param {number} limit - Number of messages to fetch
  * @returns {Promise<Array>} - Promise resolving to array of messages or empty array
  */
-async function fetchMessageHistory(receiverId, offset = 0, limit = 10) {
+async function fetchMessageHistory(receiverId, oldestMessageId = null, limit = 10) {
   try {
-    console.log(`Fetching messages with receiverId=${receiverId}, offset=${offset}, limit=${limit}`);
+    console.log(`Fetching messages with receiverId=${receiverId}, oldestMessageId=${oldestMessageId}, limit=${limit}`);
 
-    const response = await fetch(`/messages?receiver_id=${receiverId}&offset=${offset}&limit=${limit}`, {
+    // Build the query URL with ID-based pagination parameters
+    let url = `/messages?receiver_id=${receiverId}&limit=${limit}`;
+
+    // Add oldestMessageId if provided (for loading older messages)
+    if (oldestMessageId) {
+      url += `&last_message_id=${oldestMessageId}&direction=older`;
+    }
+
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -461,23 +489,34 @@ async function fetchMessageHistory(receiverId, offset = 0, limit = 10) {
     }
 
     const messages = await response.json();
-    console.log(`Fetched ${messages.length} messages:`, messages);
 
     // Make sure we handle null/undefined properly
     const messageArray = Array.isArray(messages) ? messages : [];
+    console.log(`Fetched ${messageArray.length} messages:`, messageArray);
 
-    // Make sure messages are in chronological order (oldest first)
-    // This is critical for proper display
-    messageArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    // Messages should already be in chronological order (oldest first) from the server
 
     // Track the last loaded batch
     lastLoadedMessages = messageArray;
+
+    // Update the first message ID for pagination (oldest message)
+    if (messageArray.length > 0) {
+      // Update firstMessageId if this is the first batch or if we found older messages
+      if (!firstMessageId || messageArray[0].id < firstMessageId) {
+        firstMessageId = messageArray[0].id;
+      }
+
+      // Update lastMessageId if this is the first batch
+      if (!oldestMessageId && messageArray.length > 0) {
+        lastMessageId = messageArray[messageArray.length - 1].id;
+      }
+    }
 
     // Get the message area element
     const messageArea = document.getElementById('message-area');
     if (!messageArea) return messageArray;
 
-    if (offset === 0) {
+    if (!oldestMessageId) {
       // For the first batch (initial load), clear the message area
       messageArea.innerHTML = '';
 
@@ -485,7 +524,6 @@ async function fetchMessageHistory(receiverId, offset = 0, limit = 10) {
       const fragment = document.createDocumentFragment();
 
       // Add all messages to the fragment in chronological order (oldest first)
-      // Messages are already sorted by timestamp ASC from the server
       messageArray.forEach(msg => {
         const messageElement = createMessageElement(msg);
         fragment.appendChild(messageElement);
@@ -500,8 +538,7 @@ async function fetchMessageHistory(receiverId, offset = 0, limit = 10) {
         messageArea.scrollTop = messageArea.scrollHeight;
       }, 50);
     } else {
-      // For subsequent batches (loading older messages), prepend them at the top
-      // since these are older messages
+      // For older messages, prepend them at the top
       const fragment = document.createDocumentFragment();
 
       // Add older messages to the fragment
@@ -510,12 +547,23 @@ async function fetchMessageHistory(receiverId, offset = 0, limit = 10) {
         fragment.appendChild(messageElement);
       });
 
+      // Save current scroll position and height
+      const prevHeight = messageArea.scrollHeight;
+      const prevScrollTop = messageArea.scrollTop;
+
       // Prepend all messages at once for better performance
       if (messageArea.firstChild) {
         messageArea.insertBefore(fragment, messageArea.firstChild);
       } else {
         messageArea.appendChild(fragment);
       }
+
+      // Calculate new scroll position to maintain the same view
+      const newHeight = messageArea.scrollHeight;
+      const heightDifference = newHeight - prevHeight;
+
+      // Set scroll position to maintain the same view
+      messageArea.scrollTop = prevScrollTop + heightDifference;
     }
 
     return messageArray;
@@ -720,8 +768,9 @@ function navigateToChat(user) {
   userNotifications[user.id] = 0;
   updateNotificationBadges();
 
-  // Reset offset for fresh load
-  offset = 0;
+  // Reset message IDs for fresh load
+  firstMessageId = null;
+  lastMessageId = null;
 
   // Update chat title
   const chatTitle = document.getElementById('chat-title');
@@ -735,8 +784,8 @@ function navigateToChat(user) {
   // Render the chat interface
   renderChatInterface(user);
 
-  // Fetch message history
-  fetchMessageHistory(user.id, 0, limit);
+  // Fetch initial message history (most recent messages)
+  fetchMessageHistory(user.id, null, limit);
 }
 
 /**

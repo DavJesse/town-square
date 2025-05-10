@@ -67,23 +67,41 @@ func GetLastMessage(userID1, userID2 int) (models.Message, error) {
 	return message, nil
 }
 
-// GetMessages retrieves messages between two users, ordered by timestamp.
-// GetMessages retrieves messages between two users with proper sorting
-func GetMessages(senderID, receiverID int, offset, limit int) ([]models.Message, error) {
+// GetMessages retrieves messages between two users using ID-based pagination
+func GetMessages(senderID, receiverID int, lastMessageID int, limit int, direction string) ([]models.Message, error) {
 	var messages []models.Message
+	var query string
+	var args []interface{}
 
-	// Ensure messages are returned in chronological order (oldest first)
-	// Using SQLite's ? placeholders instead of PostgreSQL's $1, $2, etc.
-	query := `
-		SELECT m.id, m.sender_id, m.receiver_id, m.content, m.timestamp, u.username as sender_nickname
-		FROM messages m
-		JOIN users u ON m.sender_id = u.id
-		WHERE (m.sender_id = ? AND m.receiver_id = ?) OR (m.sender_id = ? AND m.receiver_id = ?)
-		ORDER BY m.timestamp ASC
-		LIMIT ? OFFSET ?
-	`
+	// Base condition for conversation between the two users
+	baseCondition := "(m.sender_id = ? AND m.receiver_id = ?) OR (m.sender_id = ? AND m.receiver_id = ?)"
+	baseArgs := []interface{}{senderID, receiverID, receiverID, senderID}
 
-	rows, err := db.Query(query, senderID, receiverID, receiverID, senderID, limit, offset)
+	if lastMessageID > 0 && direction == "older" {
+		// Get messages older than the lastMessageID (for scrolling up)
+		query = `
+			SELECT m.id, m.sender_id, m.receiver_id, m.content, m.timestamp, u.username as sender_nickname
+			FROM messages m
+			JOIN users u ON m.sender_id = u.id
+			WHERE (` + baseCondition + `) AND m.id < ?
+			ORDER BY m.id ASC
+			LIMIT ?
+		`
+		args = append(baseArgs, lastMessageID, limit)
+	} else {
+		// Initial load - get the most recent messages
+		query = `
+			SELECT m.id, m.sender_id, m.receiver_id, m.content, m.timestamp, u.username as sender_nickname
+			FROM messages m
+			JOIN users u ON m.sender_id = u.id
+			WHERE ` + baseCondition + `
+			ORDER BY m.id DESC
+			LIMIT ?
+		`
+		args = append(baseArgs, limit)
+	}
+
+	rows, err := db.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -110,6 +128,15 @@ func GetMessages(senderID, receiverID int, offset, limit int) ([]models.Message,
 
 	if err = rows.Err(); err != nil {
 		return nil, err
+	}
+
+	// If this is the initial load, we need to reverse the order
+	// since we queried with ORDER BY id DESC
+	if lastMessageID == 0 {
+		// Reverse the slice
+		for i, j := 0, len(messages)-1; i < j; i, j = i+1, j-1 {
+			messages[i], messages[j] = messages[j], messages[i]
+		}
 	}
 
 	return messages, nil

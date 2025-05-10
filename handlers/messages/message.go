@@ -231,20 +231,31 @@ func GetMessagesHandler() http.HandlerFunc {
 		var receiverIDInt int
 		fmt.Sscanf(receiverID, "%d", &receiverIDInt)
 
-		// Get the offset and limit from the query parameters for pagination.
-		offsetStr := r.URL.Query().Get("offset")
+		// Get lastMessageID and limit from query parameters
+		lastMessageIDStr := r.URL.Query().Get("last_message_id")
 		limitStr := r.URL.Query().Get("limit")
-		fmt.Printf("Offset: %s, Limit: %s\n", offsetStr, limitStr)
-		if offsetStr == "" || limitStr == "" {
-			errs.JSONErrorResponse(w, "Offset and limit are required", http.StatusBadRequest)
-			return
+		direction := r.URL.Query().Get("direction")
+
+		// Default values
+		lastMessageID := 0
+		limit := 10
+
+		// Parse lastMessageID if provided
+		if lastMessageIDStr != "" {
+			fmt.Sscanf(lastMessageIDStr, "%d", &lastMessageID)
 		}
 
-		var offset, limit int
-		fmt.Sscanf(offsetStr, "%d", &offset)
-		fmt.Sscanf(limitStr, "%d", &limit)
+		// Parse limit if provided
+		if limitStr != "" {
+			fmt.Sscanf(limitStr, "%d", &limit)
+		}
 
-		messages, err := database.GetMessages(senderID, receiverIDInt, offset, limit)
+		// Default direction is "older" if not specified
+		if direction == "" {
+			direction = "older"
+		}
+
+		messages, err := database.GetMessages(senderID, receiverIDInt, lastMessageID, limit, direction)
 		if err != nil {
 			log.Printf("Error getting messages: %v", err)
 			errs.JSONErrorResponse(w, "Failed to get messages", http.StatusInternalServerError)

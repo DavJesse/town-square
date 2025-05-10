@@ -297,6 +297,18 @@
     justify-content: flex-end;
 }
 
+/* End of history message */
+.end-of-history-message {
+    text-align: center;
+    padding: 0.5rem;
+    margin: 1rem 0;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-style: italic;
+    background-color: var(--bg-light);
+    border-radius: 1rem;
+}
+
 .message.sent .message-time {
     color: rgba(255, 255, 255, 0.8);
 }

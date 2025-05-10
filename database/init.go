@@ -78,6 +78,7 @@ func createTables(db *sql.DB) error {
 		DISLIKES_TABLE_INDEX_user_id,
 		DISLIKES_TABLE_INDEX_post_id,
 		DISLIKES_TABLE_INDEX_comment_id,
+		MESSAGES_TABLE_CREATE,
 		USER_STATUS_TABLE_CREATE,
 	}
 

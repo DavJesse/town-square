@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	"sort"
 	"time"
 
@@ -36,11 +35,9 @@ func GetUserByEmail(email string) (models.UserWS, error) {
 
 // GetUserByID retrieves a user from the database by ID.
 func GetUserByID(id int) (models.UserWS, error) {
-	fmt.Println("GETUSERBYID: ", id)
 	var user models.UserWS
 	// Use the correct column names from the users table
 	err := db.QueryRow("SELECT id, username as nickname, first_name, last_name, email, gender, age FROM users WHERE id = ?", id).Scan(&user.ID, &user.Nickname, &user.FirstName, &user.LastName, &user.Email, &user.Gender, &user.Age)
-	fmt.Println("FETCHED_USER: ", user)
 	return user, err
 }
 
@@ -135,7 +132,6 @@ func GetAllUsers(currentUserID int) ([]models.UserWS, error) {
 
 	// For each user, get their last message with the current user
 	for i, user := range users {
-		fmt.Println("USER: ", user.FirstName)
 		if user.HasChatHistory {
 			lastMessage, err := GetLastMessage(currentUserID, user.ID)
 			if err == nil && lastMessage.ID > 0 {

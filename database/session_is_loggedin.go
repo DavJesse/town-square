@@ -15,7 +15,7 @@ func IsLoggedIn(r *http.Request) (*models.SessionWithUsername, bool) {
 	if err != nil {
 		// If the cookie is not found, return nil and false indicating no session
 		if err == http.ErrNoCookie {
-			// fmt.Println("Session cookie not present")
+			fmt.Println("Session cookie not present")
 			return nil, false
 		}
 		// Handle any other error that may occur
@@ -43,8 +43,6 @@ func IsLoggedIn(r *http.Request) (*models.SessionWithUsername, bool) {
 		fmt.Println("Session expired")
 		return nil, false
 	}
-
-	fmt.Println("DBSESSION: ", session.UserID)
 
 	// If session is found and valid, return the session object and true indicating the user is logged in
 	return &session, true

@@ -3,7 +3,6 @@ package middleware
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -28,7 +27,6 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			json.NewEncoder(w).Encode(r)
 			return
 		}
-		fmt.Println("AUTHSESS ", session.UserID)
 
 		// Check if session is expired
 		if time.Now().After(session.Expiry) {
@@ -49,8 +47,6 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		ctx := r.Context()
 		ctx = context.WithValue(ctx, database.SESSION_KEY, session)
 		r = r.WithContext(ctx)
-
-		fmt.Println("USERID: ", session.UserID)
 
 		// Proceed to the next handler
 		next.ServeHTTP(w, r)

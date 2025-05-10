@@ -7,11 +7,11 @@ import (
 	"forum/handlers/auth"
 	"forum/handlers/comments"
 	"forum/handlers/errors"
+	messages "forum/handlers/messages"
 	"forum/handlers/middleware"
 	"forum/handlers/misc"
 	"forum/handlers/posts"
 	users "forum/handlers/users"
-	messages "forum/handlers/messages"
 )
 
 func RegisterRoutes() {

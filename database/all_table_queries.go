@@ -112,17 +112,4 @@ const (
             FOREIGN KEY (receiver_id) REFERENCES users(id)
         )
     `
-	USER_STATUS_TABLE_CREATE = `CREATE TABLE IF NOT EXISTS user_status (
-		user_id INTEGER PRIMARY KEY,
-		is_online BOOLEAN DEFAULT false,
-		last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-		last_activity TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-		status_message TEXT DEFAULT NULL,
-		device_info TEXT DEFAULT NULL,
-		notification_preferences TEXT DEFAULT 'all',
-		typing_status BOOLEAN DEFAULT false,
-		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-	);
-	CREATE INDEX IF NOT EXISTS idx_user_status_last_activity ON user_status(last_activity);
-    `
 )

@@ -311,7 +311,7 @@ func GetCommentsForPost(postUUID string) ([]models.CommentWithCreator, error) {
 	}
 	defer rows.Close()
 
-	var comments []models.CommentWithCreator
+	comments := []models.CommentWithCreator{}
 
 	for rows.Next() {
 		var comment models.CommentWithCreator

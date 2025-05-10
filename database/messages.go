@@ -29,7 +29,7 @@ func GetLastMessage(userID1, userID2 int) (models.Message, error) {
 			m.receiver_id,
 			m.content,
 			m.timestamp,
-			u.nickname as sender_nickname
+			u.username as sender_nickname
 		FROM messages m
 		JOIN users u ON m.sender_id = u.id
 		WHERE (m.sender_id = ? AND m.receiver_id = ?)
@@ -72,14 +72,14 @@ func GetLastMessage(userID1, userID2 int) (models.Message, error) {
 func GetMessages(senderID, receiverID int, offset, limit int) ([]models.Message, error) {
 	var messages []models.Message
 
-	// Modify the SQL query to properly sort messages by timestamp in ascending order
+	// Modify the SQL query to properly sort messages by timestamp in ascending order (oldest first)
 	// Using SQLite's ? placeholders instead of PostgreSQL's $1, $2, etc.
 	query := `
 		SELECT m.id, m.sender_id, m.receiver_id, m.content, m.timestamp, u.username as sender_nickname
 		FROM messages m
 		JOIN users u ON m.sender_id = u.id
 		WHERE (m.sender_id = ? AND m.receiver_id = ?) OR (m.sender_id = ? AND m.receiver_id = ?)
-		ORDER BY m.timestamp DESC
+		ORDER BY m.timestamp ASC
 		LIMIT ? OFFSET ?
 	`
 

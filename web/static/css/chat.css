@@ -22,7 +22,7 @@
 /* Chat Container */
 .chat-container {
     display: flex;
-    height: 100%;
+    height: calc(100vh - 2rem); /* Subtract margin to fit in viewport */
     border-radius: 8px;
     overflow: hidden;
     box-shadow: var(--shadow-md);
@@ -33,11 +33,13 @@
 
 /* Chat Sidebar */
 .chat-sidebar {
-    width: 300px;
+    width: 280px;
+    min-width: 280px;
     border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     background-color: var(--light-bg);
+    overflow: hidden; /* Prevent sidebar from expanding */
 }
 
 .sidebar-header {
@@ -75,6 +77,7 @@
 .users-container {
     flex-grow: 1;
     overflow-y: auto;
+    height: 0; /* Force scrolling when content overflows */
 }
 
 /* Main Chat Area */
@@ -83,6 +86,8 @@
     display: flex;
     flex-direction: column;
     background-color: white;
+    overflow: hidden; /* Prevent overflow */
+    max-width: calc(100% - 280px); /* Ensure it doesn't overflow the container */
 }
 
 .chat-header {
@@ -117,11 +122,72 @@
     margin-right: 0.5rem;
 }
 
+/* Mobile toggle button */
+.mobile-toggle {
+    display: none; /* Hidden by default, shown on mobile */
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
+    background-color: white;
+    cursor: pointer;
+    margin-right: 0.5rem;
+}
+
+.mobile-toggle:hover {
+    background-color: var(--light-bg);
+}
+
+.message-container {
+    flex-grow: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 0; /* Force content to scroll when it overflows */
+    overflow: hidden; /* Hide overflow */
+}
+
 .message-area {
     flex-grow: 1;
     overflow-y: auto;
     padding: 1rem;
     background-color: var(--light-bg);
+}
+
+/* New message notification */
+.new-message-notification {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    font-size: 0.875rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.new-message-notification.active {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* End of history message */
+.end-of-history-message {
+    text-align: center;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    color: var(--text-light);
+    font-size: 0.75rem;
+    font-style: italic;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: var(--radius-md);
 }
 
 .message-input-container {
@@ -282,6 +348,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
     padding-left: 1.125rem;
+    max-width: 100%;
+    margin-top: 0.25rem;
 }
 
 .notification-badge {
@@ -381,6 +449,7 @@
 
     .chat-sidebar {
         width: 100%;
+        min-width: 100%;
         height: 100%;
         position: absolute;
         top: 0;
@@ -396,10 +465,21 @@
 
     .chat-main {
         width: 100%;
+        max-width: 100%;
     }
 
     .mobile-toggle {
         display: block;
+    }
+
+    /* Adjust message area for mobile */
+    .message-area {
+        padding: 0.5rem;
+    }
+
+    /* Make messages take up more width on mobile */
+    .message {
+        max-width: 90%;
     }
 }
 

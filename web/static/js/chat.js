@@ -64,10 +64,29 @@ function connectWebSocket() {
           if (selectedUser && (selectedUser.id == data.message.sender_id ||
               selectedUser.id == data.message.receiver_id)) {
             displayMessage(data.message);
-            // Scroll to bottom when new message arrives
+
+            // Check if we should auto-scroll after adding the message
             const messageArea = document.getElementById('message-area');
             if (messageArea) {
-              messageArea.scrollTop = messageArea.scrollHeight;
+              // We'll auto-scroll if the user is already near the bottom (within 100px)
+              const isNearBottom = messageArea.scrollTop + messageArea.clientHeight >= messageArea.scrollHeight - 100;
+              if (isNearBottom) {
+                // Use a small delay to ensure rendering is complete
+                setTimeout(() => {
+                  messageArea.scrollTop = messageArea.scrollHeight;
+                }, 10);
+              } else {
+                // If the user has scrolled up to read older messages, show a notification
+                const newMessageNotification = document.getElementById('new-message-notification');
+                if (newMessageNotification) {
+                  newMessageNotification.classList.add('active');
+
+                  // Auto-hide after 5 seconds
+                  setTimeout(() => {
+                    newMessageNotification.classList.remove('active');
+                  }, 5000);
+                }
+              }
             }
           }
 
@@ -159,10 +178,11 @@ function setupScrollHandler() {
   const messageArea = document.getElementById('message-area');
   if (!messageArea) return;
 
-  // Use a very small threshold to detect when user is near the top
-  const SCROLL_THRESHOLD = 30;
+  // Use a threshold to detect when user is near the top
+  const SCROLL_THRESHOLD = 100;
 
-  // Use a smaller throttle time for more responsive loading
+  // Use throttling to prevent excessive API calls
+  // 300ms is a good balance between responsiveness and preventing spam
   const handleScroll = throttle(async function () {
     // Only proceed if we have a selected user and we're not already loading
     if (isLoading || !selectedUser) return;
@@ -181,6 +201,7 @@ function setupScrollHandler() {
       const prevScrollTop = messageArea.scrollTop;
 
       try {
+        console.log(`Loading older messages: offset=${offset}, limit=${limit}`);
         const messages = await fetchMessageHistory(selectedUser.id, offset, limit);
 
         // Remove loading indicator
@@ -188,6 +209,7 @@ function setupScrollHandler() {
 
         if (messages.length > 0) {
           // Calculate new scroll position to maintain the same view
+          // This ensures the user stays at the same position in the conversation
           const newHeight = messageArea.scrollHeight;
           const heightDifference = newHeight - prevHeight;
 
@@ -197,19 +219,25 @@ function setupScrollHandler() {
 
         if (messages.length < limit) {
           console.log('Reached the beginning of the conversation history');
+          // Optionally show a message to the user that they've reached the beginning
+          const endOfHistoryMsg = document.createElement('div');
+          endOfHistoryMsg.className = 'end-of-history-message';
+          endOfHistoryMsg.textContent = 'Beginning of conversation';
+          messageArea.insertBefore(endOfHistoryMsg, messageArea.firstChild);
         }
       } catch (error) {
         console.error('Error loading more messages:', error);
         removeLoadingIndicator(loadingIndicator);
+        showToast('Error loading older messages', 'error');
       } finally {
         isLoading = false;
       }
     }
-  }, 200);
+  }, 300); // 300ms throttle time
 
   messageArea.addEventListener('scroll', handleScroll);
 
-  // Also check if we need to load more messages when the chat is first opened
+  // Check if we need to load more messages when the chat is first opened
   function checkInitialScroll() {
     if (messageArea.scrollHeight <= messageArea.clientHeight &&
         !isLoading &&
@@ -300,18 +328,36 @@ function displayMessage(msg) {
   const messageElement = createMessageElement(msg);
 
   // Check if we should auto-scroll after adding the message
-  // (if user is already at the bottom)
-  const shouldScroll = messageArea.scrollTop + messageArea.clientHeight >= messageArea.scrollHeight - 20;
+  // We'll auto-scroll if the user is already near the bottom (within 100px)
+  const isNearBottom = messageArea.scrollTop + messageArea.clientHeight >= messageArea.scrollHeight - 100;
 
-  // Add the message to the message area
+  // Add the new message to the message area (always at the bottom since it's the newest)
   messageArea.appendChild(messageElement);
 
-  // Scroll to bottom if we were already at the bottom
-  if (shouldScroll) {
+  // Scroll to bottom if we were already near the bottom
+  if (isNearBottom) {
     // Use a small delay to ensure rendering is complete
     setTimeout(() => {
       messageArea.scrollTop = messageArea.scrollHeight;
     }, 10);
+  } else {
+    // If the user has scrolled up to read older messages, show a notification
+    // that new messages have arrived
+    const newMessageNotification = document.getElementById('new-message-notification');
+    if (newMessageNotification) {
+      newMessageNotification.classList.add('active');
+
+      // Add click handler to scroll to bottom if not already there
+      newMessageNotification.onclick = () => {
+        messageArea.scrollTop = messageArea.scrollHeight;
+        newMessageNotification.classList.remove('active');
+      };
+
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        newMessageNotification.classList.remove('active');
+      }, 5000);
+    }
   }
 }
 
@@ -393,8 +439,7 @@ async function fetchAllUsers() {
  */
 async function fetchMessageHistory(receiverId, offset = 0, limit = 10) {
   try {
-    // Add a small delay to ensure the session is properly established
-    await new Promise(resolve => setTimeout(resolve, 100));
+    console.log(`Fetching messages with receiverId=${receiverId}, offset=${offset}, limit=${limit}`);
 
     const response = await fetch(`/messages?receiver_id=${receiverId}&offset=${offset}&limit=${limit}`, {
       method: "GET",
@@ -416,30 +461,37 @@ async function fetchMessageHistory(receiverId, offset = 0, limit = 10) {
     }
 
     const messages = await response.json();
-    console.log("Fetched messages:", messages);
+    console.log(`Fetched ${messages.length} messages:`, messages);
 
     // Make sure we handle null/undefined properly
     const messageArray = Array.isArray(messages) ? messages : [];
 
-    // Sort messages by timestamp to ensure chronological order (oldest first)
+    // Messages should already be in chronological order (oldest first) from the server
+    // But let's ensure it just in case
     messageArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
     // Track the last loaded batch
     lastLoadedMessages = messageArray;
 
-    // Clear message area if this is the first batch
+    // Get the message area element
     const messageArea = document.getElementById('message-area');
     if (!messageArea) return messageArray;
 
     if (offset === 0) {
+      // For the first batch (initial load), clear the message area
       messageArea.innerHTML = '';
 
-      // For first batch, append messages in chronological order
+      // Create a document fragment for better performance
       const fragment = document.createDocumentFragment();
+
+      // Add all messages to the fragment in chronological order (oldest first)
+      // Messages are already sorted by timestamp ASC from the server
       messageArray.forEach(msg => {
         const messageElement = createMessageElement(msg);
         fragment.appendChild(messageElement);
       });
+
+      // Append all messages at once
       messageArea.appendChild(fragment);
 
       // Scroll to bottom after loading initial messages
@@ -448,10 +500,11 @@ async function fetchMessageHistory(receiverId, offset = 0, limit = 10) {
         messageArea.scrollTop = messageArea.scrollHeight;
       }, 50);
     } else {
-      // For subsequent batches, prepend messages
+      // For subsequent batches (loading older messages), prepend them at the top
+      // since these are older messages
       const fragment = document.createDocumentFragment();
 
-      // Add messages in chronological order
+      // Add older messages to the fragment
       messageArray.forEach(msg => {
         const messageElement = createMessageElement(msg);
         fragment.appendChild(messageElement);
@@ -526,8 +579,36 @@ function updateUsersList(users) {
   const offlineUsersWithoutMessages = usersWithoutMessages.filter(user => !user.is_online);
 
   // Sort users with messages by last message time (most recent first)
-  onlineUsersWithMessages.sort((a, b) => new Date(b.last_message?.timestamp || 0) - new Date(a.last_message?.timestamp || 0));
-  offlineUsersWithMessages.sort((a, b) => new Date(b.last_message?.timestamp || 0) - new Date(a.last_message?.timestamp || 0));
+  onlineUsersWithMessages.sort((a, b) => {
+    // Check if both users have last_message
+    if (a.last_message && b.last_message) {
+      return new Date(b.last_message.timestamp) - new Date(a.last_message.timestamp);
+    }
+    // If only a has last_message, a comes first
+    else if (a.last_message) {
+      return -1;
+    }
+    // If only b has last_message, b comes first
+    else if (b.last_message) {
+      return 1;
+    }
+    // If neither has last_message, sort alphabetically
+    return a.nickname.localeCompare(b.nickname);
+  });
+
+  // Sort offline users with messages the same way
+  offlineUsersWithMessages.sort((a, b) => {
+    if (a.last_message && b.last_message) {
+      return new Date(b.last_message.timestamp) - new Date(a.last_message.timestamp);
+    }
+    else if (a.last_message) {
+      return -1;
+    }
+    else if (b.last_message) {
+      return 1;
+    }
+    return a.nickname.localeCompare(b.nickname);
+  });
 
   // Sort users with no messages alphabetically
   onlineUsersWithoutMessages.sort((a, b) => a.nickname.localeCompare(b.nickname));
@@ -689,6 +770,9 @@ function renderChatInterface(user) {
       <!-- Main Chat Area -->
       <div class="chat-main">
         <div class="chat-header">
+          <button id="mobile-toggle" class="mobile-toggle">
+            <span class="mobile-toggle-icon">👥</span>
+          </button>
           <h3 id="chat-title" class="chat-title">Chat with ${user.nickname}</h3>
           <button id="back-button" class="back-button">
             <span class="back-icon">←</span>
@@ -696,8 +780,15 @@ function renderChatInterface(user) {
           </button>
         </div>
 
-        <div id="message-area" class="message-area">
-          <!-- Messages will appear here -->
+        <div class="message-container">
+          <div id="message-area" class="message-area">
+            <!-- Messages will appear here -->
+          </div>
+
+          <!-- New message notification that appears when user has scrolled up -->
+          <div id="new-message-notification" class="new-message-notification">
+            New messages ↓
+          </div>
         </div>
 
         <div class="message-input-container">
@@ -721,6 +812,24 @@ function renderChatInterface(user) {
       // Navigate back to the users list
       history.pushState(null, "", "/chat");
       renderUsersList();
+    });
+  }
+
+  // Add mobile toggle button handler
+  const mobileToggle = document.getElementById('mobile-toggle');
+  const chatSidebar = document.querySelector('.chat-sidebar');
+  if (mobileToggle && chatSidebar) {
+    mobileToggle.addEventListener('click', () => {
+      // Toggle the active class on the sidebar
+      chatSidebar.classList.toggle('active');
+    });
+
+    // Close sidebar when a user is selected on mobile
+    const userItems = chatSidebar.querySelectorAll('.user-item');
+    userItems.forEach(item => {
+      item.addEventListener('click', () => {
+        chatSidebar.classList.remove('active');
+      });
     });
   }
 
@@ -917,17 +1026,28 @@ function showToast(message, type = 'success') {
  * @returns {Function} The throttled function
  */
 function throttle(func, limit) {
-  let inThrottle;
+  let lastFunc;
+  let lastRan;
 
   return function(...args) {
     const context = this;
 
-    if (!inThrottle) {
+    if (!lastRan) {
+      // First time being called, execute immediately
       func.apply(context, args);
-      inThrottle = true;
-      setTimeout(() => {
-        inThrottle = false;
-      }, limit);
+      lastRan = Date.now();
+    } else {
+      // Clear previous scheduled execution
+      clearTimeout(lastFunc);
+
+      // Schedule a new execution after the throttle period
+      lastFunc = setTimeout(function() {
+        // Only execute if enough time has passed since last execution
+        if ((Date.now() - lastRan) >= limit) {
+          func.apply(context, args);
+          lastRan = Date.now();
+        }
+      }, limit - (Date.now() - lastRan));
     }
   };
 }

@@ -117,9 +117,13 @@ export function populatePosts(posts) {
                 handleDislikePost(post.uuid, likeContainer, dislikeContainer);
             });
 
+            // Add event listener to fetch comments only if comments section is not rendered
             commentLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                populateComments(postElement, post.uuid, post.comments);
+                let commentsSection = document.getElementById('comments_section');
+                if (!commentsSection) {
+                    populateComments(postElement, post.uuid, post.comments);                    
+                }
             });
 
             // Assemble the structure

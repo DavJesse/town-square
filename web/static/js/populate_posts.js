@@ -121,9 +121,14 @@ export function populatePosts(posts) {
             // Add event listener to fetch comments only if comments section is not rendered
             commentLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                let commentsSection = document.getElementById('comment_input_field');
-                if (!commentsSection) {
-                    populateComments(postElement, post.uuid, post.comments);                    
+                let commentsSection = postElement.querySelector('#comments_section');
+                if (commentsSection) {
+                    let commentInput = commentsSection.querySelector('#comment_input_field');
+                    if (!commentInput) {
+                        populateComments(postElement, post.uuid, post.comments);                    
+                    }
+                } else {
+                    populateComments(postElement, post.uuid, post.comments);
                 }
             });
 

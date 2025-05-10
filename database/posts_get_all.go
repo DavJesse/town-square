@@ -315,9 +315,10 @@ func GetCommentsForPost(postUUID string) ([]models.CommentWithCreator, error) {
 
 	for rows.Next() {
 		var comment models.CommentWithCreator
+		var commentContent string
 		err := rows.Scan(
 			&comment.UUID,
-			&comment.Content,
+			&commentContent,
 			&comment.PostID,
 			&comment.CreatedAt,
 			&comment.CreatorFirstName,
@@ -330,6 +331,8 @@ func GetCommentsForPost(postUUID string) ([]models.CommentWithCreator, error) {
 		if err != nil {
 			return nil, fmt.Errorf("error scanning comment: %v", err)
 		}
+
+		comment.Content = html.UnescapeString(commentContent) // Unescape HTML entities
 
 		// Convert time to EAT
 		eatTime, err := utils.ConvertToEAT(comment.CreatedAt.String())

@@ -72,7 +72,7 @@ func GetLastMessage(userID1, userID2 int) (models.Message, error) {
 func GetMessages(senderID, receiverID int, offset, limit int) ([]models.Message, error) {
 	var messages []models.Message
 
-	// Modify the SQL query to properly sort messages by timestamp in ascending order (oldest first)
+	// Ensure messages are returned in chronological order (oldest first)
 	// Using SQLite's ? placeholders instead of PostgreSQL's $1, $2, etc.
 	query := `
 		SELECT m.id, m.sender_id, m.receiver_id, m.content, m.timestamp, u.username as sender_nickname

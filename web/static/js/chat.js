@@ -466,8 +466,8 @@ async function fetchMessageHistory(receiverId, offset = 0, limit = 10) {
     // Make sure we handle null/undefined properly
     const messageArray = Array.isArray(messages) ? messages : [];
 
-    // Messages should already be in chronological order (oldest first) from the server
-    // But let's ensure it just in case
+    // Make sure messages are in chronological order (oldest first)
+    // This is critical for proper display
     messageArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
     // Track the last loaded batch
@@ -892,22 +892,23 @@ function createMessageElement(msg) {
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('message', isSender ? 'sent' : 'received');
 
+  // Add data attribute for message ID to help with debugging
+  messageDiv.dataset.messageId = msg.id;
+
+  // Create message header with username and timestamp
+  const messageHeader = document.createElement('div');
+  messageHeader.classList.add('message-header');
+
   // Create username element (only for received messages)
   if (!isSender && msg.sender_nickname) {
-    const usernameElement = document.createElement('div');
+    const usernameElement = document.createElement('span');
     usernameElement.classList.add('message-username');
     usernameElement.textContent = msg.sender_nickname;
-    messageDiv.appendChild(usernameElement);
+    messageHeader.appendChild(usernameElement);
   }
 
-  // Create message content
-  const messageContent = document.createElement('div');
-  messageContent.classList.add('message-content');
-  messageContent.textContent = msg.content;
-  messageDiv.appendChild(messageContent);
-
   // Create timestamp
-  const messageTime = document.createElement('div');
+  const messageTime = document.createElement('span');
   messageTime.classList.add('message-time');
 
   // Format date and time
@@ -924,7 +925,16 @@ function createMessageElement(msg) {
     }
   }
   messageTime.textContent = timeText;
-  messageDiv.appendChild(messageTime);
+  messageHeader.appendChild(messageTime);
+
+  // Add header to message
+  messageDiv.appendChild(messageHeader);
+
+  // Create message content
+  const messageContent = document.createElement('div');
+  messageContent.classList.add('message-content');
+  messageContent.textContent = msg.content;
+  messageDiv.appendChild(messageContent);
 
   return messageDiv;
 }
@@ -1064,25 +1074,24 @@ function formatFullDate(date) {
   const yesterday = new Date(now);
   yesterday.setDate(yesterday.getDate() - 1);
 
-  // Format the time part
+  // Format the time part (more compact)
   const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   // If today, just show time
   if (date.toDateString() === now.toDateString()) {
-    return `Today at ${timeStr}`;
+    return timeStr;
   }
-  // If yesterday, show Yesterday + time
+  // If yesterday, show Yesterday
   else if (date.toDateString() === yesterday.toDateString()) {
-    return `Yesterday at ${timeStr}`;
+    return `Yesterday ${timeStr}`;
   }
-  // Otherwise show full date + time
+  // Otherwise show compact date + time
   else {
     const dateStr = date.toLocaleDateString([], {
-      year: 'numeric',
       month: 'short',
       day: 'numeric'
     });
-    return `${dateStr} at ${timeStr}`;
+    return `${dateStr} ${timeStr}`;
   }
 }
 

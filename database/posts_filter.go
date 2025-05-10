@@ -2,6 +2,7 @@ package database
 
 import (
 	"encoding/json"
+	"html"
 	"log"
 
 	"forum/models"
@@ -78,13 +79,14 @@ func PostsFilterByUser(userID int) ([]models.PostWithUsername, error) {
 
 	var posts []models.PostWithUsername
 	var commentsJSON string
+	var postContent string
 
 	for rows.Next() {
 		var post models.PostWithUsername
 		err := rows.Scan(
 			&post.UUID,
 			&post.Title,
-			&post.Content,
+			&postContent,
 			&post.Media,
 			&post.CreatedAt,
 			&post.CreatorUsername,
@@ -98,6 +100,10 @@ func PostsFilterByUser(userID int) ([]models.PostWithUsername, error) {
 		if err != nil {
 			return nil, err
 		}
+
+		// Unescape HTML entities
+		post.Content = html.UnescapeString(postContent)
+		commentsJSON = html.UnescapeString(commentsJSON)
 
 		// Convert the JSON string into a slice of CommentWithCreator
 		if err := json.Unmarshal([]byte(commentsJSON), &post.Comments); err != nil {

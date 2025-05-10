@@ -38,8 +38,9 @@ func GetUserByEmail(email string) (models.UserWS, error) {
 func GetUserByID(id int) (models.UserWS, error) {
 	fmt.Println("GETUSERBYID: ", id)
 	var user models.UserWS
-	err := db.QueryRow("SELECT id, username, first_name, last_name, email, gender, age FROM users WHERE id = ?", id).Scan(&user.ID, &user.Nickname, &user.FirstName, &user.LastName, &user.Email, &user.Gender, &user.Age)
-	fmt.Println("FETCHED_USER: ", user);
+	// Use the correct column names from the users table
+	err := db.QueryRow("SELECT id, username as nickname, first_name, last_name, email, gender, age FROM users WHERE id = ?", id).Scan(&user.ID, &user.Nickname, &user.FirstName, &user.LastName, &user.Email, &user.Gender, &user.Age)
+	fmt.Println("FETCHED_USER: ", user)
 	return user, err
 }
 
@@ -63,26 +64,29 @@ func GetUserIDByToken(token string) (int, error) {
 func GetAllUsers(currentUserID int) ([]models.UserWS, error) {
 	// SQLite compatible query to get all users except the current user, with their online status
 	query := `
-		SELECT 
-			u.id, 
-			u.username,
+		SELECT
+			u.id,
+			u.username as nickname,
 			u.first_name,
-			u.last_name, 
+			u.last_name,
 			u.email,
 			u.gender,
 			u.age,
-			CASE WHEN datetime(u.last_active) > datetime('now', '-5 minutes') THEN 1 ELSE 0 END as is_online,
-			u.last_active as last_seen,
 			CASE WHEN EXISTS (
-				SELECT 1 FROM messages m 
-				WHERE (m.sender_id = u.id AND m.receiver_id = ?) 
+				SELECT 1 FROM sessions s
+				WHERE s.user_id = u.id AND datetime(s.expiry) > datetime('now')
+			) THEN 1 ELSE 0 END as is_online,
+			COALESCE(u.created_at, CURRENT_TIMESTAMP) as last_seen,
+			CASE WHEN EXISTS (
+				SELECT 1 FROM messages m
+				WHERE (m.sender_id = u.id AND m.receiver_id = ?)
 				OR (m.sender_id = ? AND m.receiver_id = u.id)
 			) THEN 1 ELSE 0 END as has_messages
 		FROM users u
 		WHERE u.id != ?
-		ORDER BY 
+		ORDER BY
 			has_messages DESC, -- First show users with message history
-			nickname ASC      -- Then alphabetically by nickname
+			username ASC      -- Then alphabetically by username
 	`
 
 	rows, err := db.Query(query, currentUserID, currentUserID, currentUserID)

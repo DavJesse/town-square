@@ -36,13 +36,13 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 
 	// Get the user ID from the request context. This should have been added by the AuthMiddleware.
 	sessionWithUsername, ok := r.Context().Value(database.SESSION_KEY).(*models.SessionWithUsername)
-	userID := sessionWithUsername.UserID
-	fmt.Println("SESSSIONWIT: ", userID)
 	if !ok {
 		log.Println("User ID not found in request context")
 		conn.Close()
 		return
 	}
+	userID := sessionWithUsername.UserID
+	fmt.Println("SESSSIONWIT: ", userID)
 
 	// Store the connection.
 	currentUser, err := database.GetUserByID(userID)
@@ -217,11 +217,12 @@ func BroadcastUserStatus(userID int, isOnline bool) {
 func GetMessagesHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Get the sender and receiver IDs from the request.
-		senderID, ok := r.Context().Value("userID").(int)
+		sessionWithUsername, ok := r.Context().Value(database.SESSION_KEY).(*models.SessionWithUsername)
 		if !ok {
 			errs.JSONErrorResponse(w, "User ID not found in request context", http.StatusBadRequest)
 			return
 		}
+		senderID := sessionWithUsername.UserID
 
 		receiverID := r.URL.Query().Get("receiver_id")
 		if receiverID == "" {
@@ -264,13 +265,14 @@ func GetMessagesHandler() http.HandlerFunc {
 func GetAllUsers() http.HandlerFunc {
 	fmt.Println("ATTEMPT FETCH ALL USERS HANDLER")
 	return func(w http.ResponseWriter, r *http.Request) {
-		userID, ok := r.Context().Value("userID").(int)
+		sessionWithUsername, ok := r.Context().Value(database.SESSION_KEY).(*models.SessionWithUsername)
 		if !ok {
 			errs.JSONErrorResponse(w, "User ID not found in request context", http.StatusBadRequest)
 			return
 		}
+		userID := sessionWithUsername.UserID
 
-		fmt.Println("FETCHING_USERS: ", userID);
+		fmt.Println("FETCHING_USERS: ", userID)
 		users, err := database.GetAllUsers(userID)
 		fmt.Println("ATTEMPTED_USERS: ", users)
 		if err != nil {
@@ -305,11 +307,12 @@ func SendMessageHTTPHandler() http.HandlerFunc {
 		}
 
 		// Get user ID from context
-		senderID, ok := r.Context().Value("userID").(int)
+		sessionWithUsername, ok := r.Context().Value(database.SESSION_KEY).(*models.SessionWithUsername)
 		if !ok {
-			errs.JSONErrorResponse(w, "User ID not found", http.StatusBadRequest)
+			errs.JSONErrorResponse(w, "User ID not found in request context", http.StatusBadRequest)
 			return
 		}
+		senderID := sessionWithUsername.UserID
 
 		// Extract the message data
 		msgType, ok := msgData["type"].(string)

@@ -19,13 +19,13 @@ const limit = 10;
 function initChat(userId) {
   // Store user ID
   myUserId = userId;
-  
+
   // Connect WebSocket
   connectWebSocket();
-  
+
   // Setup UI components
   setupUI();
-  
+
   // Fetch initial user list
   fetchAllUsers();
 }
@@ -36,51 +36,80 @@ function initChat(userId) {
 function connectWebSocket() {
   // Create WebSocket connection (cookies will be sent automatically)
   const wsURL = `ws://${window.location.host}/ws`;
-  ws = new WebSocket(wsURL);
 
-  ws.onopen = () => {
-    console.log('WebSocket connected successfully');
-    fetchAllUsers();
-  };
+  try {
+    ws = new WebSocket(wsURL);
 
-  ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
+    ws.onopen = () => {
+      console.log('WebSocket connected successfully');
+      // Clear any previous connection error messages
+      showToast('Connected to chat server', 'success');
+      // Fetch users after successful connection
+      fetchAllUsers();
+    };
 
-    if (data.type === 'message') {
-      // If this is the currently selected chat, display the message
-      if (selectedUser && (selectedUser.id == data.message.sender_id ||
-          selectedUser.id == data.message.receiver_id)) {
-        displayMessage(data.message);
-        // Scroll to bottom when new message arrives
-        const messageArea = document.getElementById('message-area');
-        if (messageArea) {
-          messageArea.scrollTop = messageArea.scrollHeight;
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        console.log('WebSocket message received:', data);
+
+        if (data.type === 'auth_success') {
+          console.log('Authentication successful, user ID:', data.userID);
+          // Ensure myUserId is set correctly
+          if (data.userID && !myUserId) {
+            myUserId = data.userID;
+          }
+        } else if (data.type === 'message') {
+          // If this is the currently selected chat, display the message
+          if (selectedUser && (selectedUser.id == data.message.sender_id ||
+              selectedUser.id == data.message.receiver_id)) {
+            displayMessage(data.message);
+            // Scroll to bottom when new message arrives
+            const messageArea = document.getElementById('message-area');
+            if (messageArea) {
+              messageArea.scrollTop = messageArea.scrollHeight;
+            }
+          }
+
+          // Show notification for new message if it's from someone else
+          if (data.message.sender_id != myUserId) {
+            showNotification(data.message);
+          }
+
+          // Refresh the user list to update the latest message preview
+          fetchAllUsers();
+        } else if (data.type === 'user_status_change') {
+          // When receiving a user status change, refresh the user list
+          console.log('User status changed:', data.user);
+          fetchAllUsers();
         }
+      } catch (error) {
+        console.error('Error processing WebSocket message:', error);
+      }
+    };
+
+    ws.onclose = (event) => {
+      console.log('WebSocket disconnected. Code:', event.code, 'Reason:', event.reason);
+
+      // Show a message to the user
+      if (event.code !== 1000) { // 1000 is normal closure
+        showToast('Disconnected from chat server. Reconnecting...', 'error');
       }
 
-      // Show notification for new message if it's from someone else
-      if (data.message.sender_id != myUserId) {
-        showNotification(data.message);
-      }
+      // Try to reconnect in 3 seconds
+      setTimeout(connectWebSocket, 3000);
+    };
 
-      // Refresh the user list to update the latest message preview
-      fetchAllUsers();
-    } else if (data.type === 'user_status_change') {
-      // When receiving a user status change, refresh the user list
-      console.log('User status changed:', data.user);
-      fetchAllUsers();
-    }
-  };
-
-  ws.onclose = (event) => {
-    console.log('WebSocket disconnected. Code:', event.code, 'Reason:', event.reason);
-    // Try to reconnect in 3 seconds
-    setTimeout(connectWebSocket, 3000);
-  };
-
-  ws.onerror = (error) => {
-    console.error('WebSocket error:', error);
-  };
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+      showToast('Error connecting to chat server', 'error');
+    };
+  } catch (error) {
+    console.error('Failed to create WebSocket connection:', error);
+    showToast('Failed to connect to chat server', 'error');
+    // Try to reconnect in 5 seconds
+    setTimeout(connectWebSocket, 5000);
+  }
 }
 
 /**
@@ -224,7 +253,9 @@ function sendMessage() {
     fetch('/send_message', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        // Include credentials to ensure cookies are sent
+        'credentials': 'same-origin'
       },
       body: JSON.stringify(messageData)
     })
@@ -233,11 +264,17 @@ function sendMessage() {
         messageInput.value = '';
         return response.json();
       }
-      throw new Error('Failed to send message');
+      // If unauthorized, try to refresh the page to re-establish session
+      if (response.status === 401) {
+        showToast('Session expired. Please log in again.', 'error');
+        return null;
+      }
+      throw new Error(`Failed to send message: ${response.status}`);
     })
     .then(data => {
-      // Display the sent message directly instead of refetching all messages
-      if (data.message) {
+      // Only process if we got valid data
+      if (data && data.message) {
+        // Display the sent message directly instead of refetching all messages
         displayMessage(data.message);
         const messageArea = document.getElementById('message-area');
         if (messageArea) {
@@ -246,7 +283,7 @@ function sendMessage() {
       }
     })
     .catch(error => {
-      showToast('Error sending message', 'error');
+      showToast('Error sending message. Please try again.', 'error');
       console.error('Error sending message:', error);
     });
   }
@@ -303,20 +340,37 @@ function showNotification(msg) {
  * Fetch all users from the server
  */
 async function fetchAllUsers() {
-    console.log("TRY FETCH USERS")
+  console.log("TRY FETCH USERS");
   try {
-    const response = await fetch("/users");
+    // Add a small delay to ensure the session is properly established
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    const response = await fetch("/users", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        // Include credentials to ensure cookies are sent
+        "credentials": "same-origin"
+      }
+    });
 
     if (!response.ok) {
+      console.error(`Failed to fetch users: ${response.status}`);
+      // If unauthorized, try to refresh the page to re-establish session
+      if (response.status === 401) {
+        showToast('Session expired. Please log in again.', 'error');
+        return;
+      }
       throw new Error(`Failed to fetch users: ${response.status}`);
     }
 
     const users = await response.json();
+    console.log("Fetched users:", users);
     updateUsersList(users);
 
   } catch (error) {
     console.error('Error fetching users:', error);
-    showToast('Error loading users', 'error');
+    showToast('Error loading users. Please try refreshing the page.', 'error');
   }
 }
 
@@ -329,13 +383,30 @@ async function fetchAllUsers() {
  */
 async function fetchMessageHistory(receiverId, offset = 0, limit = 10) {
   try {
-    const response = await fetch(`/messages?receiver_id=${receiverId}&offset=${offset}&limit=${limit}`);
+    // Add a small delay to ensure the session is properly established
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    const response = await fetch(`/messages?receiver_id=${receiverId}&offset=${offset}&limit=${limit}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        // Include credentials to ensure cookies are sent
+        "credentials": "same-origin"
+      }
+    });
 
     if (!response.ok) {
+      console.error(`Failed to fetch messages: ${response.status}`);
+      // If unauthorized, try to refresh the page to re-establish session
+      if (response.status === 401) {
+        showToast('Session expired. Please log in again.', 'error');
+        return [];
+      }
       throw new Error(`Failed to fetch messages: ${response.status}`);
     }
 
     const messages = await response.json();
+    console.log("Fetched messages:", messages);
 
     // Make sure we handle null/undefined properly
     const messageArray = Array.isArray(messages) ? messages : [];
@@ -780,10 +851,10 @@ function showToast(message, type = 'success') {
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
   toast.textContent = message;
-  
+
   // Add to document
   document.body.appendChild(toast);
-  
+
   // Remove after 3 seconds
   setTimeout(() => {
     toast.classList.add('toast-hide');
@@ -803,10 +874,10 @@ function showToast(message, type = 'success') {
  */
 function throttle(func, limit) {
   let inThrottle;
-  
+
   return function(...args) {
     const context = this;
-    
+
     if (!inThrottle) {
       func.apply(context, args);
       inThrottle = true;
@@ -824,14 +895,14 @@ function throttle(func, limit) {
  */
 function formatFullDate(date) {
   if (!date) return '';
-  
+
   const now = new Date();
   const yesterday = new Date(now);
   yesterday.setDate(yesterday.getDate() - 1);
-  
+
   // Format the time part
   const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  
+
   // If today, just show time
   if (date.toDateString() === now.toDateString()) {
     return `Today at ${timeStr}`;
@@ -842,10 +913,10 @@ function formatFullDate(date) {
   }
   // Otherwise show full date + time
   else {
-    const dateStr = date.toLocaleDateString([], { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    const dateStr = date.toLocaleDateString([], {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
     return `${dateStr} at ${timeStr}`;
   }
@@ -858,11 +929,11 @@ function formatFullDate(date) {
  */
 function formatMessageTime(date) {
   if (!date) return '';
-  
+
   const now = new Date();
   const yesterday = new Date(now);
   yesterday.setDate(yesterday.getDate() - 1);
-  
+
   // If today, show time
   if (date.toDateString() === now.toDateString()) {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });

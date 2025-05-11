@@ -65,3 +65,27 @@
     width: calc(100% - 40px);
     margin-left: 10px;
 }
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: row; /* Keep items in a row */
+        flex-wrap: wrap; /* Allows wrapping */
+    }
+    
+    .navbar__title {
+        font-size: 24px;
+        text-align: left; /* Align to the left */
+        flex: 1;
+    }
+    
+    .navbar__button {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+    
+    .navbar__actions {
+        flex: 1;
+        justify-content: flex-end; /* Align actions to the right */
+    }
+    
+}

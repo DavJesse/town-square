@@ -1,8 +1,8 @@
 /* Chat Component Styles */
 :root {
-    --primary-color: #4f46e5;
+    /* --primary-color: #4f46e5; */
     --primary-hover: #4338ca;
-    --secondary-color: #ecf3f1;
+    /* --secondary-color: #ecf3f1; */
     --danger-color: #ef4444;
     --danger-hover: #dc2626;
     --light-bg: #f9fafb;
@@ -582,5 +582,4 @@
     .message {
         max-width: 90%;
     }
-}
 

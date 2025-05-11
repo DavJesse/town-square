@@ -1,6 +1,7 @@
 import { handleLikePost } from '/static/js/like_post.js';
 import { handleDislikePost } from '/static/js/dislike_post.js';
 import { populateComments } from '/static/js/populate_comments.js';
+import { formatTextWithLineBreaks } from '/static/js/posts_utils.js';
 
 export function populatePosts(posts) {
     let postsContainer = document.getElementById('posts_container');
@@ -45,7 +46,7 @@ export function populatePosts(posts) {
 
             let postContent = document.createElement('p');
             postContent.id = 'post_content';
-            postContent.textContent = post.content;
+            formatTextWithLineBreaks(post.content, postContent);
             postContentContainer.appendChild(postContent);
 
             if (post.media) {
@@ -120,9 +121,14 @@ export function populatePosts(posts) {
             // Add event listener to fetch comments only if comments section is not rendered
             commentLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                let commentsSection = document.getElementById('comments_section');
-                if (!commentsSection) {
-                    populateComments(postElement, post.uuid, post.comments);                    
+                let commentsSection = postElement.querySelector('#comments_section');
+                if (commentsSection) {
+                    let commentInput = commentsSection.querySelector('#comment_input_field');
+                    if (!commentInput) {
+                        populateComments(postElement, post.uuid, post.comments);                    
+                    }
+                } else {
+                    populateComments(postElement, post.uuid, post.comments);
                 }
             });
 

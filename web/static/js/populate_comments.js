@@ -1,6 +1,7 @@
 import { handleLikeComment } from '/static/js/like_comment.js';
 import { handleDislikeComment } from '/static/js/dislike_comment.js';
 import { fetchComments } from '/static/js/fetch_post_comments.js';
+import { formatTextWithLineBreaks } from '/static/js/posts_utils.js';
 
 export function populateComments(postCard, postID, comments) {
     let commentsSection = document.createElement('div');
@@ -109,7 +110,7 @@ export function populateComments(postCard, postID, comments) {
         let commentContentContainer = document.createElement('div');
         let commentContent = document.createElement('p');
         commentContentContainer.id = 'comment_content_text';
-        commentContent.textContent = comment.content.replace(/\n/g, '<br>');
+        formatTextWithLineBreaks(comment.content, commentContent);
         commentContentContainer.appendChild(commentContent)
         commentContainer.appendChild(commentContentContainer);
 

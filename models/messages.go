@@ -1,49 +1,38 @@
 package models
 
 import (
-	"encoding/json"
-	"fmt"
+	"github.com/gorilla/websocket"
 	"time"
 )
 
-// Message represents a chat message
+// Message struct to hold message data
 type Message struct {
-	Type       string    `json:"type"`
-	Content    string    `json:"content,omitempty"`
-	SenderID   int64     `json:"sender_id,omitempty"`
-	ReceiverID int64     `json:"receiver_id,omitempty"`
-	Timestamp  time.Time `json:"timestamp"`
-	TempID     string    `json:"temp_id,omitempty"`
+	ID             int       `json:"id"`
+	SenderID       int       `json:"sender_id"`
+	ReceiverID     int       `json:"receiver_id"`
+	Content        string    `json:"content"`
+	Timestamp      time.Time `json:"timestamp"`
+	SenderNickname string    `json:"sender_nickname"`
 }
 
-func (m *Message) Serialize() []byte {
-	data, err := json.Marshal(m)
-	if err != nil {
-		fmt.Printf("Failed to serialize message: %v", err)
-		return nil
-	}
-	return data
+// WSUser holds a user and their WebSocket connection
+type WSUser struct {
+	User UserWS
+	Conn *websocket.Conn
 }
 
-type Conversation struct {
-	OtherUserID     int64     `json:"other_user_id"`
-	Username        string    `json:"username"`
-	IsOnline        bool      `json:"is_online"`
-	LastSeen        time.Time `json:"last_seen"`
-	LastMessage     string    `json:"last_message"`
-	LastMessageTime time.Time `json:"last_message_time"`
+// Define a struct to hold validation errors.  This will make it easier to
+// send structured error responses.
+type ValidationError struct {
+	Field   string `json:"field"`
+	Message string `json:"message"`
 }
 
-// Add a new message type for status updates
-type StatusUpdateMessage struct {
-	Type     string    `json:"type"`
-	UserID   int64     `json:"user_id"`
-	IsOnline bool      `json:"is_online"`
-	LastSeen time.Time `json:"last_seen"`
-}
-
-// Add a new type for heartbeat messages
-type HeartbeatMessage struct {
-	Type      string    `json:"type"`
-	Timestamp time.Time `json:"timestamp"`
+// Message struct to hold message data for WebSocket communication
+type WSMessage struct {
+	SenderID       int    `json:"sender_id"`
+	ReceiverID     int    `json:"receiver_id"`
+	Content        string `json:"content"`
+	Timestamp      string `json:"timestamp"` // Store as string for easy transfer
+	SenderNickname string `json:"sender_nickname"`
 }

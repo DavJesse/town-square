@@ -5,19 +5,23 @@ export function renderNavBar() {
   navBarContainer.id = 'navbar_container';
   
   // Create logo link
+  let leftCluster = document.createElement('div');
   let logoHomeLink = document.createElement('a');
+  leftCluster.classList.add('navbar-clusters');
+  leftCluster.id = 'navbar_left_cluster';
   logoHomeLink.href = '/';
   
   let logo = document.createElement('h1');
-  logo.textContent = 'real-time forum';
+  logo.textContent = window.innerWidth < 769 ? 'forum' : 'real-time forum';
   logo.classList.add('navbar__title');
   
   logoHomeLink.appendChild(logo);
-  navBarContainer.appendChild(logoHomeLink);
+  leftCluster.appendChild(logoHomeLink);
+  navBarContainer.appendChild(leftCluster);
   
   // Create center navbar cluster container
   let centerCluster = document.createElement('div');
-  centerCluster.classList.add('navbar-center');
+  centerCluster.classList.add('navbar-clusters');
   centerCluster.id = 'navbar_center_cluster';
   
   // Create home icon
@@ -31,18 +35,6 @@ export function renderNavBar() {
   homeIconLink.appendChild(homeIcon);
   
   centerCluster.appendChild(homeIconLink);
-  
-  // Create like icon
-  let likeIconLink = document.createElement('a');
-  likeIconLink.href = '/liked-posts';
-  
-  let likeIcon = document.createElement('span');
-  likeIcon.classList.add('material-symbols-outlined');
-  likeIcon.id = 'like_icon';
-  likeIcon.textContent = 'thumb_up';
-  likeIconLink.appendChild(likeIcon);
-  
-  centerCluster.appendChild(likeIconLink);
   
   // Create chat icon
   let chatIconLink = document.createElement('a');
@@ -71,7 +63,7 @@ export function renderNavBar() {
   
   // Create right navbar cluster container
   let rightCluster = document.createElement('div');
-  rightCluster.classList.add('navbar-right');
+  rightCluster.classList.add('navbar-clusters');
   rightCluster.id = 'navbar_right_cluster';
   
   // Create search bar form

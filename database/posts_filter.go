@@ -2,6 +2,7 @@ package database
 
 import (
 	"encoding/json"
+	"html"
 	"log"
 
 	"forum/models"
@@ -48,9 +49,14 @@ func PostsFilterByUser(userID int) ([]models.PostWithUsername, error) {
     COALESCE(
         json_group_array(
             json_object(
-                'id', c.uuid, 
-                'content', c.content, 
-                'created_at', c.created_at, 
+                'uuid', c.uuid, 
+                'content', c.content,
+				'post_id', c.post_id,
+				'creator_first_name', cu.first_name,
+				'creator_last_name', cu.last_name,
+				'creator_username', cu.username,
+				'creator_image', cu.image, 
+                'created_at', strftime('%Y-%m-%dT%H:%M:%SZ', c.created_at), 
                 'username', cu.username
             )
         ) FILTER (WHERE c.uuid IS NOT NULL), 
@@ -73,13 +79,14 @@ func PostsFilterByUser(userID int) ([]models.PostWithUsername, error) {
 
 	var posts []models.PostWithUsername
 	var commentsJSON string
+	var postContent string
 
 	for rows.Next() {
 		var post models.PostWithUsername
 		err := rows.Scan(
 			&post.UUID,
 			&post.Title,
-			&post.Content,
+			&postContent,
 			&post.Media,
 			&post.CreatedAt,
 			&post.CreatorUsername,
@@ -94,10 +101,14 @@ func PostsFilterByUser(userID int) ([]models.PostWithUsername, error) {
 			return nil, err
 		}
 
+		// Unescape HTML entities
+		post.Content = html.UnescapeString(postContent)
+		commentsJSON = html.UnescapeString(commentsJSON)
+
 		// Convert the JSON string into a slice of CommentWithCreator
 		if err := json.Unmarshal([]byte(commentsJSON), &post.Comments); err != nil {
 			log.Println("Error parsing comments JSON:", err)
-			post.Comments = []models.CommentWithCreator{} // Ensure it's an empty slice on error
+			return nil, err
 		}
 
 		posts = append(posts, post)

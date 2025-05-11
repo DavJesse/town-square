@@ -1,5 +1,6 @@
 import { navigateTo } from '/static/js/routes.js';
 import { renderErrorPage } from '/static/js/error.js';
+import { setupImageUpload } from '/static/js/onboarding.js'
 
 export function renderCreatePostForm() {
     document.title = 'Create Post';
@@ -27,9 +28,10 @@ export function renderCreatePostForm() {
 
 
     // Create forum logo
-    let logo = document.createElement('h1');
-    logo.textContent = 'Create New Post';
-    formContainer.appendChild(logo);
+    let formTitle = document.createElement('h1');
+    formTitle.id = 'create_post_form_title';
+    formTitle.textContent = 'Create New Post';
+    formContainer.appendChild(formTitle);
 
     // Create text to capture user-generated errors
     let errorMessage = document.createElement('p');
@@ -47,7 +49,8 @@ export function renderCreatePostForm() {
     // Create title field
     let postTitle = document.createElement('input');
     postTitle.type = 'text';
-    postTitle.id = 'post_title';
+    postTitle.id = 'post_subject';
+    postTitle.classList.add('create_post_input');
     postTitle.name = 'title';
     postTitle.placeholder = 'subject of your post';
     postTitle.required = true;
@@ -56,8 +59,10 @@ export function renderCreatePostForm() {
     // Create content field
     let postContent = document.createElement('textarea');
     postContent.id = 'post_content';
+    postContent.classList.add('create_post_input');
     postContent.name = 'content';
     postContent.placeholder = 'share your thoughts';
+    postContent.maxLength = '63206';
     postContent.required = true;
     form.appendChild(postContent);
 
@@ -103,9 +108,10 @@ export function renderCreatePostForm() {
     // Create categories title
     let categoriesTitle = document.createElement('h2');
     categoriesTitle.textContent = 'Select Categories';
-    categoriesTitle.id = 'categories_title';
+    categoriesTitle.id = 'category_selection_title';
     categoriesContainer.appendChild(categoriesTitle);
 
+    setupImageUpload();
     fetchCategories(); // fetch and render categories
 
     form.addEventListener('submit', async (e) => {
@@ -137,15 +143,10 @@ export function renderCreatePostForm() {
     
     // Create submit button
     let submitButton = document.createElement('button');
+    submitButton.classList.add('upload-btn');
     submitButton.type = 'submit';
     submitButton.textContent = 'Create Post';
     form.appendChild(submitButton);
-
-    // Link js
-    let scriptTag = document.createElement('script');
-    scriptTag.src = '/static/js/onboarding.js';
-    scriptTag.defer = true;
-    app.appendChild(scriptTag);
 }
 
 function fetchCategories() {
@@ -185,21 +186,24 @@ function fetchCategories() {
 
             let leftCategoriesCluster = document.createElement('div');
             leftCategoriesCluster.id = 'left_categories_cluster';
+            leftCategoriesCluster.classList.add('categories-cluster');
             combinedCluster.appendChild(leftCategoriesCluster);
 
             let rightCategoriesCluster = document.createElement('div');
             rightCategoriesCluster.id = 'right_categories_cluster';
+            rightCategoriesCluster.classList.add('categories-cluster');
             combinedCluster.appendChild(rightCategoriesCluster);
 
             categories.forEach((category, index) => {
                 // Create category container
                 let categoryPill = document.createElement('div');
-                categoryPill.id = 'category_pill';
+                categoryPill.classList.add('category-check-options');
 
                 // Create category checkbox
                 let categoryCheckbox = document.createElement('input');
                 categoryCheckbox.type = 'checkbox';
-                categoryCheckbox.id = `category_checkbox`;
+                categoryCheckbox.id = 'category_checkbox';
+                categoryCheckbox.classList.add('category_checkbox');
                 categoryCheckbox.name = 'categories';
                 categoryCheckbox.value = category.id;
                 categoryPill.appendChild(categoryCheckbox);

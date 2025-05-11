@@ -20,10 +20,9 @@ type PostResponse struct {
 	Code       int        `json:"code,omitempty"`
 }
 
-type LikeResponse struct {
-	Success    bool   `json:"success"`
-	LikesCount int    `json:"likesCount"`
-	Message    string `json:"message"`
+type PostEngagementResponse struct {
+	LikesCount   int `json:"like_count"`
+	DislikeCount int `json:"dislike_count"`
 }
 
 type DislikeResponse struct {

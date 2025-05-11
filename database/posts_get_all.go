@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"html"
 	"log"
 	"strings"
 
@@ -34,7 +35,9 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 									'creator_last_name', cu.last_name,
 									'creator_username', cu.username,
 									'creator_image', cu.image,
-									'created_at', strftime('%Y-%m-%dT%H:%M:%SZ', c.created_at)
+									'created_at', strftime('%Y-%m-%dT%H:%M:%SZ', c.created_at),
+									'likes_count', COALESCE((SELECT COUNT(*) FROM likes l WHERE l.comment_id = c.uuid), 0),
+    								'dislikes_count', COALESCE((SELECT COUNT(*) FROM dislikes d WHERE d.comment_id = c.uuid), 0)
 									))
 	             FILTER (WHERE c.uuid IS NOT NULL), '[]') AS comments
 	FROM posts p
@@ -52,6 +55,7 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 	defer rows.Close()
 
 	var posts []models.PostWithUsername
+	var postContent string
 	var commentsJSON string
 
 	for rows.Next() {
@@ -59,7 +63,7 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 		err := rows.Scan(
 			&post.UUID,
 			&post.Title,
-			&post.Content,
+			&postContent,
 			&post.Media,
 			&post.CreatedAt,
 			&post.CreatorUsername,
@@ -74,10 +78,13 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 			return nil, err
 		}
 
+		post.Content = html.UnescapeString(postContent)
+		commentsJSON = html.UnescapeString(commentsJSON)
+
 		// Convert the JSON string into a slice of CommentWithCreator
 		if err := json.Unmarshal([]byte(commentsJSON), &post.Comments); err != nil {
 			log.Println("Error parsing comments JSON:", err)
-			post.Comments = []models.CommentWithCreator{} // Ensure it's an empty slice on error
+			return nil, err
 		}
 
 		posts = append(posts, post)
@@ -89,11 +96,14 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 func GetLikedPostsByUser(userID int) ([]models.PostWithCategories, error) {
 	query := `
 		SELECT 
-			p.uuid, 
+			p.uuid,
+			u.first_name,
+			u.last_name, 
+			u.username,
+			u.image, 
 			p.title, 
 			p.content, 
 			p.media, 
-			u.username, 
 			p.user_id, 
 			p.created_at,
 			GROUP_CONCAT(DISTINCT c.name) AS category_names,
@@ -120,13 +130,17 @@ func GetLikedPostsByUser(userID int) ([]models.PostWithCategories, error) {
 	for rows.Next() {
 		var post models.PostWithCategories
 		var categoryNames string
+		var postContent string
 
 		err := rows.Scan(
 			&post.UUID,
+			&post.CreatorFirstName,
+			&post.CreatorLastName,
+			&post.CreatorUsername,
+			&post.CreatorImage,
 			&post.Title,
-			&post.Content,
+			&postContent,
 			&post.Media,
-			&post.Username,
 			&post.UserID,
 			&post.CreatedAt,
 			&categoryNames,
@@ -136,6 +150,8 @@ func GetLikedPostsByUser(userID int) ([]models.PostWithCategories, error) {
 		if err != nil {
 			return nil, fmt.Errorf("error scanning liked posts: %v", err)
 		}
+
+		post.Content = html.UnescapeString(postContent) // Unescape HTML entities
 
 		// Convert created_at time to East African Time
 		eatTime, err := utils.ConvertToEAT(post.CreatedAt.String())
@@ -154,7 +170,7 @@ func GetLikedPostsByUser(userID int) ([]models.PostWithCategories, error) {
 		comments, err := GetCommentsForPost(post.UUID)
 		if err != nil {
 			log.Printf("Failed to fetch comments for post %s: %v", post.UUID, err)
-			comments = []models.CommentWithCreator{}
+			return nil, err
 		}
 		post.Comments = comments
 
@@ -295,13 +311,14 @@ func GetCommentsForPost(postUUID string) ([]models.CommentWithCreator, error) {
 	}
 	defer rows.Close()
 
-	var comments []models.CommentWithCreator
+	comments := []models.CommentWithCreator{}
 
 	for rows.Next() {
 		var comment models.CommentWithCreator
+		var commentContent string
 		err := rows.Scan(
 			&comment.UUID,
-			&comment.Content,
+			&commentContent,
 			&comment.PostID,
 			&comment.CreatedAt,
 			&comment.CreatorFirstName,
@@ -314,6 +331,8 @@ func GetCommentsForPost(postUUID string) ([]models.CommentWithCreator, error) {
 		if err != nil {
 			return nil, fmt.Errorf("error scanning comment: %v", err)
 		}
+
+		comment.Content = html.UnescapeString(commentContent) // Unescape HTML entities
 
 		// Convert time to EAT
 		eatTime, err := utils.ConvertToEAT(comment.CreatedAt.String())

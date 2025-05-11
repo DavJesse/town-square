@@ -12,7 +12,7 @@ export function renderNavBar() {
   logoHomeLink.href = '/';
   
   let logo = document.createElement('h1');
-  logo.textContent = 'real-time forum';
+  logo.textContent = window.innerWidth < 769 ? 'forum' : 'real-time forum';
   logo.classList.add('navbar__title');
   
   logoHomeLink.appendChild(logo);

@@ -273,9 +273,6 @@ function fetchIndexData() {
                         border-radius: 50%;
                         margin-right: 8px;
                     }
-                    .status-online {
-                        background-color: #4CAF50;
-                    }
                     .status-offline {
                         background-color: #9e9e9e;
                     }

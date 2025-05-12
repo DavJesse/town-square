@@ -2,7 +2,7 @@
 :root {
     /* --primary-color: #4f46e5; */
     --primary-hover: #4338ca;
-    /* --secondary-color: #ecf3f1; */
+    --success-color: #0bf158;
     --danger-color: #ef4444;
     --danger-hover: #dc2626;
     --light-bg: #f9fafb;
@@ -495,7 +495,7 @@
 }
 
 .toast-success {
-    background-color: var(--secondary-color);
+    background-color: var(--success-color);
 }
 
 .toast-error {

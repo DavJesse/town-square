@@ -219,7 +219,7 @@ function fetchIndexData() {
             profilePic.alt = `${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)} image`;
             profileContact.textContent = `mail: ${user.email}`;
             profileGender.textContent = `${user.gender.charAt(0).toUpperCase()}${user.gender.slice(1)}`;
-            profileAge.textContent = `${user.age} years old`;
+            profileAge.textContent = `${user.age} years`;
             bioTitle.textContent = `About ${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)}`;
             bioText.textContent = `${user.bio.charAt(0).toUpperCase()}${user.bio.slice(1)}`;
 

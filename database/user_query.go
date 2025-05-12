@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"forum/models"
 	"forum/utils"
+	"html"
 )
 
 func GetUserByEmailOrUsername(email, username string) (models.User, error) {
@@ -70,7 +71,7 @@ func GetUserbySessionID(UUID string) (models.User, error) {
 		user.Age = int(age.Int64)
 	}
 	if bio.Valid {
-		user.Bio = bio.String
+		user.Bio = html.UnescapeString(bio.String)
 	}
 	if image.Valid {
 		user.Image = image.String

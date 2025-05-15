@@ -12,8 +12,13 @@ export function renderNavBar() {
   logoHomeLink.href = '/';
   
   let logo = document.createElement('h1');
-  logo.textContent = window.innerWidth < 769 ? 'forum' : 'real-time forum';
+  logo.textContent = window.innerWidth < 1025 ? 'forum' : 'real-time forum';
   logo.classList.add('navbar__title');
+
+  // Detect screen resizing and adjust logo accordinly
+  window.addEventListener('resize', () => {
+    logo.textContent = window.innerWidth < 1025 ? 'forum' : 'real-time forum';
+  });
   
   logoHomeLink.appendChild(logo);
   leftCluster.appendChild(logoHomeLink);

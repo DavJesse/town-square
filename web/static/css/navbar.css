@@ -78,4 +78,7 @@
         flex: 1;
     }
     
+    #navbar_center_cluster .material-symbols-outlined {
+        font-size: 30px;
+    }
 }

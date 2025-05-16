@@ -85,4 +85,8 @@
     #navbar_center_cluster {
         width: 40%;
     }
+
+    #search_cluster {
+        height: 30px;
+    }
 }

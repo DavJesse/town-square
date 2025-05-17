@@ -1,3 +1,5 @@
+import { renderProfileMenu } from '/static/js/mobile_profile_menu.js';
+
 export function renderNavBar(userData) {
   // Create nav bar container
   let navBarContainer = document.createElement('div');
@@ -75,6 +77,10 @@ export function renderNavBar(userData) {
   // Append nav bar container to the app div
   let app = document.getElementById('app')
   app.appendChild(navBarContainer);
+
+  if (window.innerWidth <= 540) {
+    renderProfileMenu(userData);
+  }
 }
 
  // Create search bar form

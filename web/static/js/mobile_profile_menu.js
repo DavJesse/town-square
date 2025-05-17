@@ -19,7 +19,7 @@ export function renderProfileMenu(userData) {
     }
 
     // Create profile menu image
-    let profileMenuImage = document.createElement('image');
+    let profileMenuImage = document.createElement('img');
     profileMenuImage.id = 'profile_menu_image';
     profileMenuImage.src = userData.image;
     profileMenuImage.alt = userData.name;

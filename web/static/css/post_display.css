@@ -336,15 +336,6 @@ footer a:hover {
         gap: 10px; /* Adds spacing between input and button */
     }
 
-    /* form input[type="text"] {
-        width: 100%;
-        max-width: 400px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        text-align: center;
-    } */
-
     .form-container form button {
         width: auto;
         padding: 10px 15px;

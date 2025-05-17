@@ -42,6 +42,15 @@
     margin: 0 auto 15px auto;
 }
 
+#category_container, #online_users_card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
 #category_button_1, #category_button_2,
 #category_button_3, #category_button_4,
 #category_button_5, #category_button_6,
@@ -152,7 +161,7 @@
 #profile_card {
     display: flex;
     flex-direction: column;
-    gap: 10px;    
+    gap: 10px;
     padding: 20px;
 }
 
@@ -161,7 +170,7 @@
 }
 
 #index_bio_container {
-    border: 1px solid #aaa;
+    border: 1px solid var(--border-color);
     border-radius: 5px;
     background-color: #f3f3f1;
     margin: 0 auto;
@@ -355,7 +364,7 @@
     }
 }
 
-@media (min-width: 1024px) { 
+@media (min-width: 1024px) {
     .sidebar__close, .hamburger {
         display: none !important;
     }
@@ -393,7 +402,7 @@
         color: #F13B50;
         cursor: pointer;
     }
-  
+
     /* Show sidebar when active */
     .sidebar.active {
         left: 0;

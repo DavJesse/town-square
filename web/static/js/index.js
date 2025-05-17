@@ -4,6 +4,7 @@ import { navigateTo } from '/static/js/routes.js';
 import { populatePosts, setToggleEventListeners } from '/static/js/populate_posts.js';
 import { renderErrorPage } from '/static/js/error.js';
 import { populateCategories } from '/static/js/populate_categories.js';
+import { initChat, populateOnlineUsersList, fetchAllUsers } from '/static/js/chat.js';
 
 export function renderIndexPage() {
     // Extract app from dom
@@ -12,9 +13,6 @@ export function renderIndexPage() {
 
     // Set document title
     document.title = 'real-time-forum';
-
-    // Render navbar
-    renderNavBar();
 
     // Create index page container
     let indexPageContainer = document.createElement('div');
@@ -62,12 +60,12 @@ export function renderIndexPage() {
     categoriesCard.appendChild(categoryContentContainer);
     leftCluster.appendChild(categoriesCard);
     leftCluster.appendChild(onlineUsersCard);
-   
+
     // Create container for post toggling button
     let postsButtonContainer = document.createElement('div');
     postsButtonContainer.id = 'posts_button_container';
 
-    // Create buttons to toggle prefered posts    
+    // Create buttons to toggle prefered posts
     let allPostsButton = document.createElement('button');
     let likedPostsButton = document.createElement('button');
     let myPostsButton = document.createElement('button');
@@ -89,16 +87,17 @@ export function renderIndexPage() {
     postsCard.classList.add('posts-card');
     postsCard.id = 'posts_card';
 
-    // Add Posts Section            
+    // Add Posts Section
     let postsContainer = document.createElement('div');
     postsContainer.id = 'posts_container';
-    postsCard.appendChild(postsButtonContainer);    
+    postsCard.appendChild(postsButtonContainer);
     postsCard.appendChild(postsContainer);
     centerCluster.appendChild(postsCard);
 
-    // Add prifile container
+    // Add profile container
+    if (window.innerWidth > 540) {
     let profileCard = document.createElement('div');
-    profileCard.id = 'profile_card';
+    profileCard.id = 'profile_card';    
 
     // Add contents of profile container
     let profileHead = document.createElement('div');
@@ -165,6 +164,13 @@ export function renderIndexPage() {
     profileCard.appendChild(bioContainer);
     profileCard.appendChild(profileActionContainer);
     rightCluster.appendChild(profileCard);
+    }
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth <= 540 && document.getElementById('profile_card') !== null) {
+            document.getElementById('profile_card').remove();
+        }
+    });
 
     // Fetch home page data from server
     fetchIndexData();
@@ -194,38 +200,138 @@ function fetchIndexData() {
         }
         return response.json();
     })
-    
+
     .then(data => {
             // Extract data for rendering
             const categories = data.categories
             const allPosts = data.all_posts
             const likedPosts = data.liked_posts
             const userPosts = data.user_posts
-            const user = data.user
-            let profileTitle = document.getElementById('profile_title');
-            let profileSubtitle = document.getElementById('profile_subtitle');
-            let profilePic = document.getElementById('index_profile_pic');
-            let profileContact = document.getElementById('profile_contact');
-            let profileGender = document.getElementById('profile_gender');
-            let profileAge = document.getElementById('profile_age');
-            let bioTitle = document.getElementById('profile_bio_title');
-            let bioText = document.getElementById('profile_bio_text');
+            let user = data.user
+            const userData = {
+                name: `${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)}`,
+                username: user.username,
+                first_name: `${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)}`,
+                email: user.email,
+                age: `${user.age} years`,
+                gender: `${user.gender.charAt(0).toUpperCase()}${user.gender.slice(1)}`,
+                bio: `${user.bio.charAt(0).toUpperCase()}${user.bio.slice(1)}`,
+                image: `/static/images/${user.image}`
+            }
 
-            // Update page with user infomation
-            profileTitle.textContent = `${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)}`;
-            profileSubtitle.textContent = `@${user.username}`;
-            profilePic.src = `/static/images/${user.image}`;
-            profilePic.alt = `${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)} image`;
-            profileContact.textContent = `mail: ${user.email}`;
-            profileGender.textContent = `${user.gender.charAt(0).toUpperCase()}${user.gender.slice(1)}`;
-            profileAge.textContent = `${user.age} years old`;
-            bioTitle.textContent = `About ${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)}`;
-            bioText.textContent = `${user.bio.charAt(0).toUpperCase()}${user.bio.slice(1)}`;
+            // Update profile section if profile card exists
+            if (document.querySelector('#profile_card')) {
+                let profileTitle = document.getElementById('profile_title');
+                let profileSubtitle = document.getElementById('profile_subtitle');
+                let profilePic = document.getElementById('index_profile_pic');
+                let profileContact = document.getElementById('profile_contact');
+                let profileGender = document.getElementById('profile_gender');
+                let profileAge = document.getElementById('profile_age');
+                let bioTitle = document.getElementById('profile_bio_title');
+                let bioText = document.getElementById('profile_bio_text');    
+    
+                // Update page with user infomation
+                profileTitle.textContent = userData.name;
+                profileSubtitle.textContent = `@${userData.username}`;
+                profilePic.src = userData.image;
+                profilePic.alt = userData.name;
+                profileContact.textContent = `mail: ${userData.email}`;
+                profileGender.textContent = userData.gender;
+                profileAge.textContent = userData.age;
+                bioTitle.textContent = `About ${userData.name}`;
+                bioText.textContent = userData.bio;                
+            }
+
+            // Render navbar
+            renderNavBar(userData);
 
             // Render categories and populate posts
             populateCategories(categories);
             populatePosts(allPosts);
             setToggleEventListeners(allPosts, likedPosts, userPosts);
+
+            // Initialize chat and fetch online users
+            console.log("USERID: ", user.id);
+            initChat(user.id);
+
+            // Get the online users container and populate it
+            const onlineUsersCard = document.getElementById('online_users_card');
+            if (onlineUsersCard) {
+                // Create a container for the online users list
+                const onlineUsersContent = document.createElement('div');
+                onlineUsersContent.id = 'online_users_content';
+                onlineUsersCard.appendChild(onlineUsersContent);
+
+                // Add some CSS styles for the online users list
+                const style = document.createElement('style');
+                style.textContent = `
+                    #online_users_content {
+                        padding: 10px;
+                        max-height: 300px;
+                        overflow-y: auto;
+                    }
+                    .compact-user-item {
+                        display: flex;
+                        align-items: center;
+                        padding: 8px;
+                        cursor: pointer;
+                        border-radius: 4px;
+                        margin-bottom: 4px;
+                        transition: background-color 0.2s;
+                    }
+                    .compact-user-item:hover {
+                        background-color: #f0f0f0;
+                    }
+                    .user-section-header {
+                        font-weight: bold;
+                        margin-top: 8px;
+                        margin-bottom: 4px;
+                        color: #555;
+                        font-size: 0.9em;
+                    }
+                    .status-indicator {
+                        width: 8px;
+                        height: 8px;
+                        border-radius: 50%;
+                        margin-right: 8px;
+                    }
+                    .status-offline {
+                        background-color: #9e9e9e;
+                    }
+                    .user-nickname {
+                        font-size: 0.9em;
+                    }
+                    .notification-badge {
+                        background-color: #f44336;
+                        color: white;
+                        border-radius: 50%;
+                        padding: 2px 6px;
+                        font-size: 0.7em;
+                        margin-left: auto;
+                    }
+                    .show-more-btn {
+                        text-align: center;
+                        color: #2196F3;
+                        font-size: 0.8em;
+                        padding: 5px;
+                        cursor: pointer;
+                        margin-top: 5px;
+                    }
+                    .show-more-btn:hover {
+                        text-decoration: underline;
+                    }
+                    .empty-user-item {
+                        color: #757575;
+                        font-style: italic;
+                        padding: 8px;
+                        font-size: 0.9em;
+                    }
+                `;
+                document.head.appendChild(style);
+
+                // Fetch users and populate the list
+                fetchAllUsers();
+            }
     })
 
     .catch(error => {

@@ -99,3 +99,16 @@
         margin: auto;
     }
 }
+
+@media (max-width: 540px) {
+    #navbar_bio_container {
+        width: 80%;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #FFFFFF;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+    
+ }

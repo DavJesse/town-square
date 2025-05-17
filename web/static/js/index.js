@@ -94,9 +94,10 @@ export function renderIndexPage() {
     postsCard.appendChild(postsContainer);
     centerCluster.appendChild(postsCard);
 
-    // Add prifile container
+    // Add profile container
+    if (window.innerWidth > 540) {
     let profileCard = document.createElement('div');
-    profileCard.id = 'profile_card';
+    profileCard.id = 'profile_card';    
 
     // Add contents of profile container
     let profileHead = document.createElement('div');
@@ -163,6 +164,13 @@ export function renderIndexPage() {
     profileCard.appendChild(bioContainer);
     profileCard.appendChild(profileActionContainer);
     rightCluster.appendChild(profileCard);
+    }
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth <= 540 && document.getElementById('profile_card') !== null) {
+            document.getElementById('profile_card').remove();
+        }
+    });
 
     // Fetch home page data from server
     fetchIndexData();
@@ -200,15 +208,6 @@ function fetchIndexData() {
             const likedPosts = data.liked_posts
             const userPosts = data.user_posts
             let user = data.user
-            let profileTitle = document.getElementById('profile_title');
-            let profileSubtitle = document.getElementById('profile_subtitle');
-            let profilePic = document.getElementById('index_profile_pic');
-            let profileContact = document.getElementById('profile_contact');
-            let profileGender = document.getElementById('profile_gender');
-            let profileAge = document.getElementById('profile_age');
-            let bioTitle = document.getElementById('profile_bio_title');
-            let bioText = document.getElementById('profile_bio_text');
-
             const userData = {
                 name: `${user.first_name.charAt(0).toUpperCase()}${user.first_name.slice(1)} ${user.last_name.charAt(0).toUpperCase()}${user.last_name.slice(1)}`,
                 username: user.username,
@@ -220,16 +219,28 @@ function fetchIndexData() {
                 image: `/static/images/${user.image}`
             }
 
-            // Update page with user infomation
-            profileTitle.textContent = userData.name;
-            profileSubtitle.textContent = `@${userData.username}`;
-            profilePic.src = userData.image;
-            profilePic.alt = userData.name;
-            profileContact.textContent = `mail: ${userData.email}`;
-            profileGender.textContent = userData.gender;
-            profileAge.textContent = userData.age;
-            bioTitle.textContent = `About ${userData.name}`;
-            bioText.textContent = userData.bio;
+            // Update profile section if profile card exists
+            if (document.querySelector('#profile_card')) {
+                let profileTitle = document.getElementById('profile_title');
+                let profileSubtitle = document.getElementById('profile_subtitle');
+                let profilePic = document.getElementById('index_profile_pic');
+                let profileContact = document.getElementById('profile_contact');
+                let profileGender = document.getElementById('profile_gender');
+                let profileAge = document.getElementById('profile_age');
+                let bioTitle = document.getElementById('profile_bio_title');
+                let bioText = document.getElementById('profile_bio_text');    
+    
+                // Update page with user infomation
+                profileTitle.textContent = userData.name;
+                profileSubtitle.textContent = `@${userData.username}`;
+                profilePic.src = userData.image;
+                profilePic.alt = userData.name;
+                profileContact.textContent = `mail: ${userData.email}`;
+                profileGender.textContent = userData.gender;
+                profileAge.textContent = userData.age;
+                bioTitle.textContent = `About ${userData.name}`;
+                bioText.textContent = userData.bio;                
+            }
 
             // Render navbar
             renderNavBar(userData);

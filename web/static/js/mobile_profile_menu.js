@@ -15,7 +15,7 @@ export function renderProfileMenu(userData) {
 
     // Render profile menu
     if (profileMenuButton.classList.contains('active')) {
-
+        renderNavbarBio(userData);
     }
 
     // Create profile menu image

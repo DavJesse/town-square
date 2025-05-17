@@ -78,9 +78,17 @@ export function renderNavBar(userData) {
   let app = document.getElementById('app')
   app.appendChild(navBarContainer);
 
+  // Render profile menu on mobile
   if (window.innerWidth <= 540) {
     renderProfileMenu(userData);
   }
+
+  // Dynamically detect mobile before rendering profile menu
+  window.addEventListener('resize', () => {
+    if (window.innerWidth <= 540) {
+      renderProfileMenu(userData);
+    }
+  });
 }
 
  // Create search bar form

@@ -40,7 +40,10 @@ function renderNavbarBio(userData) {
     closeButton.id = 'navbar_bio_close_button';
     closeButton.textContent = 'X';
     closeButton.addEventListener('click', () => {
-        bioMenuContainer.remove();
+        let profileMenuButton = document.getElementById('profile_menu_button');
+        profileMenuButton.classList.remove('active');
+        profileMenuButton.classList.add('inactive');
+        smokeScreen.remove();
     });
     bioMenuContainer.appendChild(closeButton);
 

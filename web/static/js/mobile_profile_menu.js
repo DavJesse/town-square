@@ -13,12 +13,8 @@ export function renderProfileMenu(userData) {
     profileMenuButton.addEventListener('click', () => {
         profileMenuButton.classList.add('active');
         profileMenuButton.classList.remove('inactive');
-    });
-
-    // Render profile menu
-    if (profileMenuButton.classList.contains('active')) {
         renderNavbarBio(userData);
-    }
+    });
 
     // Append button to navbar right cluster
     navbarRightCluster.appendChild(profileMenuButton);
@@ -44,9 +40,9 @@ function renderNavbarBio(userData) {
     closeButton.id = 'navbar_bio_close_button';
     closeButton.textContent = 'X';
     closeButton.addEventListener('click', () => {
-        bioContainer.remove();
+        bioMenuContainer.remove();
     });
-    bioContainer.appendChild(closeButton);
+    bioMenuContainer.appendChild(closeButton);
 
     // Create bio title
     let profileHead = document.createElement('div');

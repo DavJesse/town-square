@@ -3,9 +3,11 @@ export function renderProfileMenu(userData) {
     let navbarRightCluster = document.getElementById('navbar_right_cluster');
 
     // Create profile menu button
-    let profileMenuButton = document.createElement('button');
+    let profileMenuButton = document.createElement('img');
     profileMenuButton.id = 'profile_menu_button';
     profileMenuButton.classList.add('inactive');
+    profileMenuButton.src = userData.image;
+    profileMenuButton.alt = userData.name;
 
     // Add event listener for profile menu button
     profileMenuButton.addEventListener('click', () => {
@@ -17,15 +19,6 @@ export function renderProfileMenu(userData) {
     if (profileMenuButton.classList.contains('active')) {
         renderNavbarBio(userData);
     }
-
-    // Create profile menu image
-    let profileMenuImage = document.createElement('img');
-    profileMenuImage.id = 'profile_menu_image';
-    profileMenuImage.src = userData.image;
-    profileMenuImage.alt = userData.name;
-
-    // Append image to button
-    profileMenuButton.appendChild(profileMenuImage);
 
     // Append button to navbar right cluster
     navbarRightCluster.appendChild(profileMenuButton);

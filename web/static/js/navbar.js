@@ -70,8 +70,6 @@ export function renderNavBar(userData) {
   let rightCluster = document.createElement('div');
   rightCluster.classList.add('navbar-clusters');
   rightCluster.id = 'navbar_right_cluster';
-  
- 
   navBarContainer.appendChild(rightCluster);
 
   // Append nav bar container to the app div

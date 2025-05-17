@@ -85,7 +85,7 @@ export function renderNavBar(userData) {
 
   // Dynamically detect mobile before rendering profile menu
   window.addEventListener('resize', () => {
-    if (window.innerWidth <= 540) {
+    if (window.innerWidth <= 540 && !document.getElementById('profile_menu_button')) {
       renderProfileMenu(userData);
     }
   });

@@ -1,4 +1,4 @@
-export function renderNavBar() {
+export function renderNavBar(userData) {
   // Create nav bar container
   let navBarContainer = document.createElement('div');
   navBarContainer.classList.add('navbar');
@@ -71,7 +71,15 @@ export function renderNavBar() {
   rightCluster.classList.add('navbar-clusters');
   rightCluster.id = 'navbar_right_cluster';
   
-  // Create search bar form
+ 
+  navBarContainer.appendChild(rightCluster);
+
+  // Append nav bar container to the app div
+  let app = document.getElementById('app')
+  app.appendChild(navBarContainer);
+}
+
+ // Create search bar form
   // let searchBar = document.createElement('form');
   // searchBar.method = 'GET';
   // searchBar.action = '/search';
@@ -106,9 +114,3 @@ export function renderNavBar() {
   // searchCluster.appendChild(searchButton);
   // searchBar.appendChild(searchCluster);
   // rightCluster.appendChild(searchBar);
-  navBarContainer.appendChild(rightCluster);
-
-  // Append nav bar container to the app div
-  let app = document.getElementById('app')
-  app.appendChild(navBarContainer);
-}

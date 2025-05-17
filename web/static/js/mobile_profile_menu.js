@@ -1,6 +1,6 @@
 export function renderProfileMenu(userData) {
     // Grab navbar right cluster
-    let navbarRightCluster = document.getElementById('navbar_right_custer');
+    let navbarRightCluster = document.getElementById('navbar_right_cluster');
 
     // Create profile menu button
     let profileMenuButton = document.createElement('button');

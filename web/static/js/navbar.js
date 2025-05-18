@@ -1,4 +1,6 @@
-export function renderNavBar() {
+import { renderProfileMenu } from '/static/js/mobile_profile_menu.js';
+
+export function renderNavBar(userData) {
   // Create nav bar container
   let navBarContainer = document.createElement('div');
   navBarContainer.classList.add('navbar');
@@ -12,8 +14,13 @@ export function renderNavBar() {
   logoHomeLink.href = '/';
   
   let logo = document.createElement('h1');
-  logo.textContent = window.innerWidth < 769 ? 'forum' : 'real-time forum';
+  logo.textContent = window.innerWidth < 1025 ? 'forum' : 'real-time forum';
   logo.classList.add('navbar__title');
+
+  // Detect screen resizing and adjust logo accordinly
+  window.addEventListener('resize', () => {
+    logo.textContent = window.innerWidth < 1025 ? 'forum' : 'real-time forum';
+  });
   
   logoHomeLink.appendChild(logo);
   leftCluster.appendChild(logoHomeLink);
@@ -65,45 +72,57 @@ export function renderNavBar() {
   let rightCluster = document.createElement('div');
   rightCluster.classList.add('navbar-clusters');
   rightCluster.id = 'navbar_right_cluster';
-  
-  // Create search bar form
-  let searchBar = document.createElement('form');
-  searchBar.method = 'GET';
-  searchBar.action = '/search';
-  searchBar.classList.add('navbar__search-form');
-  searchBar.id = 'search_bar';
-
-   // Create right navbar cluster container
-   let searchCluster = document.createElement('div');
-   searchCluster.classList.add('search-cluster');
-   searchCluster.id = 'search_cluster';
-  
-  // Create search bar input field
-  let searchInput = document.createElement('input');
-  searchInput.type = 'text';
-  searchInput.name = 'q';
-  searchInput.id = 'search_input';
-  searchInput.placeholder = 'Search...';    
-  searchInput.classList.add('navbar__search');
-  searchCluster.appendChild(searchInput);
-  
-  // Create search button
-  let searchButton = document.createElement('button');
-  searchButton.type = 'submit';
-  searchButton.id = 'search_btn';
-  
-  let searchIcon = document.createElement('span');
-  searchIcon.classList.add('material-symbols-outlined');
-  searchIcon.id ='search_icon';
-  searchIcon.textContent = 'search';
-  
-  searchButton.appendChild(searchIcon);
-  searchCluster.appendChild(searchButton);
-  searchBar.appendChild(searchCluster);
-  rightCluster.appendChild(searchBar);
   navBarContainer.appendChild(rightCluster);
 
   // Append nav bar container to the app div
   let app = document.getElementById('app')
   app.appendChild(navBarContainer);
+
+  // Render profile menu on mobile
+  if (window.innerWidth <= 540) {
+    renderProfileMenu(userData);
+  }
+
+  // Dynamically detect mobile before rendering profile menu
+  window.addEventListener('resize', () => {
+    if (window.innerWidth <= 540 && !document.getElementById('profile_menu_button')) {
+      renderProfileMenu(userData);
+    }
+  });
 }
+
+ // Create search bar form
+  // let searchBar = document.createElement('form');
+  // searchBar.method = 'GET';
+  // searchBar.action = '/search';
+  // searchBar.classList.add('navbar__search-form');
+  // searchBar.id = 'search_bar';
+
+   // Create right navbar cluster container
+  //  let searchCluster = document.createElement('div');
+  //  searchCluster.classList.add('search-cluster');
+  //  searchCluster.id = 'search_cluster';
+  
+  // Create search bar input field
+  // let searchInput = document.createElement('input');
+  // searchInput.type = 'text';
+  // searchInput.name = 'q';
+  // searchInput.id = 'search_input';
+  // searchInput.placeholder = 'Search...';    
+  // searchInput.classList.add('navbar__search');
+  // searchCluster.appendChild(searchInput);
+  
+  // Create search button
+  // let searchButton = document.createElement('button');
+  // searchButton.type = 'submit';
+  // searchButton.id = 'search_btn';
+  
+  // let searchIcon = document.createElement('span');
+  // searchIcon.classList.add('material-symbols-outlined');
+  // searchIcon.id ='search_icon';
+  // searchIcon.textContent = 'search';
+  
+  // searchButton.appendChild(searchIcon);
+  // searchCluster.appendChild(searchButton);
+  // searchBar.appendChild(searchCluster);
+  // rightCluster.appendChild(searchBar);

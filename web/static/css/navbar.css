@@ -78,14 +78,89 @@
         flex: 1;
     }
     
-    .navbar__button {
-        font-size: 12px;
-        padding: 6px 10px;
+    #navbar_center_cluster .material-symbols-outlined {
+        font-size: 30px;
     }
-    
-    .navbar__actions {
-        flex: 1;
-        justify-content: flex-end; /* Align actions to the right */
+
+    #navbar_center_cluster {
+        width: 40%;
     }
-    
+
+    #search_cluster {
+        height: 30px;
+    }
+
+    #profile_menu_button {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: none;
+        margin: auto;
+    }
 }
+
+@media (max-width: 540px) {
+    #navbar_bio_container {
+        width: 80%;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #FFFFFF;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    #navbar_bio_close_button {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--danger-color);
+        background-color: #FFFFFF;
+        border: none;
+        margin-right: 0;
+        padding: 5px 5px 0px 0px;
+    }
+
+    @media (max-height: 740px) {
+        #index_profile_pic {
+            height: 150px;
+            width: 150px;
+        }
+    }
+
+    @media (max-height: 667px) {
+        #profile_title {
+            font-size: 20px;
+        }
+
+        #profile_subtitle {
+            font-size: 16px;
+        }
+
+        #index_profile_pic {
+            height: 120px;
+            width: 120px;
+        }
+
+        #profile_contact {
+            font-size: 17px;
+        }
+
+        .profile-age-gender {
+            font-size: 16px;
+        }
+
+        #profile_age_gender_separator {
+            font-size: 17px;
+        }
+
+        #profile_bio_title {
+            font-size: 15px;
+        }
+
+        #profile_bio_text {
+            font-size: 13px;
+        }
+    }
+ }

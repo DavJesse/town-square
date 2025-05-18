@@ -128,4 +128,39 @@
             width: 150px;
         }
     }
+
+    @media (max-height: 667px) {
+        #profile_title {
+            font-size: 20px;
+        }
+
+        #profile_subtitle {
+            font-size: 16px;
+        }
+
+        #index_profile_pic {
+            height: 120px;
+            width: 120px;
+        }
+
+        #profile_contact {
+            font-size: 17px;
+        }
+
+        .profile-age-gender {
+            font-size: 16px;
+        }
+
+        #profile_age_gender_separator {
+            font-size: 17px;
+        }
+
+        #profile_bio_title {
+            font-size: 15px;
+        }
+
+        #profile_bio_text {
+            font-size: 13px;
+        }
+    }
  }

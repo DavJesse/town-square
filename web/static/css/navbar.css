@@ -119,5 +119,13 @@
         background-color: #FFFFFF;
         border: none;
         margin-right: 0;
+        padding: 5px 5px 0px 0px;
+    }
+
+    @media (max-height: 740px) {
+        #index_profile_pic {
+            height: 150px;
+            width: 150px;
+        }
     }
  }

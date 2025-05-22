@@ -30,21 +30,19 @@ export function renderIndexPage() {
     app.appendChild(userOptions);
 
     // Create clusters of index page
-    // Only create left cluster if screen is larger than 540px
-    if (window.innerWidth > 540) {
-    let leftCluster = document.createElement('div');
-    leftCluster.id = 'left_cluster';
-    indexPageContainer.appendChild(leftCluster);    
-    }
-
-    // Create rest of the clusters
     let centerCluster = document.createElement('div');
     let rightCluster = document.createElement('div');
     centerCluster.id = 'center_cluster';
     rightCluster.id = 'right_cluster';
-
+    
     indexPageContainer.appendChild(centerCluster);
     indexPageContainer.appendChild(rightCluster);
+    
+    // Only create left cluster if screen is larger than 540px
+    if (window.innerWidth > 540) {
+    let leftCluster = document.createElement('div');
+    leftCluster.id = 'left_cluster';
+    indexPageContainer.appendChild(leftCluster);
 
     // Create categories and online users containers
     let categoriesCard = document.createElement('div');
@@ -59,12 +57,13 @@ export function renderIndexPage() {
     categoryContentContainer.id = 'category_content_container';
     onlineUsersTitle.textContent = 'Who\'s online?';
     categoriesCardTitle.textContent = 'Categories';
-
+    
     onlineUsersCard.appendChild(onlineUsersTitle);
     categoriesCard.appendChild(categoriesCardTitle);
     categoriesCard.appendChild(categoryContentContainer);
     leftCluster.appendChild(categoriesCard);
     leftCluster.appendChild(onlineUsersCard);
+    }
 
     // Create container for post toggling button
     let postsButtonContainer = document.createElement('div');

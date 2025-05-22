@@ -259,8 +259,8 @@ function fetchIndexData() {
             console.log("USERID: ", user.id);
             initChat(user.id);
 
-            // Get the online users container and populate it
-            const onlineUsersCard = document.getElementById('online_users_card');
+            // Get the online users container and populate it            
+            const onlineUsersCard = document.querySelector('#online_users_card');
             if (onlineUsersCard) {
                 // Create a container for the online users list
                 const onlineUsersContent = document.createElement('div');

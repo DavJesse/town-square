@@ -30,14 +30,19 @@ export function renderIndexPage() {
     app.appendChild(userOptions);
 
     // Create clusters of index page
+    // Only create left cluster if screen is larger than 540px
+    if (window.innerWidth > 540) {
     let leftCluster = document.createElement('div');
+    leftCluster.id = 'left_cluster';
+    indexPageContainer.appendChild(leftCluster);    
+    }
+
+    // Create rest of the clusters
     let centerCluster = document.createElement('div');
     let rightCluster = document.createElement('div');
-    leftCluster.id = 'left_cluster';
     centerCluster.id = 'center_cluster';
     rightCluster.id = 'right_cluster';
 
-    indexPageContainer.appendChild(leftCluster);
     indexPageContainer.appendChild(centerCluster);
     indexPageContainer.appendChild(rightCluster);
 

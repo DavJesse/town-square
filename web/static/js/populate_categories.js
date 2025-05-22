@@ -1,9 +1,12 @@
 import { fetchPostsPerCategory } from '/static/js/fetch_category_posts.js';
 
 export function populateCategories(categories) {
-    let categoriesContentContainer = document.getElementById('category_content_container');
+    let categoriesContentContainer = document.querySelector('#category_content_container');
 
     categories = categories ?? [];
+
+    // Terminate function if categories container is not found
+    if (!categoriesContentContainer) return;
 
     // Create buttons for each category
     categories.forEach(category => {

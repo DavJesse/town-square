@@ -37,10 +37,10 @@ export function renderMobileCategoriesMenu(categories) {
 
     // Create categories list
     let categoriesList = document.createElement('div');
-    categoriesList.id = 'categories_content_container';
+    categoriesList.id = 'mobile_category_content_container';
     categoriesContainer.appendChild(categoriesList);
 
-    populateCategories(categories);
+    populateCategories(categories, categoriesList.id);
 
     // Create online users card
     let onlineUsersCard = document.createElement('div');

@@ -300,7 +300,7 @@ function fetchIndexData() {
             renderNavBar(userData);
 
             // Render categories and populate posts
-            populateCategories(categories);
+            populateCategories(categories, 'category_content_container');
             populatePosts(allPosts);
             setToggleEventListeners(allPosts, likedPosts, userPosts);
 

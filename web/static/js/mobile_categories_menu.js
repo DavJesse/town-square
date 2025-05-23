@@ -20,6 +20,7 @@ export function renderMobileCategoriesMenu(categories) {
     closeButton.textContent = 'X';
     closeButton.addEventListener('click', () => {
         smokeScreen.remove();
+        document.getElementById('hamburger_menu').style.display = 'block';
     });
     smokeScreen.appendChild(closeButton);
     

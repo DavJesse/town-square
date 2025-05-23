@@ -1,4 +1,4 @@
-import { populateCategories } from "./populate_categories";
+import { populateCategories } from "/static/js/populate_categories.js";
 import { fetchAllUsers } from '/static/js/chat.js';
 
 export function renderMobileCategoriesMenu(categories) {

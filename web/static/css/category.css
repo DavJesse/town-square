@@ -25,3 +25,21 @@ body {
     cursor: pointer;
     margin: 10px auto auto 10px;
 }
+
+#mobile_categories_close_button {
+    background-color: #00000A80;
+    color: #FFFFFF;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    margin: 10px 10px auto auto;
+}
+
+#mobile_categories_close_button:hover {
+    background-color: var(--danger-color);
+}
+
+#mobile_categories_container {
+    background-color: #FFFFFF;
+    border-radius: 15px;
+}

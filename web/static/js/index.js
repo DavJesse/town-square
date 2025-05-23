@@ -4,6 +4,7 @@ import { navigateTo } from '/static/js/routes.js';
 import { populatePosts, setToggleEventListeners } from '/static/js/populate_posts.js';
 import { renderErrorPage } from '/static/js/error.js';
 import { populateCategories } from '/static/js/populate_categories.js';
+import { renderMobileCategoriesMenu } from '/static/js/mobile_categories_menu.js';
 import { initChat, populateOnlineUsersList, fetchAllUsers } from '/static/js/chat.js';
 
 export function renderIndexPage() {
@@ -69,6 +70,15 @@ export function renderIndexPage() {
         const categoryContainer = document.getElementById('category_container');
         const onlineUsersCard = document.getElementById('online_users_card');
         const profileCard = document.getElementById('profile_card');
+        let leftCuster = document.getElementById('left_cluster');
+        let hamburgerMenu = document.createElement('button');
+        hamburgerMenu.id = 'hamburger_menu';
+        hamburgerMenu.textContent = '☰';
+        hamburgerMenu.addEventListener('click', () => {
+            hamburgerMenu.remove();
+            renderMobileCategoriesMenu();
+        });
+        leftCluster.appendChild(hamburgerMenu);
 
         if (window.innerWidth <= 540) {
             // Hide elements on small screens
@@ -81,6 +91,7 @@ export function renderIndexPage() {
             if (profileCard) {
                 profileCard.style.display = 'none';
             }
+            hamburgerMenu.style.display = 'block';
         } else {
             // Show elements on larger screens
             if (categoryContainer) {
@@ -92,6 +103,7 @@ export function renderIndexPage() {
             if (profileCard) {
                 profileCard.style.display = '';
             }
+            hamburgerMenu.style.display = 'none';
         }
     }
 

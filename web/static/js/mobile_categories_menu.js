@@ -8,6 +8,7 @@ export function renderMobileCategoriesMenu(categories) {
     // Create smoke screen
     let smokeScreen = document.createElement('div');
     smokeScreen.id = 'smoke_screen';
+    smokeScreen.style.flexDirection = 'column';
     app.appendChild(smokeScreen);
 
     // Make hamburger menu invisible

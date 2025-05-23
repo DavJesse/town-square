@@ -1,7 +1,9 @@
 import { populateCategories } from "/static/js/populate_categories.js";
 import { fetchAllUsers } from '/static/js/chat.js';
+import { navigateTo } from '/static/js/routes.js';
+import { renderErrorPage } from '/static/js/error.js';
 
-export function renderMobileCategoriesMenu(categories) {
+export function renderMobileCategoriesMenu() {
     // Grab app
     let app = document.getElementById('app');
     
@@ -39,8 +41,13 @@ export function renderMobileCategoriesMenu(categories) {
     let categoriesList = document.createElement('div');
     categoriesList.id = 'mobile_category_content_container';
     categoriesContainer.appendChild(categoriesList);
-
-    populateCategories(categories, categoriesList.id);
+    
+    // Fetch categories and populate when ready
+    fetchCategories().then(categories => {
+        populateCategories(categories, categoriesList.id);
+    }).catch(error => {
+        console.error('Error fetching categories:', error);
+    });
 
     // Create online users card
     let onlineUsersCard = document.createElement('div');
@@ -55,4 +62,29 @@ export function renderMobileCategoriesMenu(categories) {
     onlineUsersCard.appendChild(onlineUsersContent);
 
     fetchAllUsers();
+}
+
+function fetchCategories() {
+    return fetch('/api/index-data', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            if (response.status === 401) {
+                navigateTo('/login');
+                return Promise.reject('Unauthorized');
+            } else {
+                renderErrorPage(response.statusText, response.status);
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        }
+        return response.json();
+    })
+    .then(data => {
+        return data.categories;
+    });
 }

@@ -34,12 +34,12 @@ export function renderIndexPage() {
     let rightCluster = document.createElement('div');
     centerCluster.id = 'center_cluster';
     rightCluster.id = 'right_cluster';
-    
+
     indexPageContainer.appendChild(centerCluster);
     indexPageContainer.appendChild(rightCluster);
-    
+
     // Only create left cluster if screen is larger than 540px
-    if (window.innerWidth > 540) {
+    // if (window.innerWidth > 540) {
     let leftCluster = document.createElement('div');
     leftCluster.id = 'left_cluster';
     indexPageContainer.appendChild(leftCluster);
@@ -57,13 +57,49 @@ export function renderIndexPage() {
     categoryContentContainer.id = 'category_content_container';
     onlineUsersTitle.textContent = 'Who\'s online?';
     categoriesCardTitle.textContent = 'Categories';
-    
+
     onlineUsersCard.appendChild(onlineUsersTitle);
     categoriesCard.appendChild(categoriesCardTitle);
     categoriesCard.appendChild(categoryContentContainer);
     leftCluster.appendChild(categoriesCard);
     leftCluster.appendChild(onlineUsersCard);
+
+    // Function to handle responsive layout
+    function handleResponsiveLayout() {
+        const categoryContainer = document.getElementById('category_container');
+        const onlineUsersCard = document.getElementById('online_users_card');
+        const profileCard = document.getElementById('profile_card');
+
+        if (window.innerWidth <= 540) {
+            // Hide elements on small screens
+            if (categoryContainer) {
+                categoryContainer.style.display = 'none';
+            }
+            if (onlineUsersCard) {
+                onlineUsersCard.style.display = 'none';
+            }
+            if (profileCard) {
+                profileCard.style.display = 'none';
+            }
+        } else {
+            // Show elements on larger screens
+            if (categoryContainer) {
+                categoryContainer.style.display = '';
+            }
+            if (onlineUsersCard) {
+                onlineUsersCard.style.display = '';
+            }
+            if (profileCard) {
+                profileCard.style.display = '';
+            }
+        }
     }
+
+    // Add resize event listener
+    window.addEventListener('resize', handleResponsiveLayout);
+
+    // Call initially to set correct state
+    handleResponsiveLayout();
 
     // Create container for post toggling button
     let postsButtonContainer = document.createElement('div');
@@ -101,7 +137,7 @@ export function renderIndexPage() {
     // Add profile container
     if (window.innerWidth > 540) {
     let profileCard = document.createElement('div');
-    profileCard.id = 'profile_card';    
+    profileCard.id = 'profile_card';
 
     // Add contents of profile container
     let profileHead = document.createElement('div');
@@ -170,11 +206,7 @@ export function renderIndexPage() {
     rightCluster.appendChild(profileCard);
     }
 
-    window.addEventListener('resize', () => {
-        if (window.innerWidth <= 540 && document.getElementById('profile_card') !== null) {
-            document.getElementById('profile_card').remove();
-        }
-    });
+
 
     // Fetch home page data from server
     fetchIndexData();
@@ -232,8 +264,8 @@ function fetchIndexData() {
                 let profileGender = document.getElementById('profile_gender');
                 let profileAge = document.getElementById('profile_age');
                 let bioTitle = document.getElementById('profile_bio_title');
-                let bioText = document.getElementById('profile_bio_text');    
-    
+                let bioText = document.getElementById('profile_bio_text');
+
                 // Update page with user infomation
                 profileTitle.textContent = userData.name;
                 profileSubtitle.textContent = `@${userData.username}`;
@@ -243,7 +275,7 @@ function fetchIndexData() {
                 profileGender.textContent = userData.gender;
                 profileAge.textContent = userData.age;
                 bioTitle.textContent = `About ${userData.name}`;
-                bioText.textContent = userData.bio;                
+                bioText.textContent = userData.bio;
             }
 
             // Render navbar
@@ -258,7 +290,7 @@ function fetchIndexData() {
             console.log("USERID: ", user.id);
             initChat(user.id);
 
-            // Get the online users container and populate it            
+            // Get the online users container and populate it
             const onlineUsersCard = document.querySelector('#online_users_card');
             if (onlineUsersCard) {
                 // Create a container for the online users list

@@ -13,11 +13,6 @@ export function renderMobileCategoriesMenu(categories) {
     // Make hamburger menu invisible
     document.getElementById('hamburger_menu').style.display = 'none';
 
-    // Create categories container
-    let categoriesContainer = document.createElement('div');
-    categoriesContainer.id = 'mobile_categories_container';
-    smokeScreen.appendChild(categoriesContainer);
-
     // Create close button and add related event listener
     let closeButton = document.createElement('button');
     closeButton.id = 'mobile_categories_close_button';
@@ -25,7 +20,12 @@ export function renderMobileCategoriesMenu(categories) {
     closeButton.addEventListener('click', () => {
         smokeScreen.remove();
     });
-    categoriesContainer.appendChild(closeButton);
+    smokeScreen.appendChild(closeButton);
+    
+    // Create categories container
+    let categoriesContainer = document.createElement('div');
+    categoriesContainer.id = 'mobile_categories_container';
+    smokeScreen.appendChild(categoriesContainer);
 
     // Create categories title
     let categoriesTitle = document.createElement('h3');

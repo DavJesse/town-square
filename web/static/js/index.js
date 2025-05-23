@@ -71,6 +71,7 @@ export function renderIndexPage() {
         const onlineUsersCard = document.getElementById('online_users_card');
         const profileCard = document.getElementById('profile_card');
         let leftCuster = document.getElementById('left_cluster');
+        if (!document.getElementById('hamburger_menu')) {
         let hamburgerMenu = document.createElement('button');
         hamburgerMenu.id = 'hamburger_menu';
         hamburgerMenu.textContent = '☰';
@@ -79,6 +80,13 @@ export function renderIndexPage() {
             renderMobileCategoriesMenu();
         });
         leftCluster.appendChild(hamburgerMenu);
+
+        if (window.innerWidth <= 540) {
+            hamburgerMenu.style.display = 'block';
+        } else {
+            hamburgerMenu.style.display = 'none';
+        }
+        }
 
         if (window.innerWidth <= 540) {
             // Hide elements on small screens
@@ -91,7 +99,6 @@ export function renderIndexPage() {
             if (profileCard) {
                 profileCard.style.display = 'none';
             }
-            hamburgerMenu.style.display = 'block';
         } else {
             // Show elements on larger screens
             if (categoryContainer) {
@@ -103,7 +110,6 @@ export function renderIndexPage() {
             if (profileCard) {
                 profileCard.style.display = '';
             }
-            hamburgerMenu.style.display = 'none';
         }
     }
 

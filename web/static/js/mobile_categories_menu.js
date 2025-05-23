@@ -4,11 +4,14 @@ import { fetchAllUsers } from '/static/js/chat.js';
 export function renderMobileCategoriesMenu(categories) {
     // Grab app
     let app = document.getElementById('app');
-
+    
     // Create smoke screen
     let smokeScreen = document.createElement('div');
     smokeScreen.id = 'smoke_screen';
     app.appendChild(smokeScreen);
+
+    // Make hamburger menu invisible
+    document.getElementById('hamburger_menu').style.display = 'none';
 
     // Create categories container
     let categoriesContainer = document.createElement('div');

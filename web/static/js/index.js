@@ -75,7 +75,7 @@ export function renderIndexPage() {
         hamburgerMenu.id = 'hamburger_menu';
         hamburgerMenu.textContent = '☰';
         hamburgerMenu.addEventListener('click', () => {
-            hamburgerMenu.remove();
+            hamburgerMenu.style.display = 'none';
             renderMobileCategoriesMenu();
         });
         leftCluster.appendChild(hamburgerMenu);

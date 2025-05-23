@@ -27,7 +27,7 @@ body {
 }
 
 #mobile_categories_close_button {
-    background-color: #00000A80;
+    background-color: rgba(0, 0, 0, 0);
     color: #FFFFFF;
     border: none;
     font-size: 20px;

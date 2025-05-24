@@ -147,6 +147,7 @@
 
     #online_users_card, #profile_card, #category_container {
         min-height: fit-content;
+        border-radius: 5px;
     }
 
     #online_users_content {

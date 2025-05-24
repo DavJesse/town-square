@@ -316,7 +316,7 @@ footer a:hover {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 540px) {
     body {
         padding: 15px;
     }
@@ -362,7 +362,7 @@ footer a:hover {
     }
 
     .posts-button-container button {
-        font-size: 14px;
+        font-size: 9px;
         margin-bottom: 0;
     }
 
@@ -384,7 +384,7 @@ footer a:hover {
 @media (max-width: 1024px) {
     .posts-button-container button {
         width: 100%;
-        font-size: 10px;
+        font-size: 9px;
     }
 
     #post_creation_date {

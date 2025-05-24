@@ -386,4 +386,8 @@ footer a:hover {
         width: 100%;
         font-size: 10px;
     }
+
+    #post_creation_date {
+        font-size: 10px;
+    }
 }

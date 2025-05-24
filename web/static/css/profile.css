@@ -133,7 +133,7 @@
         width: 60%;
     }
 
-    #online_users_title, #categories_title {
+    #online_users_title, #categories_title, #profile_title {
         font-size: 18px;
     }
 
@@ -153,4 +153,34 @@
         padding: 0;
     }
 
+    #index_profile_pic {
+        height: 100px;
+        width: 100px;
+    }
+
+
+    #profile_contact, #profile_bio_title, #profile_subtitle {
+       font-size: 14px; 
+    }
+
+    .profile-age-gender {
+        font-size: 12px;
+    }
+
+    #profile_bio_text {
+        font-size: 10px;
+    }
+
+    #profile_card {
+        gap: 3px;
+    }
+
+    #messanger_button, #profile_logout_button {
+        font-size: 14px;
+        height:fit-content
+    }
+
+    #profile_action_container {
+        gap: 3px;
+    }
 }

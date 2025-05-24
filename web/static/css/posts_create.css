@@ -112,3 +112,36 @@
 @media (max-width: 480px) {
  
 }
+
+@media (max-width: 1024px) {
+    #create_post_form_container {
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    #create_post_form_title {
+        font-size: 18px;
+    }
+
+    #post_subject {
+        font-size: 20px;
+    }
+
+    #post_content {
+        height: 140px;
+    }
+
+    .create_post_input::placeholder, #category_selection_title,
+    .custom-file-upload label[for="image"], .upload-btn {
+        font-size: 12px;
+    }
+
+    #file_name, label {
+        font-size: 10px;
+    }
+
+    #close_button {
+        top: 10%;
+        right: 20%;
+    }
+}

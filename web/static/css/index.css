@@ -464,4 +464,16 @@
     #post_card {
         border-radius: 5px;
     }
+
+    #like_link, #dislike_link, #comment_link {
+        font-size: 14px;
+    }
+
+    #engagement_count, #post_like_count, #post_dislike_count {
+        font-size: 14px;
+    }
+
+    #engagement_icon, #comment_engagement_icon {
+        font-size: 18px;
+    }
 }

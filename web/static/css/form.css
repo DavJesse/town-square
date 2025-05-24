@@ -290,6 +290,16 @@ button:hover {
 
     #register_bio {
         margin: 2px auto 15px auto;
+        min-height: 80px;
+    }
+
+    .custom-file-upload {
+        font-size: 12px;
+        gap: 0px;
+    }
+
+    .custom-file-upload button {
+        font-size: 12px;
     }
 }
 

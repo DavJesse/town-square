@@ -214,4 +214,8 @@ button:hover {
     .logo {
         font-size: 34px;
     }
+
+    .register-link {
+        font-size: 12px;
+    }
 }

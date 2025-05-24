@@ -122,6 +122,7 @@ export function renderIndexPage() {
     // Create container for post toggling button
     let postsButtonContainer = document.createElement('div');
     postsButtonContainer.id = 'posts_button_container';
+    postsButtonContainer.classList.add('posts-button-container');
 
     // Create buttons to toggle prefered posts
     let allPostsButton = document.createElement('button');

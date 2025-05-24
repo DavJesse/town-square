@@ -159,7 +159,7 @@
     }
 
 
-    #profile_contact, #profile_bio_title, #profile_subtitle {
+    #profile_contact, #profile_subtitle {
        font-size: 14px; 
     }
 
@@ -169,6 +169,7 @@
 
     #profile_bio_text {
         font-size: 10px;
+        margin: 0 auto 0 5px;
     }
 
     #profile_card {
@@ -182,5 +183,10 @@
 
     #profile_action_container {
         gap: 3px;
+    }
+
+    #profile_bio_title {
+        font-size: 10px;
+        margin: 3px auto auto 15px;
     }
 }

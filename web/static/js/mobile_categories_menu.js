@@ -1,5 +1,5 @@
 import { populateCategories } from "/static/js/populate_categories.js";
-import { fetchAllUsers } from '/static/js/chat.js';
+import { fetchAllUsers, populateOnlineUsersList } from '/static/js/chat.js';
 import { navigateTo } from '/static/js/routes.js';
 import { renderErrorPage } from '/static/js/error.js';
 
@@ -41,27 +41,38 @@ export function renderMobileCategoriesMenu() {
     let categoriesList = document.createElement('div');
     categoriesList.id = 'mobile_category_content_container';
     categoriesContainer.appendChild(categoriesList);
-    
-    // Fetch categories and populate when ready
-    fetchCategories().then(categories => {
-        populateCategories(categories, categoriesList.id);
-    }).catch(error => {
-        console.error('Error fetching categories:', error);
-    });
 
     // Create online users card
     let onlineUsersCard = document.createElement('div');
+    onlineUsersCard.id = 'mobile_online_users_card';
+    
     let onlineUsersTitle = document.createElement('h3');
-    let onlineUsersContent = document.createElement('div');
-    onlineUsersCard.id = 'online_users_card'
     onlineUsersTitle.id = 'online_users_title';
-    onlineUsersContent.id = 'online_users_content';
     onlineUsersTitle.textContent = 'Who\'s online?';
     onlineUsersCard.appendChild(onlineUsersTitle);
-    smokeScreen.appendChild(onlineUsersCard);
+    
+    let onlineUsersContent = document.createElement('div');
+    onlineUsersContent.id = 'online_users_content';
     onlineUsersCard.appendChild(onlineUsersContent);
+    
+    smokeScreen.appendChild(onlineUsersCard);
 
-    fetchAllUsers();
+    // First fetch categories
+    fetchCategories().then(categories => {
+        populateCategories(categories, categoriesList.id);
+        // Then fetch users after categories are loaded
+        return fetchAllUsers();
+    }).then(users => {
+        if (users && users.length > 0) {
+            let onlineUsersCard = document.getElementById('mobile_online_users_card');
+            let onlineUsersContent = onlineUsersCard.querySelector('#online_users_content');
+            if (onlineUsersContent) {
+                populateOnlineUsersList(users, onlineUsersContent);
+            }
+        }
+    }).catch(error => {
+        console.error('Error:', error);
+    });
 }
 
 function fetchCategories() {

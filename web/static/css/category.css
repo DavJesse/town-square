@@ -57,7 +57,8 @@ body {
     color: var(--danger-color);
 }
 
-#mobile_categories_container {
+#mobile_categories_container,
+#mobile_online_users_card {
     background-color: #FFFFFF;
     border-radius: 5px;
     width: 90%;
@@ -98,7 +99,7 @@ body {
     }
 
     #mobile_categories_container,
-    #online_users_card {
+    #mobile_online_users_card {
         width: 60%;
         margin: 10px auto;
     }

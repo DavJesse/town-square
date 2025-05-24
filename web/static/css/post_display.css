@@ -351,8 +351,26 @@ footer a:hover {
         font-size: 1rem;
     }
 
+    #index_page {
+        padding: 0 5px;
+    }
+
     .posts-button-container button {
         font-size: 14px;
         margin-bottom: 0;
+    }
+
+    #posts_container {
+        padding: 10px 0;
+    }
+
+    #center_cluster, #posts_card {
+        width: 100%;
+        margin: auto;
+    }
+
+    #post_card {
+        width: 100%;
+        margin: auto
     }
 }

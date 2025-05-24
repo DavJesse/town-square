@@ -105,8 +105,15 @@
     align-items: center;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 540px) {
+    #create_post_form_container {
+        width: 90%;
+    }
 
+    #close_button {
+        top: 10px !important;
+        right: 10px !important;
+    }
 }
 
 @media (max-width: 480px) {

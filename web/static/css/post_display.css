@@ -380,3 +380,10 @@ footer a:hover {
         margin: auto
     }
 }
+
+@media (max-width: 1024px) {
+    .posts-button-container button {
+        width: 100%;
+        font-size: 10px;
+    }
+}

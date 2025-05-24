@@ -310,6 +310,12 @@ footer a:hover {
 }
 
 /* Responsive Styling */
+@media (max-width: 540px) {
+    #post_media {
+        width: 100%;
+    }
+}
+
 @media (max-width: 768px) {
     body {
         padding: 15px;

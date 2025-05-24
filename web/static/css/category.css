@@ -33,14 +33,6 @@ body {
     margin-top: 80px;
 }
 
-#hamburger_menu {
-    background-color: var(--background-color);
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    margin: 10px auto auto 10px;
-}
-
 #mobile_categories_close_button {
     position: fixed;
     top: 20px;
@@ -91,6 +83,27 @@ body {
     color: var(--quaternary-color);
     font-size: 20px;
     font-weight: 600;
+}
+
+#hamburger_menu {
+    background-color: var(--background-color);
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    margin: 10px auto auto 10px;
+}
+
+@media (max-width:420px) {
+    #hamburger_menu {      
+        font-size: 30px;  
+        margin: 5px auto auto 5px;
+    }
+}
+
+@media (max-width: 540px) {
+    #hamburger_menu {
+        margin: 0px auto auto 0px;
+    }
 }
 
 @media (max-width: 768px) {

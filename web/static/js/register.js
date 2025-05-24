@@ -1,5 +1,6 @@
 import { fetchErrorMessage } from '/static/js/form_error_message.js'
 import { navigateTo } from '/static/js/routes.js'
+import { setupImageUpload } from '/static/js/onboarding.js';
 
 export function renderRegistrationPage() {
     document.title = 'sign up - real-time-forum'; // Set document title

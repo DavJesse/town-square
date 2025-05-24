@@ -293,7 +293,7 @@ function fetchIndexData() {
                 profileContact.textContent = `mail: ${userData.email}`;
                 profileGender.textContent = userData.gender;
                 profileAge.textContent = userData.age;
-                bioTitle.textContent = `About ${userData.name}`;
+                bioTitle.textContent = `About ${userData.first_name}`;
                 bioText.textContent = userData.bio;
             }
 

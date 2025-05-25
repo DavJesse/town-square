@@ -46,12 +46,16 @@ export function renderNavBar(userData) {
   // Create chat icon
   let chatIconLink = document.createElement('a');
   chatIconLink.href = '/chat';
+
+  let chatContainer = document.createElement('div');
+  chatContainer.id = 'chat_container';
   
   let chatIcon = document.createElement('span');
   chatIcon.classList.add('material-symbols-outlined');
   chatIcon.id = 'chat_icon';
   chatIcon.textContent = 'forum';
-  chatIconLink.appendChild(chatIcon);
+  chatContainer.appendChild(chatIcon);
+  chatIconLink.appendChild(chatContainer);
   
   centerCluster.appendChild(chatIconLink);
   

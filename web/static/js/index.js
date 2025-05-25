@@ -4,6 +4,7 @@ import { navigateTo } from '/static/js/routes.js';
 import { populatePosts, setToggleEventListeners } from '/static/js/populate_posts.js';
 import { renderErrorPage } from '/static/js/error.js';
 import { populateCategories } from '/static/js/populate_categories.js';
+import { renderMobileCategoriesMenu } from '/static/js/mobile_categories_menu.js';
 import { initChat, populateOnlineUsersList, fetchAllUsers } from '/static/js/chat.js';
 
 export function renderIndexPage() {
@@ -34,12 +35,12 @@ export function renderIndexPage() {
     let rightCluster = document.createElement('div');
     centerCluster.id = 'center_cluster';
     rightCluster.id = 'right_cluster';
-    
+
     indexPageContainer.appendChild(centerCluster);
     indexPageContainer.appendChild(rightCluster);
-    
+
     // Only create left cluster if screen is larger than 540px
-    if (window.innerWidth > 540) {
+    // if (window.innerWidth > 540) {
     let leftCluster = document.createElement('div');
     leftCluster.id = 'left_cluster';
     indexPageContainer.appendChild(leftCluster);
@@ -57,17 +58,71 @@ export function renderIndexPage() {
     categoryContentContainer.id = 'category_content_container';
     onlineUsersTitle.textContent = 'Who\'s online?';
     categoriesCardTitle.textContent = 'Categories';
-    
+
     onlineUsersCard.appendChild(onlineUsersTitle);
     categoriesCard.appendChild(categoriesCardTitle);
     categoriesCard.appendChild(categoryContentContainer);
     leftCluster.appendChild(categoriesCard);
     leftCluster.appendChild(onlineUsersCard);
+
+    // Function to handle responsive layout
+    function handleResponsiveLayout() {
+        const categoryContainer = document.getElementById('category_container');
+        const onlineUsersCard = document.getElementById('online_users_card');
+        const profileCard = document.getElementById('profile_card');
+        let leftCuster = document.getElementById('left_cluster');
+        if (!document.getElementById('hamburger_menu')) {
+        let hamburgerMenu = document.createElement('button');
+        hamburgerMenu.id = 'hamburger_menu';
+        hamburgerMenu.textContent = '☰';
+        hamburgerMenu.addEventListener('click', () => {
+            hamburgerMenu.style.display = 'none';
+            renderMobileCategoriesMenu();
+        });
+        leftCluster.appendChild(hamburgerMenu);
+
+        if (window.innerWidth <= 540) {
+            hamburgerMenu.style.display = 'block';
+        } else {
+            hamburgerMenu.style.display = 'none';
+        }
+        }
+
+        if (window.innerWidth <= 540) {
+            // Hide elements on small screens
+            if (categoryContainer) {
+                categoryContainer.style.display = 'none';
+            }
+            if (onlineUsersCard) {
+                onlineUsersCard.style.display = 'none';
+            }
+            if (profileCard) {
+                profileCard.style.display = 'none';
+            }
+        } else {
+            // Show elements on larger screens
+            if (categoryContainer) {
+                categoryContainer.style.display = '';
+            }
+            if (onlineUsersCard) {
+                onlineUsersCard.style.display = '';
+            }
+            if (profileCard) {
+                profileCard.style.display = '';
+            }
+        }
     }
+
+    // Add resize event listener
+    window.addEventListener('resize', handleResponsiveLayout);
+
+    // Call initially to set correct state
+    handleResponsiveLayout();
 
     // Create container for post toggling button
     let postsButtonContainer = document.createElement('div');
     postsButtonContainer.id = 'posts_button_container';
+    postsButtonContainer.classList.add('posts-button-container');
 
     // Create buttons to toggle prefered posts
     let allPostsButton = document.createElement('button');
@@ -101,7 +156,7 @@ export function renderIndexPage() {
     // Add profile container
     if (window.innerWidth > 540) {
     let profileCard = document.createElement('div');
-    profileCard.id = 'profile_card';    
+    profileCard.id = 'profile_card';
 
     // Add contents of profile container
     let profileHead = document.createElement('div');
@@ -170,11 +225,7 @@ export function renderIndexPage() {
     rightCluster.appendChild(profileCard);
     }
 
-    window.addEventListener('resize', () => {
-        if (window.innerWidth <= 540 && document.getElementById('profile_card') !== null) {
-            document.getElementById('profile_card').remove();
-        }
-    });
+
 
     // Fetch home page data from server
     fetchIndexData();
@@ -232,8 +283,8 @@ function fetchIndexData() {
                 let profileGender = document.getElementById('profile_gender');
                 let profileAge = document.getElementById('profile_age');
                 let bioTitle = document.getElementById('profile_bio_title');
-                let bioText = document.getElementById('profile_bio_text');    
-    
+                let bioText = document.getElementById('profile_bio_text');
+
                 // Update page with user infomation
                 profileTitle.textContent = userData.name;
                 profileSubtitle.textContent = `@${userData.username}`;
@@ -242,15 +293,15 @@ function fetchIndexData() {
                 profileContact.textContent = `mail: ${userData.email}`;
                 profileGender.textContent = userData.gender;
                 profileAge.textContent = userData.age;
-                bioTitle.textContent = `About ${userData.name}`;
-                bioText.textContent = userData.bio;                
+                bioTitle.textContent = `About ${userData.first_name}`;
+                bioText.textContent = userData.bio;
             }
 
             // Render navbar
             renderNavBar(userData);
 
             // Render categories and populate posts
-            populateCategories(categories);
+            populateCategories(categories, 'category_content_container');
             populatePosts(allPosts);
             setToggleEventListeners(allPosts, likedPosts, userPosts);
 
@@ -258,80 +309,13 @@ function fetchIndexData() {
             console.log("USERID: ", user.id);
             initChat(user.id);
 
-            // Get the online users container and populate it            
+            // Get the online users container and populate it
             const onlineUsersCard = document.querySelector('#online_users_card');
             if (onlineUsersCard) {
                 // Create a container for the online users list
                 const onlineUsersContent = document.createElement('div');
                 onlineUsersContent.id = 'online_users_content';
                 onlineUsersCard.appendChild(onlineUsersContent);
-
-                // Add some CSS styles for the online users list
-                const style = document.createElement('style');
-                style.textContent = `
-                    #online_users_content {
-                        padding: 10px;
-                        max-height: 300px;
-                        overflow-y: auto;
-                    }
-                    .compact-user-item {
-                        display: flex;
-                        align-items: center;
-                        padding: 8px;
-                        cursor: pointer;
-                        border-radius: 4px;
-                        margin-bottom: 4px;
-                        transition: background-color 0.2s;
-                    }
-                    .compact-user-item:hover {
-                        background-color: #f0f0f0;
-                    }
-                    .user-section-header {
-                        font-weight: bold;
-                        margin-top: 8px;
-                        margin-bottom: 4px;
-                        color: #555;
-                        font-size: 0.9em;
-                    }
-                    .status-indicator {
-                        width: 8px;
-                        height: 8px;
-                        border-radius: 50%;
-                        margin-right: 8px;
-                    }
-                    .status-offline {
-                        background-color: #9e9e9e;
-                    }
-                    .user-nickname {
-                        font-size: 0.9em;
-                    }
-                    .notification-badge {
-                        background-color: #f44336;
-                        color: white;
-                        border-radius: 50%;
-                        padding: 2px 6px;
-                        font-size: 0.7em;
-                        margin-left: auto;
-                    }
-                    .show-more-btn {
-                        text-align: center;
-                        color: #2196F3;
-                        font-size: 0.8em;
-                        padding: 5px;
-                        cursor: pointer;
-                        margin-top: 5px;
-                    }
-                    .show-more-btn:hover {
-                        text-decoration: underline;
-                    }
-                    .empty-user-item {
-                        color: #757575;
-                        font-style: italic;
-                        padding: 8px;
-                        font-size: 0.9em;
-                    }
-                `;
-                document.head.appendChild(style);
 
                 // Fetch users and populate the list
                 fetchAllUsers();

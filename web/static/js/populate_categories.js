@@ -1,7 +1,7 @@
 import { fetchPostsPerCategory } from '/static/js/fetch_category_posts.js';
 
-export function populateCategories(categories) {
-    let categoriesContentContainer = document.querySelector('#category_content_container');
+export function populateCategories(categories, elementId) {
+    let categoriesContentContainer = document.getElementById(elementId);
 
     categories = categories ?? [];
 

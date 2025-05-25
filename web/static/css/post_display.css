@@ -245,7 +245,7 @@ footer a:hover {
     margin-bottom: 0.5px;
 }
 
-#posts_button_container button {
+.posts-button-container button {
     padding: 10px 5px;
     border: none;
     cursor: pointer;
@@ -310,7 +310,13 @@ footer a:hover {
 }
 
 /* Responsive Styling */
-@media (max-width: 768px) {
+@media (max-width: 540px) {
+    #post_media {
+        width: 100%;
+    }
+}
+
+@media (max-width: 540px) {
     body {
         padding: 15px;
     }
@@ -349,5 +355,39 @@ footer a:hover {
 
     .actions button {
         font-size: 1rem;
+    }
+
+    #index_page {
+        padding: 0 5px;
+    }
+
+    .posts-button-container button {
+        font-size: 9px;
+        margin-bottom: 0;
+    }
+
+    #posts_container {
+        padding: 10px 0;
+    }
+
+    #center_cluster, #posts_card {
+        width: 100%;
+        margin: auto;
+    }
+
+    #post_card {
+        width: 100%;
+        margin: auto
+    }
+}
+
+@media (max-width: 1024px) {
+    .posts-button-container button {
+        width: 100%;
+        font-size: 9px;
+    }
+
+    #post_creation_date {
+        font-size: 10px;
     }
 }

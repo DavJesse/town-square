@@ -205,3 +205,17 @@ button:hover {
         font-size: 14px; /* Slightly smaller button font */
     }
 }
+
+@media (max-width: 1024px) {
+    .registration-form-container {
+        width: 100%;
+    }
+
+    .logo {
+        font-size: 34px;
+    }
+
+    .register-link {
+        font-size: 12px;
+    }
+}

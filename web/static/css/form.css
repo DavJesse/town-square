@@ -261,12 +261,46 @@ button:hover {
 
 /* Media queries */
 /* Small screens: Tablets and Mobile Devices */
-@media (max-width: 600px) {
- 
-    /* .navbar__search {
-        width: 100%;
-        margin-top: 5px;
-    } */
+@media (max-width: 1024px) { 
+    #register_first_name, #register_last_name,
+    #register_age, #register_password,
+    #register_confirm_password, #register_username, #register_email {
+        font-size: 10px;
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
+
+    #register_gender_label {
+        font-size: 12px;
+        margin: 9px auto auto auto;
+    }
+
+    #register_age, #register_gender {
+        height: 33px;
+        margin: 2px auto auto 2px;
+    }
+
+    #register_gender {
+        font-size: 10px;
+    }
+
+    #register_bio, #char_counter {
+        font-size: 10px;
+    }
+
+    #register_bio {
+        margin: 2px auto 15px auto;
+        min-height: 80px;
+    }
+
+    .custom-file-upload {
+        font-size: 12px;
+        gap: 0px;
+    }
+
+    .custom-file-upload button {
+        font-size: 12px;
+    }
 }
 
 /* Adjust for extra small screens (e.g., mobile phones) */

@@ -1,4 +1,4 @@
-export function setupImageUpload () {
+export function setupImageUpload() {
     const imageInput = document.getElementById("image");
     const fileNameDisplay = document.getElementById("file_name");
 

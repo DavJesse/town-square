@@ -164,3 +164,9 @@
         }
     }
  }
+
+ @media (max-width: 1024px) {
+    #navbar_center_cluster .material-symbols-outlined {
+        font-size: 28px;
+    }
+}

@@ -182,3 +182,9 @@ font-size: 10px;
         font-size: 6px;
     }
 }
+
+@media (max-width: 1024px) {
+    p {
+        font-size: 12px;
+    }
+}

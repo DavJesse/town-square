@@ -1360,11 +1360,12 @@ function populateOnlineUsersList(users, container) {
     userNickname.textContent = user.nickname;
 
     // Add notification badge if needed
+    let chatIcon = document.getElementById('chat_container');
     if (userNotifications[user.id] && userNotifications[user.id] > 0) {
       const badge = document.createElement('span');
       badge.className = 'notification-badge';
       badge.textContent = userNotifications[user.id];
-      userItem.appendChild(badge);
+      chatIcon.appendChild(badge);
     }
 
     // Assemble user item

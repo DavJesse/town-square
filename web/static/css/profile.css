@@ -128,3 +128,66 @@
     margin: 2px auto 0 10px;
 }
 
+@media (max-width: 1024px) {
+    #online_users_card, #profile_card, #category_container {
+        width: 60%;
+    }
+
+    #online_users_title, #categories_title, #profile_title {
+        font-size: 18px;
+    }
+
+    #category_button_1, #category_button_2,
+    #category_button_3, #category_button_4,
+    #category_button_5, #category_button_6,
+    #category_button_7, #category_button_8 {
+        font-size: 16px;
+        height: 24px;
+    }
+
+    #online_users_card, #profile_card, #category_container {
+        min-height: fit-content;
+        border-radius: 5px;
+    }
+
+    #online_users_content {
+        padding: 0;
+    }
+
+    #index_profile_pic {
+        height: 100px;
+        width: 100px;
+    }
+
+
+    #profile_contact, #profile_subtitle {
+       font-size: 14px; 
+    }
+
+    .profile-age-gender {
+        font-size: 12px;
+    }
+
+    #profile_bio_text {
+        font-size: 10px;
+        margin: 0 auto 0 5px;
+    }
+
+    #profile_card {
+        gap: 3px;
+    }
+
+    #messanger_button, #profile_logout_button {
+        font-size: 14px;
+        height:fit-content
+    }
+
+    #profile_action_container {
+        gap: 3px;
+    }
+
+    #profile_bio_title {
+        font-size: 10px;
+        margin: 3px auto auto 15px;
+    }
+}

@@ -58,7 +58,7 @@ export function renderCreatePostForm() {
 
     // Create content field
     let postContent = document.createElement('textarea');
-    postContent.id = 'post_content';
+    postContent.id = 'create_post_content';
     postContent.classList.add('create_post_input');
     postContent.name = 'content';
     postContent.placeholder = 'share your thoughts';

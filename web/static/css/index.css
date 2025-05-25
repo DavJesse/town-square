@@ -430,3 +430,50 @@
         padding: 15px; /* Slightly reduce padding for better spacing */
     }
 }
+
+@media (max-width: 1024px) {
+    #post_creator_name {
+        font-size: 18px;
+    }
+
+    #post_creator_username {
+        font-size: 16px;
+    }
+
+    #post_creator_pic {
+        height: 55px;
+        width: 55px;
+    }
+
+    #post_title {
+        font-size: 12px;
+    }
+
+    #post_content {
+        font-size: 10px;
+    }
+
+    #post_media {
+        width: 100%;
+    }
+
+    #posts_container {
+        padding: 0;
+    }
+
+    #post_card {
+        border-radius: 5px;
+    }
+
+    #like_link, #dislike_link, #comment_link {
+        font-size: 14px;
+    }
+
+    #engagement_count, #post_like_count, #post_dislike_count {
+        font-size: 14px;
+    }
+
+    #engagement_icon, #comment_engagement_icon {
+        font-size: 18px;
+    }
+}

@@ -649,3 +649,9 @@
         max-width: 90%;
     }
 
+@media (max-width: 540px) {
+    .notification-badge {
+        right: 30%;
+        font-size: 12px;
+    }
+}

@@ -307,7 +307,7 @@
 .message-time {
     font-size: 0.6875rem;
     opacity: 0.7;
-    margin-left: 0.5rem;
+    margin: auto 0 auto auto;
 }
 
 /* Adjust alignment for sent messages */
@@ -389,13 +389,18 @@
     background-color: var(--text-light);
 }
 
+#message_preview_container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
 .message-preview {
     font-size: 0.8125rem;
     color: var(--text-light);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    padding-left: 1.125rem;
     max-width: 100%;
     margin-top: 0.25rem;
 }
@@ -536,7 +541,7 @@
 
 .compact-user-item {
     display: flex;
-    align-items: center;
+    justify-content: left;
     padding: 8px;
     cursor: pointer;
     border-radius: 4px;

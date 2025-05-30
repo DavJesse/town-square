@@ -1,7 +1,9 @@
+import { navigateTo } from '/static/js/routes.js';
+
 export function renderLogoutButton() {
     // Create button element
     let logoutButton = document.createElement('button');
-    logoutButton.id = 'create_post_button';
+    logoutButton.id = 'logout_button';
 
     // Create logout icon
     let logoutIcon = document.createElement('span');
@@ -11,8 +13,8 @@ export function renderLogoutButton() {
 
     // Create "Create Post" text element
     let logoutText = document.createElement('span');
-    logoutText.id = 'create_post_text';
-    logoutText.textContent = 'Create Post';
+    logoutText.id = 'logout_text';
+    logoutText.textContent = 'Logout';
 
     // Append elements
     logoutButton.appendChild(logoutIcon);
@@ -20,8 +22,8 @@ export function renderLogoutButton() {
     setLogoutButtonListeners(logoutButton);
 
     // Append button to app
-    // let app = document.getElementById('app');
-    document.body.appendChild(logoutButton);
+    let app = document.getElementById('app');
+    app.appendChild(logoutButton);
 
     // return logoutButton;
 }
@@ -33,5 +35,8 @@ export function setLogoutButtonListeners(logoutButton) {
             method: 'POST',
             credentials: 'include',
         })
+        
+        .then(navigateTo('/'))
     });
+
 }

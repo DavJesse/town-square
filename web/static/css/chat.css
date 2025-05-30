@@ -101,12 +101,14 @@
 }
 
 .chat-header {
-    padding: 0.75rem;
-    border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
     background-color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 .chat-title {
@@ -642,6 +644,14 @@
     .back-button span:last-child {
         display: none; /* Hide the "Back" text on mobile, just show the arrow */
     }
+
+    .header-buttons {
+        gap: 0.5rem;
+    }
+    
+    .header-buttons #create_post_button {
+        padding: 0.25rem 0.5rem;
+    }
 }
 
     /* Adjust message area for mobile */
@@ -659,4 +669,20 @@
         right: 30%;
         font-size: 12px;
     }
+}
+
+.header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: auto;
+}
+
+.header-buttons #create_post_button {
+    position: static;
+    margin: 0;
+    width: auto;
+    height: auto;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
 }

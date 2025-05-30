@@ -178,6 +178,10 @@ function setupUI() {
     });
   }
 
+  // Add the logout button to the body
+  renderLogoutButton();
+  // document.body.appendChild(logoutButton);
+
   // Set up scroll handler for message area
   setupScrollHandler();
 }
@@ -890,9 +894,16 @@ function renderChatInterface(user) {
     backButton.appendChild(backIcon);
     backButton.appendChild(backText);
 
+    // Create container for right-side buttons
+    const headerButtons = document.createElement('div');
+    headerButtons.classList.add('header-buttons');
+    
+    // Add back button to the header buttons container
+    headerButtons.appendChild(backButton);
+    
     chatHeader.appendChild(mobileToggle);
     chatHeader.appendChild(chatTitle);
-    chatHeader.appendChild(backButton);
+    chatHeader.appendChild(headerButtons);
     chatMain.appendChild(chatHeader);
 
     // Create message container

@@ -1,6 +1,7 @@
 /**
  * chat.js - Chat functionality for embedding in applications that handle authentication via cookies
  */
+import { renderLogoutButton } from '/static/js/logout_button.js';
 
 // Global variables
 let myUserId = null;
@@ -792,7 +793,7 @@ function renderChatInterface(user) {
 
   // Clear the app container
   app.innerHTML = "";
-
+  
   // Import and render the navbar
   import('/static/js/navbar.js').then(module => {
     const { renderNavBar } = module;

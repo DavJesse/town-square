@@ -1,29 +1,37 @@
 export function renderLogoutButton() {
     // Create button element
     let logoutButton = document.createElement('button');
-    logoutButton.id = 'logout_button';
+    logoutButton.id = 'create_post_button';
 
-    // Create plus sign element
+    // Create logout icon
     let logoutIcon = document.createElement('span');
-    logoutIcon.classList.add('material-symbols-outlined');
     logoutIcon.id = 'logout_icon';
+    logoutIcon.classList.add('material-symbols-outlined');
     logoutIcon.textContent = 'logout';
 
     // Create "Create Post" text element
     let logoutText = document.createElement('span');
-    logoutText.id = 'logout_text';
-    logoutText.textContent = 'Logout';
+    logoutText.id = 'create_post_text';
+    logoutText.textContent = 'Create Post';
 
     // Append elements
     logoutButton.appendChild(logoutIcon);
     logoutButton.appendChild(logoutText);
+    setLogoutButtonListeners(logoutButton);
 
-    return logoutButton;
+    // Append button to app
+    // let app = document.getElementById('app');
+    document.body.appendChild(logoutButton);
+
+    // return logoutButton;
 }
 
 export function setLogoutButtonListeners(logoutButton) {
     // Add Event listener for clicking create posts button
     logoutButton.addEventListener('click', () => {
-        alert('Logout button clicked');
+        fetch('/logout', {
+            method: 'POST',
+            credentials: 'include',
+        })
     });
 }

@@ -21,11 +21,7 @@ export function renderLogoutButton() {
     logoutButton.appendChild(logoutText);
     setLogoutButtonListeners(logoutButton);
 
-    // Append button to app
-    let app = document.getElementById('app');
-    app.appendChild(logoutButton);
-
-    // return logoutButton;
+    return logoutButton;
 }
 
 export function setLogoutButtonListeners(logoutButton) {

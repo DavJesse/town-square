@@ -1,4 +1,5 @@
 import { renderProfileMenu } from '/static/js/mobile_profile_menu.js';
+import { renderLogoutButton } from '/static/js/logout_button.js';
 
 export function renderNavBar(userData) {
   // Create nav bar container
@@ -76,6 +77,11 @@ export function renderNavBar(userData) {
   let rightCluster = document.createElement('div');
   rightCluster.classList.add('navbar-clusters');
   rightCluster.id = 'navbar_right_cluster';
+
+  // Add the logout button
+  const logoutButton = renderLogoutButton();
+  rightCluster.appendChild(logoutButton);
+
   navBarContainer.appendChild(rightCluster);
 
   // Append nav bar container to the app div

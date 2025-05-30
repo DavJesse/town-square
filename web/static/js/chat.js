@@ -178,10 +178,6 @@ function setupUI() {
     });
   }
 
-  // Add the logout button to the body
-  renderLogoutButton();
-  // document.body.appendChild(logoutButton);
-
   // Set up scroll handler for message area
   setupScrollHandler();
 }

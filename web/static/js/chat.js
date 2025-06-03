@@ -1,7 +1,6 @@
 /**
  * chat.js - Chat functionality for embedding in applications that handle authentication via cookies
  */
-import { renderLogoutButton } from '/static/js/logout_button.js';
 
 // Global variables
 let myUserId = null;

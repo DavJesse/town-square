@@ -79,6 +79,8 @@ export function renderRegistrationPage() {
      age.id = 'register_age';
      age.name = 'age';
      age.placeholder = 'age';
+     age.min = '13';
+     age.max = '120';
      age.required = true;
      ageGender.appendChild(age);
 

@@ -189,6 +189,32 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 			if err := conn.WriteMessage(websocket.TextMessage, messageJSON); err != nil {
 				log.Printf("Error sending message back to sender: %v", err)
 			}
+		} else if msgType == "typing" || msgType == "stop_typing" {
+			// Extract sender and receiver IDs
+			_, ok := msgData["sender_id"].(float64)
+			if !ok {
+				log.Printf("Sender ID not found or not a number")
+				continue
+			}
+
+			receiverIDFloat, ok := msgData["receiver_id"].(float64)
+			if !ok {
+				log.Printf("Receiver ID not found or not a number")
+				continue
+			}
+			receiverID := int(receiverIDFloat)
+
+			// Forward the typing event to the receiver if they're online
+			userConnMutex.Lock()
+			receiverUser, ok := UserConnections[receiverID]
+			userConnMutex.Unlock()
+
+			if ok {
+				// Send the typing event to the receiver
+				if err := receiverUser.Conn.WriteJSON(msgData); err != nil {
+					log.Printf("Error sending typing event to receiver %d: %v", receiverID, err)
+				}
+			}
 		}
 	}
 }

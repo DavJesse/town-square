@@ -277,6 +277,8 @@
     color: white;
     margin-left: auto;
     border-bottom-right-radius: 0;
+    word-wrap: break-word;
+    max-width: 300px;
 }
 
 .message.received {
@@ -285,6 +287,8 @@
     margin-right: auto;
     border-bottom-left-radius: 0;
     box-shadow: var(--shadow-sm);
+    word-wrap: break-word;
+    max-width: 300px;
 }
 
 .message-header {
@@ -685,4 +689,35 @@
     height: auto;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
+}
+
+.typing-indicator {
+    position: absolute;
+    bottom: 15px;
+    left: auto;
+    background-color: #f0f0f0;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #666;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+}
+
+.typing-indicator::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #666;
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: typing 1s infinite;
+}
+
+@keyframes typing {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
 }

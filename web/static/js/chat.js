@@ -107,6 +107,22 @@ function connectWebSocket() {
 
           // Refresh the user list to update the latest message preview
           fetchAllUsers();
+        } else if (data.type === 'typing') {
+          // Show typing indicator if it's from the selected user
+          if (selectedUser && data.sender_id == selectedUser.id) {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+              typingIndicator.style.display = 'block';
+            }
+          }
+        } else if (data.type === 'stop_typing') {
+          // Hide typing indicator if it's from the selected user
+          if (selectedUser && data.sender_id == selectedUser.id) {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+              typingIndicator.style.display = 'none';
+            }
+          }
         } else if (data.type === 'user_status_change') {
           // When receiving a user status change, refresh the user list
           console.log('User status changed:', data.user);
@@ -156,6 +172,37 @@ function setupUI() {
   if (messageInput) {
     messageInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') sendMessage();
+    });
+
+    // Add typing indicator events
+    let typingTimeout;
+    messageInput.addEventListener('input', () => {
+      if (!selectedUser) return;
+
+      // Send typing event
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        const typingData = {
+          type: 'typing',
+          sender_id: myUserId,
+          receiver_id: selectedUser.id
+        };
+        ws.send(JSON.stringify(typingData));
+      }
+
+      // Clear previous timeout
+      clearTimeout(typingTimeout);
+
+      // Set new timeout to stop typing indicator
+      typingTimeout = setTimeout(() => {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          const stopTypingData = {
+            type: 'stop_typing',
+            sender_id: myUserId,
+            receiver_id: selectedUser.id
+          };
+          ws.send(JSON.stringify(stopTypingData));
+        }
+      }, 1000); // Stop typing indicator after 1 second of no input
     });
   }
 
@@ -914,8 +961,16 @@ function renderChatInterface(user) {
     newMessageNotification.classList.add('new-message-notification');
     newMessageNotification.textContent = 'New messages ↓';
 
+    // Add typing indicator
+    const typingIndicator = document.createElement('div');
+    typingIndicator.id = 'typing-indicator';
+    typingIndicator.classList.add('typing-indicator');
+    typingIndicator.style.display = 'none';
+    typingIndicator.textContent = 'typing...';
+
     messageContainer.appendChild(messageArea);
     messageContainer.appendChild(newMessageNotification);
+    messageContainer.appendChild(typingIndicator);
     chatMain.appendChild(messageContainer);
 
     // Create message input container

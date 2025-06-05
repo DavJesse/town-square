@@ -1,12 +1,14 @@
+import { navigateTo } from '/static/js/routes.js';
+
 export function renderLogoutButton() {
     // Create button element
     let logoutButton = document.createElement('button');
     logoutButton.id = 'logout_button';
 
-    // Create plus sign element
+    // Create logout icon
     let logoutIcon = document.createElement('span');
-    logoutIcon.classList.add('material-symbols-outlined');
     logoutIcon.id = 'logout_icon';
+    logoutIcon.classList.add('material-symbols-outlined');
     logoutIcon.textContent = 'logout';
 
     // Create "Create Post" text element
@@ -17,6 +19,7 @@ export function renderLogoutButton() {
     // Append elements
     logoutButton.appendChild(logoutIcon);
     logoutButton.appendChild(logoutText);
+    setLogoutButtonListeners(logoutButton);
 
     return logoutButton;
 }
@@ -24,6 +27,12 @@ export function renderLogoutButton() {
 export function setLogoutButtonListeners(logoutButton) {
     // Add Event listener for clicking create posts button
     logoutButton.addEventListener('click', () => {
-        alert('Logout button clicked');
+        fetch('/logout', {
+            method: 'POST',
+            credentials: 'include',
+        })
+        
+        .then(navigateTo('/'))
     });
+
 }

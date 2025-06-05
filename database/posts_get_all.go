@@ -96,27 +96,35 @@ func GetAllPosts() ([]models.PostWithUsername, error) {
 func GetLikedPostsByUser(userID int) ([]models.PostWithCategories, error) {
 	query := `
 		SELECT 
-			p.uuid,
-			u.first_name,
-			u.last_name, 
-			u.username,
-			u.image, 
-			p.title, 
-			p.content, 
-			p.media, 
-			p.user_id, 
-			p.created_at,
-			GROUP_CONCAT(DISTINCT c.name) AS category_names,
-			COUNT(DISTINCT l.id) AS likes_count, 
-			COUNT(DISTINCT dl.id) AS dislikes_count
+		    p.uuid,
+		    u.first_name,
+		    u.last_name, 
+		    u.username,
+		    u.image, 
+		    p.title, 
+		    p.content, 
+		    p.media, 
+		    p.user_id, 
+		    p.created_at,
+		    GROUP_CONCAT(DISTINCT c.name) AS category_names,
+		
+		    -- Subquery to count all likes for this post
+		    (SELECT COUNT(*) FROM likes l2 WHERE l2.post_id = p.uuid) AS likes_count,
+		
+		    -- Subquery to count all dislikes for this post
+		    (SELECT COUNT(*) FROM dislikes dl2 WHERE dl2.post_id = p.uuid) AS dislikes_count
+		
 		FROM posts p
 		INNER JOIN users u ON p.user_id = u.id
 		LEFT JOIN post_categories pc ON p.uuid = pc.post_id
 		LEFT JOIN categories c ON pc.category_id = c.id
-		INNER JOIN likes l ON p.uuid = l.post_id  -- Only fetch posts the user liked
-		LEFT JOIN dislikes dl ON p.uuid = dl.post_id
-		WHERE l.user_id = ?
-		GROUP BY p.uuid, p.title, p.content, p.media, u.username, p.user_id, p.created_at
+		
+		-- Only include posts liked by the current user
+		WHERE EXISTS (
+		    SELECT 1 FROM likes l WHERE l.post_id = p.uuid AND l.user_id = ?
+		)
+		
+		GROUP BY p.uuid
 	`
 
 	rows, err := db.Query(query, userID)

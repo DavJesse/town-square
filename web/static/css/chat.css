@@ -22,7 +22,7 @@
 /* Chat Container */
 /* Chat page container - matches the site's layout */
 .chat-page-container {
-    margin-top: 20px;
+    margin-top: 80px;
     padding: 0 20px;
     max-width: 1200px;
     margin-left: auto;
@@ -101,12 +101,14 @@
 }
 
 .chat-header {
-    padding: 0.75rem;
-    border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
     background-color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 .chat-title {
@@ -275,6 +277,8 @@
     color: white;
     margin-left: auto;
     border-bottom-right-radius: 0;
+    word-wrap: break-word;
+    max-width: 300px;
 }
 
 .message.received {
@@ -283,6 +287,8 @@
     margin-right: auto;
     border-bottom-left-radius: 0;
     box-shadow: var(--shadow-sm);
+    word-wrap: break-word;
+    max-width: 300px;
 }
 
 .message-header {
@@ -307,7 +313,7 @@
 .message-time {
     font-size: 0.6875rem;
     opacity: 0.7;
-    margin-left: 0.5rem;
+    margin: auto 0 auto auto;
 }
 
 /* Adjust alignment for sent messages */
@@ -389,13 +395,18 @@
     background-color: var(--text-light);
 }
 
+#message_preview_container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
 .message-preview {
     font-size: 0.8125rem;
     color: var(--text-light);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    padding-left: 1.125rem;
     max-width: 100%;
     margin-top: 0.25rem;
 }
@@ -536,7 +547,7 @@
 
 .compact-user-item {
     display: flex;
-    align-items: center;
+    justify-content: left;
     padding: 8px;
     cursor: pointer;
     border-radius: 4px;
@@ -637,6 +648,14 @@
     .back-button span:last-child {
         display: none; /* Hide the "Back" text on mobile, just show the arrow */
     }
+
+    .header-buttons {
+        gap: 0.5rem;
+    }
+    
+    .header-buttons #create_post_button {
+        padding: 0.25rem 0.5rem;
+    }
 }
 
     /* Adjust message area for mobile */
@@ -654,4 +673,51 @@
         right: 30%;
         font-size: 12px;
     }
+}
+
+.header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: auto;
+}
+
+.header-buttons #create_post_button {
+    position: static;
+    margin: 0;
+    width: auto;
+    height: auto;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+
+.typing-indicator {
+    position: absolute;
+    bottom: 15px;
+    left: auto;
+    background-color: #f0f0f0;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #666;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+}
+
+.typing-indicator::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #666;
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: typing 1s infinite;
+}
+
+@keyframes typing {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
 }

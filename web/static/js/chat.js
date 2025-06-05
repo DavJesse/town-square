@@ -107,6 +107,22 @@ function connectWebSocket() {
 
           // Refresh the user list to update the latest message preview
           fetchAllUsers();
+        } else if (data.type === 'typing') {
+          // Show typing indicator if it's from the selected user
+          if (selectedUser && data.sender_id == selectedUser.id) {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+              typingIndicator.style.display = 'block';
+            }
+          }
+        } else if (data.type === 'stop_typing') {
+          // Hide typing indicator if it's from the selected user
+          if (selectedUser && data.sender_id == selectedUser.id) {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+              typingIndicator.style.display = 'none';
+            }
+          }
         } else if (data.type === 'user_status_change') {
           // When receiving a user status change, refresh the user list
           console.log('User status changed:', data.user);
@@ -156,6 +172,37 @@ function setupUI() {
   if (messageInput) {
     messageInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') sendMessage();
+    });
+
+    // Add typing indicator events
+    let typingTimeout;
+    messageInput.addEventListener('input', () => {
+      if (!selectedUser) return;
+
+      // Send typing event
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        const typingData = {
+          type: 'typing',
+          sender_id: myUserId,
+          receiver_id: selectedUser.id
+        };
+        ws.send(JSON.stringify(typingData));
+      }
+
+      // Clear previous timeout
+      clearTimeout(typingTimeout);
+
+      // Set new timeout to stop typing indicator
+      typingTimeout = setTimeout(() => {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          const stopTypingData = {
+            type: 'stop_typing',
+            sender_id: myUserId,
+            receiver_id: selectedUser.id
+          };
+          ws.send(JSON.stringify(stopTypingData));
+        }
+      }, 1000); // Stop typing indicator after 1 second of no input
     });
   }
 
@@ -792,7 +839,7 @@ function renderChatInterface(user) {
 
   // Clear the app container
   app.innerHTML = "";
-
+  
   // Import and render the navbar
   import('/static/js/navbar.js').then(module => {
     const { renderNavBar } = module;
@@ -889,9 +936,16 @@ function renderChatInterface(user) {
     backButton.appendChild(backIcon);
     backButton.appendChild(backText);
 
+    // Create container for right-side buttons
+    const headerButtons = document.createElement('div');
+    headerButtons.classList.add('header-buttons');
+    
+    // Add back button to the header buttons container
+    headerButtons.appendChild(backButton);
+    
     chatHeader.appendChild(mobileToggle);
     chatHeader.appendChild(chatTitle);
-    chatHeader.appendChild(backButton);
+    chatHeader.appendChild(headerButtons);
     chatMain.appendChild(chatHeader);
 
     // Create message container
@@ -907,8 +961,16 @@ function renderChatInterface(user) {
     newMessageNotification.classList.add('new-message-notification');
     newMessageNotification.textContent = 'New messages ↓';
 
+    // Add typing indicator
+    const typingIndicator = document.createElement('div');
+    typingIndicator.id = 'typing-indicator';
+    typingIndicator.classList.add('typing-indicator');
+    typingIndicator.style.display = 'none';
+    typingIndicator.textContent = 'typing...';
+
     messageContainer.appendChild(messageArea);
     messageContainer.appendChild(newMessageNotification);
+    messageContainer.appendChild(typingIndicator);
     chatMain.appendChild(messageContainer);
 
     // Create message input container
@@ -1332,17 +1394,31 @@ function populateOnlineUsersList(users, container) {
   // Clear current list
   container.innerHTML = '';
 
-  // Filter out current user and get only online users
-  const onlineUsers = users.filter(user => user.id !== myUserId && user.is_online);
-  const offlineUsers = users.filter(user => user.id !== myUserId && !user.is_online);
+  // Filter out current user
+  const filteredUsers = users.filter(user => user.id !== myUserId);
 
-  if (onlineUsers.length === 0 && offlineUsers.length === 0) {
+  if (filteredUsers.length === 0) {
     const emptyItem = document.createElement('div');
     emptyItem.textContent = 'No users available';
     emptyItem.className = 'empty-user-item';
     container.appendChild(emptyItem);
     return;
   }
+
+  // Split users into those with and without message history
+  const usersWithMessages = filteredUsers.filter(user => user.has_chat_history);
+  const usersWithoutMessages = filteredUsers.filter(user => !user.has_chat_history);
+
+  // Sort users with messages by last message timestamp
+  usersWithMessages.sort((a, b) => {
+    if (a.last_message?.timestamp && b.last_message?.timestamp) {
+      return new Date(b.last_message.timestamp) - new Date(a.last_message.timestamp);
+    }
+    return 0;
+  });
+
+  // Sort users without messages alphabetically
+  usersWithoutMessages.sort((a, b) => a.nickname.localeCompare(b.nickname));
 
   // Create a compact user item
   const createCompactUserItem = (user) => {
@@ -1351,7 +1427,9 @@ function populateOnlineUsersList(users, container) {
     userItem.dataset.userId = user.id;
 
     // Create status indicator
+    const userHandlerContainer = document.createElement('div');
     const statusIndicator = document.createElement('span');
+    userHandlerContainer.id = 'user_handler_container';
     statusIndicator.className = `status-indicator ${user.is_online ? 'status-online' : 'status-offline'}`;
 
     // Create user nickname
@@ -1369,8 +1447,26 @@ function populateOnlineUsersList(users, container) {
     }
 
     // Assemble user item
-    userItem.appendChild(statusIndicator);
-    userItem.appendChild(userNickname);
+    userHandlerContainer.appendChild(statusIndicator);
+    userHandlerContainer.appendChild(userNickname);
+    userItem.appendChild(userHandlerContainer);
+
+    // Add last message preview if available
+    if (user.has_chat_history && user.last_message) {
+      const messagePreviewContainer = document.createElement('div');
+      const messagePreview = document.createElement('div');
+      messagePreviewContainer.id = 'message_preview_container';
+      messagePreview.className = 'message-preview';
+      messagePreview.textContent = truncateText(user.last_message.content, 25);
+      
+      const timestamp = document.createElement('div');
+      timestamp.className = 'message-time';
+      timestamp.textContent = formatMessageTime(new Date(user.last_message.timestamp));
+      
+      messagePreviewContainer.appendChild(messagePreview);
+      messagePreviewContainer.appendChild(timestamp);
+      userItem.appendChild(messagePreviewContainer);
+    }
 
     // Add click handler to open chat
     userItem.addEventListener('click', () => {
@@ -1382,56 +1478,36 @@ function populateOnlineUsersList(users, container) {
     return userItem;
   };
 
-  // Add online users first
-  if (onlineUsers.length > 0) {
-    const onlineHeader = document.createElement('div');
-    onlineHeader.className = 'user-section-header';
-    onlineHeader.textContent = 'Online';
-    container.appendChild(onlineHeader);
+  // Add users with message history first
+  if (usersWithMessages.length > 0) {
+    const historyHeader = document.createElement('div');
+    historyHeader.className = 'user-section-header';
+    historyHeader.textContent = 'Recent Chats';
+    container.appendChild(historyHeader);
 
-    // Sort online users by last message time or alphabetically
-    onlineUsers.sort((a, b) => {
-      if (a.has_chat_history && b.has_chat_history) {
-        if (a.last_message?.timestamp && b.last_message?.timestamp) {
-          return new Date(b.last_message.timestamp) - new Date(a.last_message.timestamp);
-        }
-      }
-      return a.nickname.localeCompare(b.nickname);
-    });
-
-    onlineUsers.forEach(user => {
+    usersWithMessages.forEach(user => {
       container.appendChild(createCompactUserItem(user));
     });
   }
 
-  // Add offline users
-  if (offlineUsers.length > 0) {
-    const offlineHeader = document.createElement('div');
-    offlineHeader.className = 'user-section-header';
-    offlineHeader.textContent = 'Offline';
-    container.appendChild(offlineHeader);
+  // Add users without message history
+  if (usersWithoutMessages.length > 0) {
+    const newUsersHeader = document.createElement('div');
+    newUsersHeader.className = 'user-section-header';
+    newUsersHeader.textContent = 'Other Users';
+    container.appendChild(newUsersHeader);
 
-    // Sort offline users by last message time or alphabetically
-    offlineUsers.sort((a, b) => {
-      if (a.has_chat_history && b.has_chat_history) {
-        if (a.last_message?.timestamp && b.last_message?.timestamp) {
-          return new Date(b.last_message.timestamp) - new Date(a.last_message.timestamp);
-        }
-      }
-      return a.nickname.localeCompare(b.nickname);
-    });
-
-    // Only show first 5 offline users to save space
-    const displayedOfflineUsers = offlineUsers.slice(0, 5);
-    displayedOfflineUsers.forEach(user => {
+    // Show first 5 users without message history
+    const displayedUsers = usersWithoutMessages.slice(0, 5);
+    displayedUsers.forEach(user => {
       container.appendChild(createCompactUserItem(user));
     });
 
-    // Add "Show more" button if there are more offline users
-    if (offlineUsers.length > 5) {
+    // Add "Show more" button if there are more users
+    if (usersWithoutMessages.length > 5) {
       const showMoreBtn = document.createElement('div');
       showMoreBtn.className = 'show-more-btn';
-      showMoreBtn.textContent = `Show ${offlineUsers.length - 5} more...`;
+      showMoreBtn.textContent = `Show ${usersWithoutMessages.length - 5} more...`;
       showMoreBtn.addEventListener('click', () => {
         // Navigate to full chat page
         history.pushState(null, "", "/chat");

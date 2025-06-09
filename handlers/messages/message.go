@@ -191,11 +191,12 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 			}
 		} else if msgType == "typing" || msgType == "stop_typing" {
 			// Extract sender and receiver IDs
-			_, ok := msgData["sender_id"].(float64)
+			senderIDFloat, ok := msgData["sender_id"].(float64)
 			if !ok {
 				log.Printf("Sender ID not found or not a number")
 				continue
 			}
+			senderID := int(senderIDFloat)
 
 			receiverIDFloat, ok := msgData["receiver_id"].(float64)
 			if !ok {
@@ -203,6 +204,16 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 			receiverID := int(receiverIDFloat)
+
+			// Get sender's nickname
+			sender, err := database.GetUserByID(senderID)
+			if err != nil {
+				log.Printf("Error getting sender info: %v", err)
+				continue
+			}
+
+			// Add sender's nickname to the message
+			msgData["sender_nickname"] = sender.Nickname
 
 			// Forward the typing event to the receiver if they're online
 			userConnMutex.Lock()

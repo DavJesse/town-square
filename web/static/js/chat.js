@@ -110,17 +110,28 @@ function connectWebSocket() {
         } else if (data.type === 'typing') {
           // Show typing indicator if it's from the selected user
           if (selectedUser && data.sender_id == selectedUser.id) {
-            const typingIndicator = document.getElementById('typing-indicator');
-            if (typingIndicator) {
-              typingIndicator.style.display = 'block';
+            // Remove any existing typing indicator first
+            const existingIndicator = document.querySelector('.typing-indicator');
+            if (existingIndicator) {
+              existingIndicator.remove();
+            }
+
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'typing-indicator';
+            typingIndicator.textContent = `${data.sender_nickname} is typing...`;
+            typingIndicator.style.display = 'block';
+            const messageArea = document.getElementById('message-area');
+            if (messageArea) {
+              messageArea.appendChild(typingIndicator);
+              messageArea.scrollTop = messageArea.scrollHeight;
             }
           }
         } else if (data.type === 'stop_typing') {
           // Hide typing indicator if it's from the selected user
           if (selectedUser && data.sender_id == selectedUser.id) {
-            const typingIndicator = document.getElementById('typing-indicator');
+            const typingIndicator = document.querySelector('.typing-indicator');
             if (typingIndicator) {
-              typingIndicator.style.display = 'none';
+              typingIndicator.remove();
             }
           }
         } else if (data.type === 'user_status_change') {
